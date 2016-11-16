@@ -1,3 +1,3 @@
 # radare2gui_dotnet
 Another radare2 gui for windows
-![r2pipeguidotnet](https://cloud.githubusercontent.com/assets/12532269/20347784/d6e1a628-ac02-11e6-9323-3d38eb657ed7.png)
+![r2pipeguidotnet](https://cloud.githubusercontent.com/assets/12532269/20358089/cb65b5e6-ac2a-11e6-9b8b-4a073e7d5106.png)
