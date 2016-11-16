@@ -11,9 +11,10 @@ Nuget console:
 PM> Install-Package Newtonsoft.Json
 PM> Install-Package r2pipe
 ```
-## Framework
-Download and install .net framework 4.5.1 from Microsoft and configure the project for this framework (this is the version that Nuget installs for r2pipe)
+## Framework 4.5.1
+Since Nuget installs r2pipe compiled with the .net framework 4.5.1, you have to configure the project for this version; also you need the framework (downloadable from Microsoft)
 
-&& Compile!
+## Compile r2pipe (from sources) for other .net frameworks
+You can download r2pipe from https://github.com/radare/radare2-r2pipe/ and compile against other framework versions. Open the solution (.sln), try to compile, and add this project if needed :) 
 
 @m_ndingo
