@@ -17,4 +17,7 @@ Since Nuget installs r2pipe compiled with the .net framework 4.5.1, you have to 
 ## Compile r2pipe (from sources) for other .net frameworks
 You can download r2pipe from https://github.com/radare/radare2-r2pipe/ and compile against other framework versions. Open the solution (.sln), try to compile, and add this project if needed :) 
 
+## radare2 binaries for Windows
+By the moment, follow this instructions: https://radare.gitbooks.io/radare2book/content/introduction/windows_compilation.html
+
 @m_ndingo
