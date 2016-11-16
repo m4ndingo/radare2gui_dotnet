@@ -14,9 +14,9 @@ using System.Collections.Specialized;
 namespace r2pipe_test
 {    
     public partial class Form1 : Form
-    {
-        
+    {        
         R2PIPE_WRAPPER r2pw = null;
+        private RConfig rconfig = null;
         private string fileName = null;
         public Form1()
         {
@@ -25,14 +25,27 @@ namespace r2pipe_test
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            r2pw = new R2PIPE_WRAPPER(txtOutput);            
+            rconfig = new RConfig();
+            CheckR2path();
+
+            r2pw    = new R2PIPE_WRAPPER(rconfig);
             r2pw.add_control("dissasembly", txtDissasembly);
             r2pw.add_control("strings", txtStrings);
             r2pw.add_control("output", txtOutput);
             r2pw.add_control("functions_listview", listView1);            
-            LoadFile(@"c:\windows\SysWOW64\notepad.exe");
-            //LoadFile(@"c:\windows\system32.dll");
-            //LoadFile(@"C:\Users\alberto.moro\Desktop\mw logan\decrypted.dll");
+            LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
+        }
+        private void CheckR2path()
+        {
+            string r2path = rconfig.r2path; 
+            if (r2path == null)
+            {
+                MessageBox.Show("Path for 'radare2.exe' not found...","radare2.exe not found",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                openFileDialog1.FileName = "radare2.exe";
+                openFileDialog1.Title = "Please, locate your radare2.exe binary";
+                openFileDialog1.ShowDialog();
+                rconfig.save("r2path", openFileDialog1.FileName);                
+            }
         }
         private void DoLoadFile()
         {
