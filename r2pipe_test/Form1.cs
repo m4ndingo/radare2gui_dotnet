@@ -29,7 +29,8 @@ namespace r2pipe_test
             CheckR2path();
 
             r2pw    = new R2PIPE_WRAPPER(rconfig);
-            r2pw.add_control("dissasembly", txtDissasembly);
+            //r2pw.add_control("dissasembly", txtDissasembly);
+            r2pw.add_control("dissasembly", webBrowser1);
             r2pw.add_control("strings", txtStrings);
             r2pw.add_control("output", txtOutput);
             r2pw.add_control("functions_listview", listView1);            

@@ -29,10 +29,11 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.outputTab = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.txtDissasembly = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtStrings = new System.Windows.Forms.RichTextBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
@@ -46,8 +47,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -80,8 +80,26 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.outputTab);
             this.splitContainer1.Size = new System.Drawing.Size(792, 686);
-            this.splitContainer1.SplitterDistance = 179;
+            this.splitContainer1.SplitterDistance = 162;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // listView1
+            // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.listView1.Location = new System.Drawing.Point(-1, 0);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(163, 686);
+            this.listView1.TabIndex = 5;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Width = 160;
             // 
             // outputTab
             // 
@@ -99,7 +117,7 @@
             // outputTab.Panel2
             // 
             this.outputTab.Panel2.Controls.Add(this.tabControl2);
-            this.outputTab.Size = new System.Drawing.Size(596, 709);
+            this.outputTab.Size = new System.Drawing.Size(613, 709);
             this.outputTab.SplitterDistance = 467;
             this.outputTab.TabIndex = 3;
             // 
@@ -113,32 +131,19 @@
             this.tabControl1.Location = new System.Drawing.Point(-1, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(598, 465);
+            this.tabControl1.Size = new System.Drawing.Size(615, 465);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.txtDissasembly);
+            this.tabPage1.Controls.Add(this.webBrowser1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(590, 439);
+            this.tabPage1.Size = new System.Drawing.Size(607, 439);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Dissasembly";
-            // 
-            // txtDissasembly
-            // 
-            this.txtDissasembly.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDissasembly.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDissasembly.Location = new System.Drawing.Point(1, 1);
-            this.txtDissasembly.Name = "txtDissasembly";
-            this.txtDissasembly.Size = new System.Drawing.Size(588, 436);
-            this.txtDissasembly.TabIndex = 3;
-            this.txtDissasembly.Text = "";
-            this.txtDissasembly.WordWrap = false;
             // 
             // tabPage2
             // 
@@ -173,7 +178,7 @@
             this.tabControl2.Location = new System.Drawing.Point(-1, 4);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(598, 215);
+            this.tabControl2.Size = new System.Drawing.Size(615, 215);
             this.tabControl2.TabIndex = 3;
             // 
             // tabPage3
@@ -185,7 +190,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(590, 189);
+            this.tabPage3.Size = new System.Drawing.Size(607, 189);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Output";
             // 
@@ -197,7 +202,7 @@
             this.txtOutput.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutput.Location = new System.Drawing.Point(0, 5);
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(584, 160);
+            this.txtOutput.Size = new System.Drawing.Size(605, 160);
             this.txtOutput.TabIndex = 2;
             this.txtOutput.Text = "";
             this.txtOutput.TextChanged += new System.EventHandler(this.txtOutput_TextChanged);
@@ -208,7 +213,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdline.Location = new System.Drawing.Point(56, 167);
             this.cmdline.Name = "cmdline";
-            this.cmdline.Size = new System.Drawing.Size(529, 20);
+            this.cmdline.Size = new System.Drawing.Size(550, 20);
             this.cmdline.TabIndex = 0;
             this.cmdline.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmdline_KeyPress);
             // 
@@ -266,23 +271,16 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // listView1
+            // webBrowser1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.listView1.Location = new System.Drawing.Point(-1, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(180, 686);
-            this.listView1.TabIndex = 5;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Width = 160;
+            this.webBrowser1.Location = new System.Drawing.Point(0, 2);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(605, 442);
+            this.webBrowser1.TabIndex = 4;
             // 
             // Form1
             // 
@@ -335,9 +333,9 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.RichTextBox txtStrings;
-        private System.Windows.Forms.RichTextBox txtDissasembly;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }
 

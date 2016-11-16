@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -11,13 +12,13 @@ namespace r2pipe_test
     {
         private IR2Pipe r2 = null;
         public String fileName = "";
-        RConfig rconfig = null;
-        //Dictionary<string, RichTextBox> controls;
+        public RConfig rconfig = null;
         Dictionary<string, object> controls;
+        r2html r2html = null;
         public R2PIPE_WRAPPER(RConfig rconfig)
         {
             this.controls = new Dictionary<string, object>();
-            this.rconfig = rconfig;
+            this.rconfig  = rconfig;
         }
         public string run(String cmds, String controlName, Boolean append = false, List<string> cols = null)
         {
@@ -88,11 +89,24 @@ namespace r2pipe_test
                     Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
                 }
             }
+            else if (c.GetType() == typeof(WebBrowser))
+            {
+                BuildWebPage((WebBrowser)c, controlName, someText);
+            }
             else
             {
-                Console.WriteLine(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()));
+                MessageBox.Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()));
             }
         }
+        private void BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
+        {
+            string tmpName = string.Format("{0}{1}.html", rconfig.tempPath, controlName);
+            using (StreamWriter sw = new StreamWriter(tmpName))
+            {
+                sw.WriteLine(r2html.convert(someText));
+            }
+            wBrowser.Navigate(tmpName);
+        }        
         public delegate void BeginListviewUpdate(ListView lstview, bool update, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
         public void listviewUpdate(ListView lstview, bool update = true, List<string> cols = null)
@@ -128,8 +142,9 @@ namespace r2pipe_test
         }
         public void open(String fileName)
         {
-            this.r2 = new R2Pipe(fileName, @"C:\Users\alberto.moro\Documents\radare2win\radare2.exe");
+            this.r2 = new R2Pipe(fileName, rconfig.r2path);
             this.fileName = fileName;
+            this.r2html = new r2html(this);
         }
         public void exit()
         {

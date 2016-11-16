@@ -10,12 +10,14 @@ namespace r2pipe_test
     public class RConfig
     {
         public string r2path = null;
+        public string tempPath = null;
         public RConfig()
         {
             ReloadConfig();
         }
         public void ReloadConfig() { 
-            r2path = reg_read(@"SOFTWARE\r2pipe_gui_dotnet", "r2path");            
+            r2path = reg_read(@"SOFTWARE\r2pipe_gui_dotnet", "r2path");         
+            tempPath = System.IO.Path.GetTempPath(); ;
         }
         public void save(string name, string value)
         {
