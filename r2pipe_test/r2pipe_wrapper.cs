@@ -91,21 +91,22 @@ namespace r2pipe_test
             }
             else if (c.GetType() == typeof(WebBrowser))
             {
-                BuildWebPage((WebBrowser)c, controlName, someText);
+                string url=BuildWebPage((WebBrowser)c, controlName, someText);
+                ((WebBrowser)c).Navigate(url);
             }
             else
             {
                 MessageBox.Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()));
             }
         }
-        private void BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
+        private string BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
         {
             string tmpName = string.Format("{0}{1}.html", rconfig.tempPath, controlName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
                 sw.WriteLine(r2html.convert(someText));
             }
-            wBrowser.Navigate(tmpName);
+            return tmpName;                
         }        
         public delegate void BeginListviewUpdate(ListView lstview, bool update, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
@@ -145,6 +146,24 @@ namespace r2pipe_test
             this.r2 = new R2Pipe(fileName, rconfig.r2path);
             this.fileName = fileName;
             this.r2html = new r2html(this);
+        }
+        public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu)
+        {
+            foreach (ToolStripMenuItem item in menu.Items)
+            {                
+                if (item.Text.Equals(menuName))
+                {
+                    ToolStripItem newitem=item.DropDownItems.Add(string.Format("{0} ( {1} )",text,cmds));
+                    newitem.Tag = cmds;
+                    newitem.Click += new EventHandler(MenuItemClickHandler);
+                }
+            }
+        }
+        private void MenuItemClickHandler(object sender, EventArgs e)
+        {
+            System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
+            string cmds = item.Tag.ToString();
+            run(cmds, "output", true);
         }
         public void exit()
         {
