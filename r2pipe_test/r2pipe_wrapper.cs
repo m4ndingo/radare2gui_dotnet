@@ -7,7 +7,6 @@ using r2pipe;
 
 namespace r2pipe_test
 {
-
     public class R2PIPE_WRAPPER
     {
         private IR2Pipe r2 = null;
