@@ -12,7 +12,7 @@ PM> Install-Package Newtonsoft.Json
 PM> Install-Package r2pipe
 ```
 ## Framework
-Download and install .net framework 4.5.1 from Microsoft and configure the project for this framework (this is the version that Nuget installs)
+Download and install .net framework 4.5.1 from Microsoft and configure the project for this framework (this is the version that Nuget installs for r2pipe)
 
 && Compile!
 
