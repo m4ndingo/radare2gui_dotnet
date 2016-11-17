@@ -69,6 +69,11 @@ namespace r2pipe_test
         }
         private void LoadFile(String fileName)
         {
+            if (!File.Exists(rconfig.r2path))
+            {
+                MessageBox.Show(string.Format("Wops!\n{0} not found...", this.rconfig.r2path), "LoadFile", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             webBrowser1.Refresh();
             webBrowser2.Refresh();
             this.fileName = fileName;

@@ -27,6 +27,11 @@ namespace r2pipe_test
         {
             string res = "";
             dynamic json_obj = null;
+            if (r2==null)
+            {
+                MessageBox.Show(string.Format("Wops!\n{0}\nIR2Pipe is null", controlName), "run", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return null;
+            }
             if (!controls.ContainsKey(controlName))
             {
                 MessageBox.Show(string.Format("Wops!\n{0}\ncontrol not found...", controlName), "run", MessageBoxButtons.OK, MessageBoxIcon.Information);
