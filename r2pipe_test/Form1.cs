@@ -69,6 +69,7 @@ namespace r2pipe_test
         }
         private void LoadFile(String fileName)
         {
+            Text = String.Format("r2pipe gui .net v1.0 - {0}", fileName);
             if (!File.Exists(rconfig.r2path))
             {
                 MessageBox.Show(string.Format("Wops!\n{0} not found...", this.rconfig.r2path), "LoadFile", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -79,7 +80,6 @@ namespace r2pipe_test
             this.fileName = fileName;
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
-            Text = String.Format("r2pipe gui .net v1.0 - {0}", fileName);
             cmbCmdline.Focus();
         }
 
