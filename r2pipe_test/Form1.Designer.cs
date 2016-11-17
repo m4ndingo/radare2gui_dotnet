@@ -215,7 +215,7 @@
             this.txtStrings.Name = "txtStrings";
             this.txtStrings.Size = new System.Drawing.Size(616, 436);
             this.txtStrings.TabIndex = 4;
-            this.txtStrings.Text = "strings sample text...";
+            this.txtStrings.Text = "";
             this.txtStrings.WordWrap = false;
             // 
             // tabPage4

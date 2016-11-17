@@ -16,7 +16,6 @@ namespace r2pipe_test
         Dictionary<string, object> controls;
         r2html r2html = null;
         private bool mouseMoved   = false;
-        private bool skipNextKey = true;
         private string lastAddress = null;
         public R2PIPE_WRAPPER(RConfig rconfig)
         {
@@ -27,18 +26,18 @@ namespace r2pipe_test
         {
             string res = "";
             dynamic json_obj = null;
-            if (r2==null)
+            if (controls.ContainsKey("output"))
+                setText("output", string.Format("r2.RunCommand(\"{1}\"): target='{0}' type='{2}' cols='{3}'\n", controlName, cmds, controls[controlName].GetType(), cols != null ? string.Join(", ", cols) : ""), true);
+            if (r2 == null)
             {
-                MessageBox.Show(string.Format("Wops!\n{0}\nIR2Pipe is null", controlName), "run", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
             if (!controls.ContainsKey(controlName))
             {
-                MessageBox.Show(string.Format("Wops!\n{0}\ncontrol not found...", controlName), "run", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
                 return null;
             }
-            if (controls.ContainsKey("output"))
-                setText("output", string.Format("r2.RunCommand(\"{1}\"): target='{0}' type='{2}' cols='{3}'\n", controlName, cmds, controls[controlName].GetType(), cols != null ? string.Join(", ", cols) : ""), true);
             res = r2.RunCommand(cmds).Replace("\r", "");
             try
             {
@@ -102,8 +101,6 @@ namespace r2pipe_test
                 string url=BuildWebPage((WebBrowser)c, controlName, someText);
                 ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
                 ((WebBrowser)c).Navigate(url);
-                ((WebBrowser)c).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
-                ((WebBrowser)c).PreviewKeyDown += new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
             }
             else
             {
@@ -112,17 +109,17 @@ namespace r2pipe_test
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (skipNextKey)
-            {
-                skipNextKey = false;
-                return;
-            }
             if (e.KeyValue == 71) //g key
             {
-                askForm frm = new askForm();
-                frm.ShowDialog();
-                skipNextKey = true;
+                string address=Prompt("Address:","goto address");
+                gotoAddress(address);
             }
+        }
+        private string Prompt(string text, string caption)
+        {
+            askForm frm = new askForm();
+            string answer = frm.Prompt(text, caption, frm);
+            return answer;
         }
         private string BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
         {
@@ -204,7 +201,11 @@ namespace r2pipe_test
         public void add_control(string name, object control)
         {
             this.controls.Add(name, control);
-
+            if (control.GetType() == typeof(WebBrowser))
+            {
+                ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
+                ((WebBrowser)control).PreviewKeyDown += new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
+            }
         }
         public void open(String fileName)
         {
@@ -229,6 +230,12 @@ namespace r2pipe_test
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string cmds = item.Tag.ToString();
             run(cmds, "output", true);
+        }
+        public DialogResult Show(string text, string caption)
+        {
+            if (controls.ContainsKey("output"))
+                setText("output", string.Format("{0} {1}", caption, text), true);
+            return MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         public void exit()
         {

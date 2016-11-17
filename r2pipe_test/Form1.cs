@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
-using System.Collections.Specialized;
 
 namespace r2pipe_test
 {    
@@ -22,7 +15,6 @@ namespace r2pipe_test
         {
             InitializeComponent();
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             rconfig = new RConfig();
@@ -30,9 +22,9 @@ namespace r2pipe_test
 
             r2pw    = new R2PIPE_WRAPPER(rconfig);
             //assign controls
+            r2pw.add_control("output", txtOutput);
             r2pw.add_control("dissasembly", webBrowser1);
             r2pw.add_control("strings", txtStrings);
-            r2pw.add_control("output", txtOutput);
             r2pw.add_control("functions_listview", listView1);
             r2pw.add_control("imports_listview", lstImports);
             r2pw.add_control("hexview", webBrowser2);
@@ -45,7 +37,8 @@ namespace r2pipe_test
         {
             if (!File.Exists(fileName))
             {
-                MessageBox.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
+                //MessageBox.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             r2pw.open(fileName);
@@ -60,7 +53,7 @@ namespace r2pipe_test
             string r2path = rconfig.r2path;
             if (r2path == null)
             {
-                MessageBox.Show("Path for 'radare2.exe' not found...", "radare2.exe not found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                r2pw.Show("Form1: CheckR2path(): Path for 'radare2.exe' not found...", "radare2.exe not found");
                 openFileDialog1.FileName = "radare2.exe";
                 openFileDialog1.Title = "Please, locate your radare2.exe binary";
                 openFileDialog1.ShowDialog();
@@ -72,7 +65,7 @@ namespace r2pipe_test
             Text = String.Format("r2pipe gui .net v1.0 - {0}", fileName);
             if (!File.Exists(rconfig.r2path))
             {
-                MessageBox.Show(string.Format("Wops!\n{0} not found...", this.rconfig.r2path), "LoadFile", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                r2pw.Show(string.Format("Form1: LoadFile(): {0}\nWops! {1} not found...\n", fileName, this.rconfig.r2path), "radare2.exe not found");
                 return;
             }
             webBrowser1.Refresh();
@@ -82,7 +75,6 @@ namespace r2pipe_test
             newThread.Start();
             cmbCmdline.Focus();
         }
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.FileName = r2pw.fileName;
@@ -90,12 +82,10 @@ namespace r2pipe_test
             if(openFileDialog1.FileName.Length>0)
                 LoadFile(openFileDialog1.FileName);
         }
-
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             r2pw.exit();
         }
-
         private void txtOutput_TextChanged(object sender, EventArgs e)
         {
             if (txtOutput.TextLength > 0)
@@ -106,18 +96,15 @@ namespace r2pipe_test
                 cmbCmdline.Focus();
             }
         }
-
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtOutput.Clear();
         }
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.exit();
             Environment.Exit(0);
         }
-
         private void cmbCmdline_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r')

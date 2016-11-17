@@ -28,18 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtAnswer = new System.Windows.Forms.TextBox();
             this.askLabel = new System.Windows.Forms.Label();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // textBox1
+            // txtAnswer
             // 
-            this.textBox1.Location = new System.Drawing.Point(105, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(156, 20);
-            this.textBox1.TabIndex = 0;
+            this.txtAnswer.Location = new System.Drawing.Point(105, 12);
+            this.txtAnswer.Name = "txtAnswer";
+            this.txtAnswer.Size = new System.Drawing.Size(156, 20);
+            this.txtAnswer.TabIndex = 0;
+            this.txtAnswer.TextChanged += new System.EventHandler(this.txtAnswer_TextChanged);
             // 
             // askLabel
             // 
@@ -78,7 +79,7 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.askLabel);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtAnswer);
             this.Name = "askForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "askForm";
@@ -89,7 +90,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtAnswer;
         private System.Windows.Forms.Label askLabel;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
