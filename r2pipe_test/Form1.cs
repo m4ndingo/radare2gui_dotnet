@@ -53,7 +53,7 @@ namespace r2pipe_test
             r2pw.run("izq", "strings");
             r2pw.run("aaa;aflj", "functions_listview",false,new List<string> { "name", "offset" });            
             r2pw.run("iij", "imports_listview", false, new List<string> { "name", "plt" });
-            r2pw.run("px 2000", "hexview");
+            r2pw.run("px 2000", "hexview");            
         }
         private void CheckR2path()
         {

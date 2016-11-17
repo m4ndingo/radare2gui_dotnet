@@ -27,7 +27,7 @@ namespace r2pipe_test
             string html = "";
             sometext = (new Regex(@"(;.+)")).Replace(sometext, "<span class=comment>$1</span>");
             sometext = (new Regex(@"(- offset -.+)")).Replace(sometext, "<span class=comment>$1</span>");
-            sometext = (new Regex(@"(0x[0-9a-f]{2}[\s\]])", RegexOptions.IgnoreCase)).Replace(sometext, "<span class=number>$1</span>");
+            sometext = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(sometext, "<span class=number>$1</span>$2");
             sometext = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(sometext, "$1<span class=number>$2</span>");
             sometext = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(sometext, "$1<span class=hexb>$2</span>");
             sometext = (new Regex(@"([\[\s]0x[0-9a-f\s]{4,}[\]\s])", RegexOptions.IgnoreCase)).Replace(sometext, "<span class=address>$1</span>");

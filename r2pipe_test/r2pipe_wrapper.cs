@@ -15,6 +15,9 @@ namespace r2pipe_test
         public RConfig rconfig = null;
         Dictionary<string, object> controls;
         r2html r2html = null;
+        private bool mouseMoved   = false;
+        private bool skipNextKey = true;
+        private string lastAddress = null;
         public R2PIPE_WRAPPER(RConfig rconfig)
         {
             this.controls = new Dictionary<string, object>();
@@ -92,11 +95,28 @@ namespace r2pipe_test
             else if (c.GetType() == typeof(WebBrowser))
             {
                 string url=BuildWebPage((WebBrowser)c, controlName, someText);
+                ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
                 ((WebBrowser)c).Navigate(url);
+                ((WebBrowser)c).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
+                ((WebBrowser)c).PreviewKeyDown += new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
             }
             else
             {
                 MessageBox.Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()));
+            }
+        }
+        private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (skipNextKey)
+            {
+                skipNextKey = false;
+                return;
+            }
+            if (e.KeyValue == 71) //g key
+            {
+                askForm frm = new askForm();
+                frm.ShowDialog();
+                skipNextKey = true;
             }
         }
         private string BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
@@ -107,7 +127,46 @@ namespace r2pipe_test
                 sw.WriteLine(r2html.convert(someText));
             }
             return tmpName;                
-        }        
+        }
+        private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            ((WebBrowser)sender).Document.Body.MouseUp += new HtmlElementEventHandler(webBrowser_MouseUp);
+            ((WebBrowser)sender).Document.Body.MouseDown += new HtmlElementEventHandler(webBrowser_MouseDown);
+            ((WebBrowser)sender).Document.Body.MouseMove += new HtmlElementEventHandler(webBrowser_MouseMove);
+        }
+        void webBrowser_MouseDown(Object sender, HtmlElementEventArgs e)
+        {
+            mouseMoved = false;
+        }
+        void webBrowser_MouseUp(Object sender, HtmlElementEventArgs e)
+        {
+            HtmlElement browser = (HtmlElement)sender;
+            switch (e.MouseButtonsPressed)
+            {
+                case MouseButtons.Left:
+                    HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
+                    string text = null;
+                    string tagname = element.TagName;
+                    text = element.OuterText.Replace(" ", "");
+
+                    if (mouseMoved == false && tagname.Equals("SPAN"))
+                        gotoAddress(text);
+                    break;
+            }
+        }
+        void webBrowser_MouseMove(Object sender, HtmlElementEventArgs e)
+        {
+            mouseMoved = true;
+        }
+        public void gotoAddress(string address)
+        {
+            if (address != lastAddress)
+            {
+                run("pd 100 @" + address, "dissasembly");
+                run("px 2000 @" + address, "hexview");
+            }
+            lastAddress = address;
+        }
         public delegate void BeginListviewUpdate(ListView lstview, bool update, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
         public void listviewUpdate(ListView lstview, bool update = true, List<string> cols = null)
@@ -140,6 +199,7 @@ namespace r2pipe_test
         public void add_control(string name, object control)
         {
             this.controls.Add(name, control);
+
         }
         public void open(String fileName)
         {
