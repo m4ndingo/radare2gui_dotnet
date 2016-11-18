@@ -20,4 +20,7 @@ You can download r2pipe from https://github.com/radare/radare2-r2pipe/ and compi
 ## radare2 binaries for Windows
 By the moment, follow these instructions: https://radare.gitbooks.io/radare2book/content/introduction/windows_compilation.html
 
+## Screenshots
+![r2pipe_dotnet_sf2](https://cloud.githubusercontent.com/assets/12532269/20446745/854239ba-addb-11e6-81c4-7dd25c48e37f.png)
+
 @m_ndingo
