@@ -3,6 +3,7 @@ Another radare2 gui for windows
 ## Screenshots
 ![r2pipe_dotnet_classic](https://cloud.githubusercontent.com/assets/12532269/20447430/0a9937e6-addf-11e6-966f-f62c5616f3f6.png)
 ![r2pipe_dotnet_hexview](https://cloud.githubusercontent.com/assets/12532269/20447475/51ef978e-addf-11e6-87dc-ae4fd4fc4b8f.png)
+![r2pipe_dotnet_help](https://cloud.githubusercontent.com/assets/12532269/20447502/87ab5a2a-addf-11e6-9cc4-7c34673e5f49.png)
 # Compilation
 ## Packages required
 
