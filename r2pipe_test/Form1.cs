@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
@@ -11,6 +12,7 @@ namespace r2pipe_test
         R2PIPE_WRAPPER r2pw = null;
         private RConfig rconfig = null;
         private string fileName = null;
+        private bool updating_gui = false;
         public Form1()
         {
             InitializeComponent();
@@ -18,20 +20,33 @@ namespace r2pipe_test
         private void Form1_Load(object sender, EventArgs e)
         {
             rconfig = new RConfig();
+            UpdateGUI();
             CheckR2path();
-
-            r2pw    = new R2PIPE_WRAPPER(rconfig);
+            r2pw = new R2PIPE_WRAPPER(rconfig);
             //assign controls
-            r2pw.add_control("output", txtOutput);
-            r2pw.add_control("dissasembly", webBrowser1);
-            r2pw.add_control("strings", txtStrings);
-            r2pw.add_control("functions_listview", listView1);
-            r2pw.add_control("imports_listview", lstImports);
-            r2pw.add_control("hexview", webBrowser2);
+            r2pw.add_control("output",              txtOutput);
+            r2pw.add_control("dissasembly",         webBrowser1);
+            r2pw.add_control("strings_listview",    lstStrings);
+            r2pw.add_control("functions_listview",  listView1);
+            r2pw.add_control("imports_listview",    lstImports);
+            r2pw.add_control("hexview",             webBrowser2);
+            r2pw.add_control("r2help",              webBrowser3);
             //assign menu optrions
             r2pw.add_menucmd("View", "Functions", "afl", mainMenu);
             //load some example file
             LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
+        }
+        private void UpdateGUI()
+        {
+            updating_gui = true;
+            Left = int.Parse(rconfig.load("gui.left"));
+            Top  = int.Parse(rconfig.load("gui.top"));
+            Width = int.Parse(rconfig.load("gui.width"));
+            Height = int.Parse(rconfig.load("gui.height"));
+            splitContainer1.SplitterDistance = int.Parse(rconfig.load("gui.splitter_1.dist"));
+            splitContainer2.SplitterDistance = int.Parse(rconfig.load("gui.splitter_2.dist"));
+            updating_gui = false;
+            Refresh();
         }
         private void DoLoadFile()
         {
@@ -43,17 +58,18 @@ namespace r2pipe_test
             }
             r2pw.open(fileName);
             r2pw.run("pd 100", "dissasembly");
-            r2pw.run("izq", "strings");
+            r2pw.run("izj", "strings_listview",false,new List<string> { "vaddr", "section", "type", "string" });
             r2pw.run("aaa;aflj", "functions_listview",false,new List<string> { "name", "offset" });            
             r2pw.run("iij", "imports_listview", false, new List<string> { "name", "plt" });
-            r2pw.run("px 2000", "hexview");            
+            r2pw.run("px 2000", "hexview");
+            r2pw.run("?", "r2help");
         }
         private void CheckR2path()
         {
             string r2path = rconfig.r2path;
-            if (r2path == null)
+            if (r2path == null || !File.Exists(rconfig.r2path))
             {
-                r2pw.Show("Form1: CheckR2path(): Path for 'radare2.exe' not found...", "radare2.exe not found");
+                if(((object)r2pw)!=null) r2pw.Show("Form1: CheckR2path(): Path for 'radare2.exe' not found...", "radare2.exe not found");
                 openFileDialog1.FileName = "radare2.exe";
                 openFileDialog1.Title = "Please, locate your radare2.exe binary";
                 openFileDialog1.ShowDialog();
@@ -62,14 +78,12 @@ namespace r2pipe_test
         }
         private void LoadFile(String fileName)
         {
-            Text = String.Format("r2pipe gui .net v1.0 - {0}", fileName);
+            Text = String.Format("r2pipe gui .net v1.0alpha - {0}", fileName);
             if (!File.Exists(rconfig.r2path))
             {
-                r2pw.Show(string.Format("Form1: LoadFile(): {0}\nWops! {1} not found...\n", fileName, this.rconfig.r2path), "radare2.exe not found");
+                CheckR2path();
                 return;
             }
-            webBrowser1.Refresh();
-            webBrowser2.Refresh();
             this.fileName = fileName;
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
@@ -90,7 +104,7 @@ namespace r2pipe_test
         {
             if (txtOutput.TextLength > 0)
             {
-                txtOutput.SelectionStart = txtOutput.TextLength - 1;
+                txtOutput.SelectionStart = txtOutput.TextLength;
                 txtOutput.SelectionLength = 0;
                 txtOutput.Focus();
                 cmbCmdline.Focus();
@@ -102,7 +116,7 @@ namespace r2pipe_test
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.exit();
+            if(r2pw!=null) r2pw.exit();
             Environment.Exit(0);
         }
         private void cmbCmdline_KeyPress(object sender, KeyPressEventArgs e)
@@ -116,13 +130,38 @@ namespace r2pipe_test
                 cmbCmdline.Text = "";
             }
         }
-
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             string msg=((ListView)sender).SelectedItems[0].Text;
-            string res=r2pw.run("? " + msg,"output");
+            string res=r2pw.run("? " + msg);
             string address=res.Split(' ')[1];
-            r2pw.run("pd "+address, "output",true);
+            r2pw.run("pd @" + address, "dissasembly");
+            ((WebBrowser)r2pw.controls["dissasembly"]).Focus();
+        }
+
+        private void Form1_ResizeEnd(object sender, EventArgs e)
+        {
+            save_gui_config();
+        }
+        private void save_gui_config()
+        {
+            if (updating_gui) return;
+            rconfig.save("gui.left", Left);
+            rconfig.save("gui.top", Top);
+            rconfig.save("gui.width", Width);
+            rconfig.save("gui.height", Height);
+            rconfig.save("gui.splitter_1.dist",splitContainer1.SplitterDistance);
+            rconfig.save("gui.splitter_2.dist",splitContainer2.SplitterDistance);
+        }
+
+        private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            save_gui_config();
+        }
+
+        private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            save_gui_config();
         }
     }
 }

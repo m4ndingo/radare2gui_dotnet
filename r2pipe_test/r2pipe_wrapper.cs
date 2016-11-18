@@ -14,7 +14,7 @@ namespace r2pipe_test
         private IR2Pipe r2 = null;
         public String fileName = "";
         public RConfig rconfig = null;
-        Dictionary<string, object> controls;
+        public Dictionary<string, object> controls;
         r2html r2html = null;
         private bool mouseMoved   = false;
         private string lastAddress = null;
@@ -24,18 +24,23 @@ namespace r2pipe_test
             this.rconfig  = rconfig;
             new Hotkeys();
         }
-        public string run(String cmds, String controlName, Boolean append = false, List<string> cols = null)
+        public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
         {
             string res = "";
             dynamic json_obj = null;
             if (controls.ContainsKey("output"))
-                setText("output", string.Format("r2.RunCommand(\"{1}\"): target='{0}' type='{2}' cols='{3}'\n", controlName, cmds, controls[controlName].GetType(), cols != null ? string.Join(", ", cols) : ""), true);
+            {
+                string control_type = "unknown";
+                if(controlName!=null)
+                    control_type = controls[controlName].GetType().ToString();
+                setText("output", string.Format("r2.RunCommand(\"{1}\"): target='{0}' type='{2}' cols='{3}'\n", controlName, cmds, control_type, cols != null ? string.Join(", ", cols) : ""), true);
+            }
             if (r2 == null)
             {
                 Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
-            if (!controls.ContainsKey(controlName))
+            if (controlName!=null && !controls.ContainsKey(controlName))
             {
                 Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
                 return null;
@@ -46,8 +51,8 @@ namespace r2pipe_test
             {
                 json_obj = JsonConvert.DeserializeObject(res);
             }
-            catch (Exception e){}
-            setText(controlName, res, append, json_obj, cols);
+            catch (Exception){}
+            if(controlName!=null) setText(controlName, res, append, json_obj, cols);
             return res;
         }
         delegate void SetTextCallback(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
@@ -149,6 +154,7 @@ namespace r2pipe_test
                     }
                     break;
             }
+            browser.Focus();
         }
         void webBrowser_MouseMove(Object sender, HtmlElementEventArgs e)
         {
@@ -179,8 +185,9 @@ namespace r2pipe_test
                     foreach (string cname in cols)
                     {
                         lstview.Columns.Add(cname);
-                        lstview.Columns[i].Width = col_width;
+                        lstview.Columns[i++].Width = col_width;
                     }
+                    lstview.Columns[cols.Count - 1].Width = lstview.Width * 3 / 4; ;
                 }
             }
             else lstview.EndUpdate();
@@ -188,9 +195,7 @@ namespace r2pipe_test
         }
         public void listviewAdd(ListView lstview, ListViewItem item)
         {
-            lstview.BeginUpdate();
             lstview.Items.Add(item);
-            lstview.EndUpdate();
         }
         public void add_control(string name, object control)
         {
@@ -199,7 +204,8 @@ namespace r2pipe_test
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
                 ((WebBrowser)control).PreviewKeyDown += new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
-                ((WebBrowser)control).WebBrowserShortcutsEnabled = true;                
+                ((WebBrowser)control).WebBrowserShortcutsEnabled = true;
+                ((WebBrowser)control).Refresh();
             }
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

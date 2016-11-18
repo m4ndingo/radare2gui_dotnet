@@ -13,29 +13,63 @@ namespace r2pipe_test
         public r2html(R2PIPE_WRAPPER r2pw)
         {
             this.r2pw = r2pw;
+            string background = string.Format(
+                @"{0}/../../media/sf2_original_low_bright.jpg", r2pw.rconfig.guiPath);
+            background = background.Replace(@"\", "/");
+            //r2pipe (hardcoded) css
             WriteTmpFile("r2pipe.css",
-                "body{background:#fff;color:#000080;font-weight:bold;}\r\n" +
+                "body{background:#000 url('file:///"
+                    + background +
+                "');color:#000080;font-weight:bold;background-repeat: repeat;"+
+                "background-attachment: fixed;}\r\n" +
                 ".r2code{font-family:Fixedsys;}\r\n" +
                 ".comment{color:green;}\r\n"+
                 ".address{color:black;}\r\n"+
                 ".number{color:green;}\r\n"+
                 ".hexb{color:blue;}\r\n"
                 );
+            WriteTmpFile("r2pipe_high.css",
+                "body{background:#000 url('file:///"
+                    + background +
+                "');color:#ff0;font-weight:bold;background-repeat: repeat;" +
+                "background-attachment: fixed;}\r\n" +
+                ".r2code_s{font-family:Fixedsys;color:black;position:absolute;left:2px;top:2px;font-weight:bold;}\r\n" +
+                ".r2code{font-family:Fixedsys;position:absolute;left:0;top:0;padding:0;cursor:arrow;}\r\n" +
+                ".comment{color:#0f0;}\r\n" +
+                ".address, .shorted_address{color:#fff;}\r\n" +
+                ".address:hover{text-decoration:underline;}\r\n" +
+                ".number{color:#0f0;}\r\n" +
+                ".hexb{color:#aaf;}\r\n"
+                );
         }
-        public string convert(string sometext)
+        public string convert(string console_text)
         {
             string html = "";
-            sometext = (new Regex(@"(;.+)")).Replace(sometext, "<span class=comment>$1</span>");
-            sometext = (new Regex(@"(- offset -.+)")).Replace(sometext, "<span class=comment>$1</span>");
-            sometext = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(sometext, "<span class=number>$1</span>$2");
-            sometext = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(sometext, "$1<span class=number>$2</span>");
-            sometext = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(sometext, "$1<span class=hexb>$2</span>");
-            sometext = (new Regex(@"([\[\s]0x[0-9a-f\s]{4,}[\]\s])", RegexOptions.IgnoreCase)).Replace(sometext, "<span class=address>$1</span>");
+            string console_text_cut = "";
+            string console_text_cut_copy = "";
+            string css_filename = "r2pipe_high.css";
+            int maxlen_line = 100;
+            foreach (string line in console_text.Split('\n'))
+            {
+                console_text_cut += line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line) + "\n";
+            }
+            console_text_cut_copy = console_text_cut;
 
-            html = "<html>\r\n";
-            html +="<link href='r2pipe.css' rel='stylesheet'>\r\n";
+            console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut, "<span class=comment>$1</span>");
+            console_text_cut = (new Regex(@"(- offset -.+)")).Replace(console_text_cut, "<span class=comment>$1</span>");
+            console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "<span class=number>$1</span>$2");
+            console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=number>$2</span>");
+            console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=hexb>$2</span>");
+            console_text_cut = (new Regex(@"([\[\s]0x[0-9a-f\s]{4,}[\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "<span class=address>$1</span>");
+            console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut, "[<span class=shorted_address title='$1'>$2</span>]");
+
+            html =  "<!DOCTYPE html>\n";
+            html += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
+            html += "<html>\r\n";
+            html += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
             html += "<body>\r\n";
-            html += "<div class=r2code><pre>"+sometext+"</pre></div>";
+            html += "<div class=r2code_s><pre>"         + console_text_cut_copy + "</pre></div>";
+            html += "<div class=r2code id=r2code><pre>" + console_text_cut      + "</pre></div>";
             return html;
         }
         private void WriteTmpFile(string fileName, string content)
