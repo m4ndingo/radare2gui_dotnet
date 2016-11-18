@@ -1,8 +1,7 @@
 # radare2gui_dotnet
 Another radare2 gui for windows
-![r2pipeguidotnet](https://cloud.githubusercontent.com/assets/12532269/20358089/cb65b5e6-ac2a-11e6-9b8b-4a073e7d5106.png)
-# Hexview
-![r2pipeguidotnet_hexview](https://cloud.githubusercontent.com/assets/12532269/20358143/f7cef1f6-ac2a-11e6-8430-95e4da91f062.png)
+## Screenshots
+![r2pipe_dotnet_sf2](https://cloud.githubusercontent.com/assets/12532269/20446745/854239ba-addb-11e6-81c4-7dd25c48e37f.png)
 # Compilation
 ## Packages required
 
@@ -19,8 +18,5 @@ You can download r2pipe from https://github.com/radare/radare2-r2pipe/ and compi
 
 ## radare2 binaries for Windows
 By the moment, follow these instructions: https://radare.gitbooks.io/radare2book/content/introduction/windows_compilation.html
-
-## Screenshots
-![r2pipe_dotnet_sf2](https://cloud.githubusercontent.com/assets/12532269/20446745/854239ba-addb-11e6-81c4-7dd25c48e37f.png)
 
 @m_ndingo
