@@ -11,7 +11,7 @@ Another radare2 gui for windows
 
 **Sections**
 
-![r2pipe_dotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20448524/bce77552-ade4-11e6-9a10-7182f8b19930.png)
+![r2pipe_dotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20448572/f699b27e-ade4-11e6-9aa3-ae690cd98905.png)
 
 **Help**
 
