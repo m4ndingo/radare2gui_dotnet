@@ -54,8 +54,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="r2pipe">
-      <HintPath>..\..\radare2-r2pipe\dotnet\r2pipe\bin\Debug\r2pipe.dll</HintPath>
+    <Reference Include="r2pipe, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\radare2-r2pipe\dotnet\r2pipe\bin\Debug\r2pipe.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -75,6 +76,7 @@
     <Compile Include="askForm.Designer.cs">
       <DependentUpon>askForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Hotkeys.cs" />
     <Compile Include="r2html.cs" />
     <Compile Include="rconfig.cs" />
     <Compile Include="Form1.cs">

@@ -116,5 +116,13 @@ namespace r2pipe_test
                 cmbCmdline.Text = "";
             }
         }
+
+        private void listView1_DoubleClick(object sender, EventArgs e)
+        {
+            string msg=((ListView)sender).SelectedItems[0].Text;
+            string res=r2pw.run("? " + msg,"output");
+            string address=res.Split(' ')[1];
+            r2pw.run("pd "+address, "output",true);
+        }
     }
 }

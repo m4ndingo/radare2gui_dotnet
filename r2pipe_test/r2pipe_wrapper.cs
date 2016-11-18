@@ -4,7 +4,8 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using r2pipe;
-
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace r2pipe_test
 {
@@ -21,6 +22,7 @@ namespace r2pipe_test
         {
             this.controls = new Dictionary<string, object>();
             this.rconfig  = rconfig;
+            new Hotkeys();
         }
         public string run(String cmds, String controlName, Boolean append = false, List<string> cols = null)
         {
@@ -39,14 +41,12 @@ namespace r2pipe_test
                 return null;
             }
             res = r2.RunCommand(cmds).Replace("\r", "");
+            if(res.StartsWith("[") || res.StartsWith("{"))
             try
             {
                 json_obj = JsonConvert.DeserializeObject(res);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            catch (Exception e){}
             setText(controlName, res, append, json_obj, cols);
             return res;
         }
@@ -107,14 +107,6 @@ namespace r2pipe_test
                 MessageBox.Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()));
             }
         }
-        private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.KeyValue == 71) //g key
-            {
-                string address=Prompt("Address:","goto address");
-                gotoAddress(address);
-            }
-        }
         private string Prompt(string text, string caption)
         {
             askForm frm = new askForm();
@@ -149,10 +141,12 @@ namespace r2pipe_test
                     HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
                     string text = null;
                     string tagname = element.TagName;
-                    text = element.OuterText.Replace(" ", "");
-
-                    if (mouseMoved == false && tagname.Equals("SPAN"))
-                        gotoAddress(text);
+                    if (element.OuterText != null)
+                    {
+                        text = element.OuterText.Replace(" ", "");
+                        if (mouseMoved == false && tagname.Equals("SPAN"))
+                            gotoAddress(text);
+                    }
                     break;
             }
         }
@@ -162,12 +156,12 @@ namespace r2pipe_test
         }
         public void gotoAddress(string address)
         {
-            if (address != lastAddress)
+            if (address!=null && address.Length>0 && address != lastAddress)
             {
                 run("pd 100 @" + address, "dissasembly");
                 run("px 2000 @" + address, "hexview");
-            }
-            lastAddress = address;
+                lastAddress = address;
+            }            
         }
         public delegate void BeginListviewUpdate(ListView lstview, bool update, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
@@ -205,6 +199,15 @@ namespace r2pipe_test
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
                 ((WebBrowser)control).PreviewKeyDown += new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
+                ((WebBrowser)control).WebBrowserShortcutsEnabled = true;                
+            }
+        }
+        private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.G) //71 g keyvalue
+            {
+                string address = Prompt("Address:", "goto address");
+                gotoAddress(address);
             }
         }
         public void open(String fileName)
