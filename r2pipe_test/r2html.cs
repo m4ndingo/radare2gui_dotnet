@@ -17,8 +17,8 @@ namespace r2pipe_test
             string background = string.Format(
                 @"{0}/../../media/sf2_original_low_bright.jpg", r2pw.rconfig.guiPath);
             background = background.Replace(@"\", "/");
-            background = "";
-                //r2pipe (hardcoded) css
+            background = ""; //use config
+            //r2pipe css temporary hardcoded
             WriteTmpFile("r2pipe.css",
                 "body{background:"+bg_color+" url('file:///"
                     + background +
@@ -28,6 +28,7 @@ namespace r2pipe_test
                 ".comment{color:green;}\r\n"+
                 ".address, .shorted_address{color:black;}\r\n" +
                 ".address:hover{text-decoration:underline;}\r\n" +
+                ".shorted_address:hover{text-decoration:underline;background:#ee0}\r\n" +
                 ".number{color:green;}\r\n" +
                 ".hexb{color:blue;}\r\n"
                 );
@@ -63,9 +64,10 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=number>$2</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=hexb>$2</span>");
-            console_text_cut = (new Regex(@"([\[\s]0x[0-9a-f\s]{4,}[\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "<span class=address>$1</span>");
+            console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{4,})([\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=address>$2</span>$3");
             console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut, "[<span class=shorted_address title='$1'>$2</span>]");
 
+            //webpage temporary hardcoded
             html =  "<!DOCTYPE html>\n";
             html += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
             html += "<html>\r\n";

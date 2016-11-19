@@ -13,6 +13,7 @@ namespace r2pipe_test
         private RConfig rconfig = null;
         private string fileName = null;
         private bool updating_gui = false;
+        public TabControl tabcontrol = null;
         public Form1()
         {
             InitializeComponent();
@@ -22,27 +23,30 @@ namespace r2pipe_test
             rconfig = new RConfig();
             UpdateGUI();
             CheckR2path();
-            r2pw = new R2PIPE_WRAPPER(rconfig);
+            r2pw = new R2PIPE_WRAPPER(rconfig, this);
             //assign controls
             r2pw.add_control("output",              txtOutput);
             r2pw.add_control("dissasembly",         webBrowser1);
             r2pw.add_control("strings_listview",    lstStrings);
             r2pw.add_control("functions_listview",  listView1);
             r2pw.add_control("imports_listview",    lstImports);
+            r2pw.add_control("sections_listview",   lstSections);
             r2pw.add_control("hexview",             webBrowser2);
             r2pw.add_control("r2help",              webBrowser3);
             //assign menu optrions
             r2pw.add_menucmd("View", "Functions", "afl", mainMenu);
+            r2pw.add_menucmd("View", "File info", "iI", mainMenu);
             //load some example file
             LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
         }
         private void UpdateGUI()
         {
             updating_gui = true;
-            Left = int.Parse(rconfig.load("gui.left"));
-            Top  = int.Parse(rconfig.load("gui.top"));
-            Width = int.Parse(rconfig.load("gui.width"));
-            Height = int.Parse(rconfig.load("gui.height"));
+            tabcontrol = tabControl1;
+            Left    = int.Parse(rconfig.load("gui.left"));
+            Top     = int.Parse(rconfig.load("gui.top"));
+            Width   = int.Parse(rconfig.load("gui.width"));
+            Height  = int.Parse(rconfig.load("gui.height"));
             splitContainer1.SplitterDistance = int.Parse(rconfig.load("gui.splitter_1.dist"));
             splitContainer2.SplitterDistance = int.Parse(rconfig.load("gui.splitter_2.dist"));
             updating_gui = false;
@@ -53,14 +57,14 @@ namespace r2pipe_test
             if (!File.Exists(fileName))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
-                //MessageBox.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             r2pw.open(fileName);
+            r2pw.run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             r2pw.run("pd 100", "dissasembly");
             r2pw.run("izj", "strings_listview",false,new List<string> { "vaddr", "section", "type", "string" });
-            r2pw.run("aaa;aflj", "functions_listview",false,new List<string> { "name", "offset" });            
             r2pw.run("iij", "imports_listview", false, new List<string> { "name", "plt" });
+            r2pw.run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             r2pw.run("px 2000", "hexview");
             r2pw.run("?", "r2help");
         }
@@ -136,9 +140,9 @@ namespace r2pipe_test
             string res=r2pw.run("? " + msg);
             string address=res.Split(' ')[1];
             r2pw.run("pd @" + address, "dissasembly");
-            ((WebBrowser)r2pw.controls["dissasembly"]).Focus();
+            r2pw.run("px 2000 @" + address, "hexview");
+            //((WebBrowser)r2pw.controls["dissasembly"]).Focus();
         }
-
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
             save_gui_config();
@@ -153,12 +157,10 @@ namespace r2pipe_test
             rconfig.save("gui.splitter_1.dist",splitContainer1.SplitterDistance);
             rconfig.save("gui.splitter_2.dist",splitContainer2.SplitterDistance);
         }
-
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
             save_gui_config();
         }
-
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
             save_gui_config();

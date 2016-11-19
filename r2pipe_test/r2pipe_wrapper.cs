@@ -11,17 +11,19 @@ namespace r2pipe_test
 {
     public class R2PIPE_WRAPPER
     {
-        private IR2Pipe r2 = null;
-        public String fileName = "";
-        public RConfig rconfig = null;
+        private IR2Pipe r2          = null;
+        public String fileName      = "";
+        public RConfig rconfig      = null;
+        r2html r2html               = null;
+        private bool mouseMoved     = false;
+        private string lastAddress  = null;
+        TabControl tabcontrol       = null;
         public Dictionary<string, object> controls;
-        r2html r2html = null;
-        private bool mouseMoved   = false;
-        private string lastAddress = null;
-        public R2PIPE_WRAPPER(RConfig rconfig)
+        public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
             this.controls = new Dictionary<string, object>();
             this.rconfig  = rconfig;
+            this.tabcontrol = ((Form1)frm).tabcontrol;
             new Hotkeys();
         }
         public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
@@ -31,7 +33,7 @@ namespace r2pipe_test
             if (controls.ContainsKey("output"))
             {
                 string control_type = "unknown";
-                if(controlName!=null)
+                if(controlName!=null && controls.ContainsKey(controlName))
                     control_type = controls[controlName].GetType().ToString();
                 setText("output", string.Format("r2.RunCommand(\"{1}\"): target='{0}' type='{2}' cols='{3}'\n", controlName, cmds, control_type, cols != null ? string.Join(", ", cols) : ""), true);
             }
@@ -39,6 +41,10 @@ namespace r2pipe_test
             {
                 Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
+            }
+            if (controlName!=null && !controls.ContainsKey(controlName))
+            {
+                add_tab(controlName, cmds);
             }
             if (controlName!=null && !controls.ContainsKey(controlName))
             {
@@ -103,13 +109,13 @@ namespace r2pipe_test
             }
             else if (c.GetType() == typeof(WebBrowser))
             {
-                string url=BuildWebPage((WebBrowser)c, controlName, someText);
+                string url = BuildWebPage((WebBrowser)c, controlName, someText);
                 ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
                 ((WebBrowser)c).Navigate(url);
             }
             else
             {
-                MessageBox.Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()));
+                Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
             }
         }
         private string Prompt(string text, string caption)
@@ -238,7 +244,19 @@ namespace r2pipe_test
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string cmds = item.Tag.ToString();
-            run(cmds, "output", true);
+            run(cmds, item.Text);
+        }
+        public void add_tab(string tabname, string cmds)
+        {
+            var page = new TabPage(tabname);
+            var browser = new WebBrowser();
+            browser.Dock = DockStyle.Fill;
+            page.Controls.Add(browser);
+            tabcontrol.TabPages.Add(page);
+            browser.Navigate("about:"+cmds);
+            page.Select();
+            add_control(tabname, browser);
+            tabcontrol.SelectedTab = page;
         }
         public DialogResult Show(string text, string caption)
         {

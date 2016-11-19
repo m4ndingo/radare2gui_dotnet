@@ -63,6 +63,8 @@
             this.lstStrings = new System.Windows.Forms.ListView();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.webBrowser3 = new System.Windows.Forms.WebBrowser();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.lstSections = new System.Windows.Forms.ListView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -81,6 +83,7 @@
             this.ctxMenuOutput.SuspendLayout();
             this.mainMenu.SuspendLayout();
             this.tabPage6.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -122,6 +125,7 @@
             // 
             // columnHeader1
             // 
+            this.columnHeader1.Text = "Functions";
             this.columnHeader1.Width = 160;
             // 
             // splitContainer2
@@ -154,6 +158,7 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Location = new System.Drawing.Point(-3, -1);
             this.tabControl1.Name = "tabControl1";
@@ -430,6 +435,33 @@
             this.webBrowser3.Size = new System.Drawing.Size(480, 130);
             this.webBrowser3.TabIndex = 5;
             // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.lstSections);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(486, 136);
+            this.tabPage7.TabIndex = 5;
+            this.tabPage7.Text = "Sections";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // lstSections
+            // 
+            this.lstSections.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.lstSections.AllowColumnReorder = true;
+            this.lstSections.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstSections.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstSections.GridLines = true;
+            this.lstSections.HoverSelection = true;
+            this.lstSections.Location = new System.Drawing.Point(0, 0);
+            this.lstSections.Name = "lstSections";
+            this.lstSections.Size = new System.Drawing.Size(500, 139);
+            this.lstSections.TabIndex = 1;
+            this.lstSections.UseCompatibleStateImageBehavior = false;
+            this.lstSections.View = System.Windows.Forms.View.Details;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -464,6 +496,7 @@
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
             this.tabPage6.ResumeLayout(false);
+            this.tabPage7.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -503,6 +536,8 @@
         private System.Windows.Forms.ListView lstStrings;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.WebBrowser webBrowser3;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.ListView lstSections;
     }
 }
 
