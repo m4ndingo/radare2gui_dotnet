@@ -13,9 +13,11 @@ Another radare2 gui for windows
 
 ![r2pipe_dotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20448572/f699b27e-ade4-11e6-9aa3-ae690cd98905.png)
 
-**Help**
+**Themes (Azure)**
 
-![r2pipe_dotnet_help](https://cloud.githubusercontent.com/assets/12532269/20447502/87ab5a2a-addf-11e6-9cc4-7c34673e5f49.png)
+![r3pipe_gui_dotnet_azure_theme](https://cloud.githubusercontent.com/assets/12532269/20457847/d841df30-ae94-11e6-9975-89a970b702af.png)
+
+
 # Compilation
 ## Packages required
 
