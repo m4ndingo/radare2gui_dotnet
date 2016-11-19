@@ -19,19 +19,34 @@ namespace r2pipe_test
         private TabControl tabcontrol       = null;
         private themeManager theme_manager   = null;
         public Dictionary<string, object> controls;
+        private Dictionary<string, string> cached_results;
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
             this.controls = new Dictionary<string, object>();
+            this.cached_results = new Dictionary<string, string>();
             this.rconfig  = rconfig;
             this.tabcontrol = ((Form1)frm).tabcontrol;
-            this.theme_manager = new themeManager("classic", rconfig);
+            this.theme_manager = new themeManager(rconfig);
             new Hotkeys();
         }
         public void set_theme(string themeName)
         {
             theme_manager.set_theme(themeName);
+            foreach (object o in controls)
+            {
+                if (o.GetType() == typeof(WebBrowser))
+                {
+                    ((WebBrowser)o).Refresh();
+                }
+            }
         }
-        /*public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
+        public void reload_theme()
+        {
+            if(theme_manager.themeName != null)
+                set_theme(theme_manager.themeName);
+        }
+        /* // some problems found at dynamic tab append
+         * public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
         {
             if (r2 == null) return null; // may happend if gui closed when sending commands (r2.exit)
             var task = Task.Run(() => run_task(cmds,controlName, append, cols));
@@ -73,7 +88,12 @@ namespace r2pipe_test
                 json_obj = JsonConvert.DeserializeObject(res);
             }
             catch (Exception){}
-            if(controlName!=null) setText(controlName, res, append, json_obj, cols);
+            if (controlName != null)
+            {
+                setText(controlName, res, append, json_obj, cols);
+                if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
+                cached_results.Add(controlName, res);
+            }
             return res;
         }
         delegate void SetTextCallback(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
@@ -130,14 +150,22 @@ namespace r2pipe_test
             }
             else if (c.GetType() == typeof(WebBrowser))
             {
-                string url = BuildWebPage((WebBrowser)c, controlName, someText);
-                ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
-                ((WebBrowser)c).Navigate(url);
+                sendToWebBrowser(controlName, someText);
             }
             else
             {
                 Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
             }
+        }
+        public void sendToWebBrowser(string controlName, string someText)
+        {
+            object c = controls[controlName];
+            string url;
+            if (someText == null && cached_results.ContainsKey(controlName)) 
+                someText = cached_results[controlName];
+            url = BuildWebPage((WebBrowser)c, controlName, someText);
+            ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
+            ((WebBrowser)c).Navigate(url);
         }
         public string Prompt(string text, string caption, string defval="")
         {

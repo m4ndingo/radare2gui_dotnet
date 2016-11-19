@@ -52,7 +52,12 @@ namespace r2pipe_test
             string html = "";
             string console_text_cut = "";
             string console_text_cut_copy = "";
-            string css_filename = "r2pipe.css";
+            string css_filename =
+                string.Format(
+                    @"{0}\{1}",
+                    r2pw.rconfig.load<string>("gui.datapath"),
+                    r2pw.rconfig.load<string>("gui.hexview.css", "heview.css")
+                    );
             int maxlen_line = 100;
             foreach (string line in console_text.Split('\n'))
             {

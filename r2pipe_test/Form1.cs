@@ -37,15 +37,15 @@ namespace r2pipe_test
             //assign menu optrions
             r2pw.add_menucmd("View", "Functions", "afl", mainMenu);
             r2pw.add_menucmd("View", "File info", "iI", mainMenu);
-            r2pw.add_menufcn("Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Gui", "Update gui", "*", UpdateGUI, mainMenu);
+            r2pw.add_menufcn("Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             //load some example file
             LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
         }
         private void UpdateGUI(string args=null)
         {
             updating_gui    = true;
-            tabcontrol      = tabControl1;
+            tabcontrol = tabControl1;
             Left            = int.Parse(rconfig.load<int>("gui.left"));
             Top             = int.Parse(rconfig.load<int>("gui.top"));
             Width           = int.Parse(rconfig.load<int>("gui.width"));
@@ -57,8 +57,8 @@ namespace r2pipe_test
             splitContainer1.Panel1.BackColor = txtOutput.BackColor;
             splitContainer1.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_1.dist"));
             splitContainer2.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_2.dist"));
-            updating_gui    = false;
             Refresh();
+            updating_gui = false;
         }
         private void DoLoadFile()
         {
@@ -196,25 +196,30 @@ namespace r2pipe_test
         {
             r2pw.setText("output", text, true);
         }
+        private void changeTheme(string themeName)
+        {
+            if (r2pw != null)
+            {
+                r2pw.set_theme(themeName);
+                r2pw.sendToWebBrowser("dissasembly", null);
+                UpdateGUI();
+            }
+        }
         private void classicToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.set_theme("classic");
-            UpdateGUI();
+            changeTheme("classic");
         }
         private void blueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.set_theme("blue");
-            UpdateGUI();
+            changeTheme("blue");
         }
         private void darkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.set_theme("pink");
-            UpdateGUI();
+            changeTheme("pink");
         }
         private void controlToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.set_theme("control");
-            UpdateGUI();
+            changeTheme("control");
         }
     }
 }

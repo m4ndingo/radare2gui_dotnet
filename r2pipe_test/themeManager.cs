@@ -10,24 +10,26 @@ namespace r2pipe_test
     {
         public string themeName = null;
         private RConfig config = null;
-        public themeManager(string themeName, RConfig config)
+        public themeManager(RConfig config)
         {
             this.config = config;
-            set_theme(themeName);
+            set_theme(config.load<string>("gui.theme_name"));
         }
         public void set_theme(string themeName)
         {
             this.themeName = themeName;
             config.save("gui.theme_name", themeName);
+            config.save("gui.hexview.css", string.Format("hexview.{0}.css", themeName));
             switch (themeName)
             {
                 case "classic":
                     config.save("gui.output.bg", "white");
                     config.save("gui.output.fg", "black");
+                    config.save("gui.hexview.css", "r2pipe.css");
                     break;
                 case "blue":
-                    config.save("gui.output.bg", "blue");
-                    config.save("gui.output.fg", "white");
+                    config.save("gui.output.bg", "Azure");
+                    config.save("gui.output.fg", "DarkSlateGray");
                     break;
                 case "pink":
                     config.save("gui.output.bg", "indigo");

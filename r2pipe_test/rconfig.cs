@@ -48,6 +48,11 @@ namespace r2pipe_test
         public void reg_write(string subkey, string name, string value)
         {
             RegistryKey key;
+            if (value == null)
+            {
+                Console.WriteLine("reg_write: subkey={0} name={1} null?", subkey, name);
+                return;
+            }
             key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(subkey);
             key.SetValue(name, value);
             key.Close();
@@ -61,7 +66,7 @@ namespace r2pipe_test
                 key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(subkey);
                 value = key.GetValue(name);
                 key.Close();
-                return value.ToString();
+                return value==null?null:value.ToString();
             }
             catch (Exception) { }
             return null;

@@ -1,0 +1,15 @@
+body{
+	background:#660066;
+	color:#fff;
+	font-weight:bold;
+	background-repeat: repeat;
+	background-attachment: fixed;
+}
+.r2code{line-height: 1.1em;white-space:pre;font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';font-size:12px;cursor:arrow;font-weight:bold;}
+.comment{color:green;}
+.address, .shorted_address{color:black;}
+.address:hover{text-decoration:underline;}
+.shorted_address:hover{text-decoration:underline;background:#ee0}
+.number{color:green;}
+.hexb{color:blue;}
+
