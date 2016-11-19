@@ -9,10 +9,11 @@ namespace r2pipe_test
         {
             InitializeComponent();
         }
-        public string Prompt(string text, string caption, askForm o)
+        public string Prompt(string text, string caption, string defval=null,askForm o=null)
         {
             askLabel.Text = text;
             Text = caption;
+            if (defval != null) txtAnswer.Text = defval;
             o.ShowDialog();
             return answer;
         }

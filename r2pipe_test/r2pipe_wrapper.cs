@@ -4,8 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using r2pipe;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace r2pipe_test
 {
@@ -14,18 +13,34 @@ namespace r2pipe_test
         private IR2Pipe r2          = null;
         public String fileName      = "";
         public RConfig rconfig      = null;
-        r2html r2html               = null;
+        private r2html r2html               = null;
         private bool mouseMoved     = false;
         private string lastAddress  = null;
-        TabControl tabcontrol       = null;
+        private TabControl tabcontrol       = null;
+        private themeManager theme_manager   = null;
         public Dictionary<string, object> controls;
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
             this.controls = new Dictionary<string, object>();
             this.rconfig  = rconfig;
             this.tabcontrol = ((Form1)frm).tabcontrol;
+            this.theme_manager = new themeManager("classic", rconfig);
             new Hotkeys();
         }
+        public void set_theme(string themeName)
+        {
+            theme_manager.set_theme(themeName);
+        }
+        /*public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
+        {
+            if (r2 == null) return null; // may happend if gui closed when sending commands (r2.exit)
+            var task = Task.Run(() => run_task(cmds,controlName, append, cols));
+            if (task.Wait(TimeSpan.FromSeconds(int.Parse(rconfig.load<int>("r2.cmd_timeout",6)))))
+                return task.Result;
+            else
+                Show(string.Format("run: {0} Timed out",cmds),"run");
+            return null;
+        }*/
         public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
         {
             string res = "";
@@ -44,7 +59,7 @@ namespace r2pipe_test
             }
             if (controlName!=null && !controls.ContainsKey(controlName))
             {
-                add_tab(controlName, cmds);
+                add_control_tab(controlName, cmds);
             }
             if (controlName!=null && !controls.ContainsKey(controlName))
             {
@@ -62,9 +77,10 @@ namespace r2pipe_test
             return res;
         }
         delegate void SetTextCallback(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
-        private void setText(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
+        public void setText(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
         {
             object c = controls[controlName];
+            if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
             if (c.GetType() == typeof(RichTextBox))
             {
                 RichTextBox rtbox = (RichTextBox)c;
@@ -83,24 +99,29 @@ namespace r2pipe_test
             {
                 if (json_obj != null)
                 {
-                    ListView lstview = (ListView)c;
-                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
-                    for (int i = 0; i < json_obj.Count; i++)
+                    try // sometimes fails
                     {
-                        string col0 = json_obj[i][cols[0]];
-                        ListViewItem row_item = new ListViewItem(col0);
-                        for (int j = 1; j < cols.Count; j++)
+                        ListView lstview = (ListView)c;
+                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
+                        for (int i = 0; i < json_obj.Count; i++)
                         {
-                            string cname = cols[j];
-                            if (json_obj[i][cname] != null)
+                            string col0 = json_obj[i][cols[0]];
+                            ListViewItem row_item = new ListViewItem(col0);
+                            for (int j = 1; j < cols.Count; j++)
                             {
-                                string value = json_obj[i][cname].ToString();
-                                row_item.SubItems.Add(value);
+                                string cname = cols[j];
+                                if (json_obj[i][cname] != null)
+                                {
+                                    string value = json_obj[i][cname].ToString();
+                                    row_item.SubItems.Add(value);
+                                }
+                        
                             }
+                            lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
                         }
-                        lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
+                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
                     }
-                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
+                    catch (Exception) { }
                 }
                 else
                 {
@@ -118,10 +139,10 @@ namespace r2pipe_test
                 Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
             }
         }
-        private string Prompt(string text, string caption)
+        public string Prompt(string text, string caption, string defval="")
         {
             askForm frm = new askForm();
-            string answer = frm.Prompt(text, caption, frm);
+            string answer = frm.Prompt(text, caption, defval, frm);
             return answer;
         }
         private string BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
@@ -160,7 +181,11 @@ namespace r2pipe_test
                     }
                     break;
             }
-            browser.Focus();
+            try
+            { // can be frozen
+                browser.Focus();
+            }
+            catch (Exception) { }
         }
         void webBrowser_MouseMove(Object sender, HtmlElementEventArgs e)
         {
@@ -240,13 +265,33 @@ namespace r2pipe_test
                 }
             }
         }
+        public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu)
+        {
+            foreach (ToolStripMenuItem item in menu.Items)
+            {                
+                if (item.Text.Equals(menuName))
+                {
+                    ToolStripItem newitem=item.DropDownItems.Add(string.Format("{0}: {1}", text, args));
+                    object[] callback_args = new object[] {callback, args};                    
+                    newitem.Tag = callback_args;
+                 
+                    newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
+                }
+            }
+        }
+        private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
+        {
+            System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
+            object [] args = (object []) item.Tag;
+            ((Action<string>)args[0])((String)args[1]);            
+        }
         private void MenuItemClickHandler(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string cmds = item.Tag.ToString();
             run(cmds, item.Text);
         }
-        public void add_tab(string tabname, string cmds)
+        public void add_control_tab(string tabname, string cmds)
         {
             var page = new TabPage(tabname);
             var browser = new WebBrowser();
@@ -271,6 +316,7 @@ namespace r2pipe_test
                 this.r2.RunCommand("q");
             }
             catch (Exception) { };
+            this.r2 = null;
         }
     }
 }

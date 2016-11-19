@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace r2pipe_test
 {    
@@ -36,20 +37,27 @@ namespace r2pipe_test
             //assign menu optrions
             r2pw.add_menucmd("View", "Functions", "afl", mainMenu);
             r2pw.add_menucmd("View", "File info", "iI", mainMenu);
+            r2pw.add_menufcn("Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
+            r2pw.add_menufcn("Gui", "Update gui", "*", UpdateGUI, mainMenu);
             //load some example file
             LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
         }
-        private void UpdateGUI()
+        private void UpdateGUI(string args=null)
         {
-            updating_gui = true;
-            tabcontrol = tabControl1;
-            Left    = int.Parse(rconfig.load("gui.left"));
-            Top     = int.Parse(rconfig.load("gui.top"));
-            Width   = int.Parse(rconfig.load("gui.width"));
-            Height  = int.Parse(rconfig.load("gui.height"));
-            splitContainer1.SplitterDistance = int.Parse(rconfig.load("gui.splitter_1.dist"));
-            splitContainer2.SplitterDistance = int.Parse(rconfig.load("gui.splitter_2.dist"));
-            updating_gui = false;
+            updating_gui    = true;
+            tabcontrol      = tabControl1;
+            Left            = int.Parse(rconfig.load<int>("gui.left"));
+            Top             = int.Parse(rconfig.load<int>("gui.top"));
+            Width           = int.Parse(rconfig.load<int>("gui.width"));
+            Height          = int.Parse(rconfig.load<int>("gui.height"));
+            txtOutput.BackColor = Color.FromName(rconfig.load<string>("gui.output.bg", "blue"));
+            txtOutput.ForeColor = Color.FromName(rconfig.load<string>("gui.output.fg", "white"));
+            listView1.BackColor = txtOutput.BackColor;
+            listView1.ForeColor = txtOutput.ForeColor;
+            splitContainer1.Panel1.BackColor = txtOutput.BackColor;
+            splitContainer1.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_1.dist"));
+            splitContainer2.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_2.dist"));
+            updating_gui    = false;
             Refresh();
         }
         private void DoLoadFile()
@@ -100,10 +108,6 @@ namespace r2pipe_test
             if(openFileDialog1.FileName.Length>0)
                 LoadFile(openFileDialog1.FileName);
         }
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            r2pw.exit();
-        }
         private void txtOutput_TextChanged(object sender, EventArgs e)
         {
             if (txtOutput.TextLength > 0)
@@ -147,6 +151,10 @@ namespace r2pipe_test
         {
             save_gui_config();
         }
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            r2pw.exit();
+        }
         private void save_gui_config()
         {
             if (updating_gui) return;
@@ -156,6 +164,9 @@ namespace r2pipe_test
             rconfig.save("gui.height", Height);
             rconfig.save("gui.splitter_1.dist",splitContainer1.SplitterDistance);
             rconfig.save("gui.splitter_2.dist",splitContainer2.SplitterDistance);
+            rconfig.save("gui.output.bg", txtOutput.BackColor.Name);
+            rconfig.save("gui.output.fg", txtOutput.ForeColor.Name);
+            UpdateGUI();
         }
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
@@ -164,6 +175,46 @@ namespace r2pipe_test
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
             save_gui_config();
+        }
+        private void dumpGuiVars(string args)
+        {
+            List<string>keys=rconfig.reg_enumkeys();
+            if (args == "*") args = r2pw.Prompt("filter results", "Enum registry vars", args);
+            output(string.Format("filter: {0}\n", args));
+            foreach (string varname in keys)
+            {
+                string value = rconfig.load<string>(varname);
+                output(string.Format("{0} = {1}\n",varname,value));
+            }
+        }
+        private void dumpGuiVar(string varname)
+        {
+            string value = rconfig.load<string>(varname);
+            output(string.Format("dumpGuiVars(): varname='{0}' value='{1}'", varname, value));
+        }
+        private void output(string text)
+        {
+            r2pw.setText("output", text, true);
+        }
+        private void classicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.set_theme("classic");
+            UpdateGUI();
+        }
+        private void blueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.set_theme("blue");
+            UpdateGUI();
+        }
+        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.set_theme("pink");
+            UpdateGUI();
+        }
+        private void controlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.set_theme("control");
+            UpdateGUI();
         }
     }
 }

@@ -18,13 +18,14 @@ namespace r2pipe_test
                 @"{0}/../../media/sf2_original_low_bright.jpg", r2pw.rconfig.guiPath);
             background = background.Replace(@"\", "/");
             background = ""; //use config
+            readFile("r2pipe.css");
             //r2pipe css temporary hardcoded
             WriteTmpFile("r2pipe.css",
                 "body{background:"+bg_color+" url('file:///"
                     + background +
                 "');color:#000080;font-weight:bold;background-repeat: repeat;"+
                 "background-attachment: fixed;}\r\n" +
-                ".r2code{font-family:Fixedsys;font-size:12px;cursor:arrow;font-weight:bold;}\r\n" +
+                ".r2code{line-height: 1.1em;white-space:pre;font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';font-size:12px;cursor:arrow;font-weight:bold;}\r\n" +
                 ".comment{color:green;}\r\n"+
                 ".address, .shorted_address{color:black;}\r\n" +
                 ".address:hover{text-decoration:underline;}\r\n" +
@@ -74,7 +75,7 @@ namespace r2pipe_test
             html += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
             html += "<body>\r\n";
             //html += "<div class=r2code_s><pre>"         + console_text_cut_copy + "</pre></div>";
-            html += "<div class=r2code id=r2code><pre>" + console_text_cut      + "</pre></div>";
+            html += "<div class=r2code id=r2code>" + console_text_cut      + "</div>";
             return html;
         }
         private void WriteTmpFile(string fileName, string content)
@@ -84,6 +85,24 @@ namespace r2pipe_test
             {
                 sw.WriteLine(content);
             }
+        }
+        public string readFile(string fileName, bool use_guiPath=true)
+        {
+            if (use_guiPath)
+            {
+                if (r2pw.rconfig.dataPath == null)
+                {
+                    string datapath=r2pw.Prompt("gui data path?", "Please, locate your data path...");
+                    r2pw.rconfig.save("gui.datapath", datapath);
+                }
+                fileName = string.Format(@"{0}\{1}", r2pw.rconfig.dataPath, fileName);
+            }
+            if (!File.Exists(fileName))
+            {
+                r2pw.Show(string.Format("Wops!\nr2html: readFile():\nfileName='{0}'\nnot found in data path...", fileName), "readfile");
+                return "file not found...";
+            }
+            return System.IO.File.ReadAllText(fileName);
         }
     }
 }

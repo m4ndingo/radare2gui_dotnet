@@ -88,6 +88,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="r2pipe_wrapper.cs" />
+    <Compile Include="themeManager.cs" />
     <EmbeddedResource Include="askForm.resx">
       <DependentUpon>askForm.cs</DependentUpon>
     </EmbeddedResource>
