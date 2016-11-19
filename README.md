@@ -1,7 +1,7 @@
 # radare2gui_dotnet
 Another radare2 gui for windows
 ## Screenshots
-**Debugger View**
+**Dissasembly View**
 
 ![r2pipe_dotnet_main](https://cloud.githubusercontent.com/assets/12532269/20451532/bc22606c-adfa-11e6-9dbd-d93236fa06af.png)
 
