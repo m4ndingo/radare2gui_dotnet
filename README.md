@@ -21,7 +21,7 @@ Another radare2 gui for windows
 
 ***Terminal256***
 
-![r3pipe_gui_dotnet_terlinal256_theme](https://cloud.githubusercontent.com/assets/12532269/20458934/44b60804-aeb2-11e6-8609-efff72588c46.png)
+![r3pipe_gui_dotnet_terlinal256_theme](https://cloud.githubusercontent.com/assets/12532269/20459127/22927e56-aeb7-11e6-92a6-b3d9bb0eb3ca.png)
 
 # Compilation
 ## Packages required
