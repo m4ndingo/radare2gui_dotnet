@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.IO;
+using System.Windows.Forms;
 
 namespace r2pipe_test
 {
@@ -38,8 +39,17 @@ namespace r2pipe_test
             value=reg_read(@"SOFTWARE\r2pipe_gui_dotnet", name);
             if (value == null)
             {
-                if ( typeof(T) == typeof(int) ) 
-                    value = ((int)default_value).ToString();
+                if (typeof(T) == typeof(int))
+                {
+                    if (default_value != null)
+                    {
+                        value = ((int)default_value).ToString();
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("no default value for {0} type {1}",name,typeof(T)), "RConfig:load()");
+                    }
+                }
                 else
                     value = (string)default_value;
             }

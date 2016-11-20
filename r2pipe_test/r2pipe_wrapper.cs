@@ -10,45 +10,35 @@ namespace r2pipe_test
 {
     public class R2PIPE_WRAPPER
     {
-        private IR2Pipe r2          = null;
+        public IR2Pipe r2          = null;
+        public String current_shell = "";
         public String fileName      = "";
         public RConfig rconfig      = null;
-        private r2html r2html               = null;
+        public r2html r2html       = null;
         private bool mouseMoved     = false;
         private string lastAddress  = null;
-        private TabControl tabcontrol       = null;
+        private TabControl tabcontrol = null;
+        private Form1 guicontrol    = null;
         private themeManager theme_manager   = null;
         public Dictionary<string, object> controls;
         public Dictionary<string, Func<string>> decorators_cb;
         public Dictionary<string, List<string>> decorators_names;
         public string decorator_param = null;
+        public Dictionary<string, Func<string>> shellopts_cb;
         private Dictionary<string, string> cached_results;
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
             this.controls = new Dictionary<string, object>();
             this.decorators_cb = new Dictionary<string, Func<string>>();
             this.decorators_names = new Dictionary<string, List<string>>();
+            this.shellopts_cb = new Dictionary<string, Func<string>>();
             this.cached_results = new Dictionary<string, string>();
             this.rconfig  = rconfig;
+            this.guicontrol = frm;
             this.tabcontrol = ((Form1)frm).tabcontrol;
             this.theme_manager = new themeManager(rconfig);
-            new Hotkeys();
-        }
-        public void set_theme(string themeName)
-        {
-            theme_manager.set_theme(themeName);
-            foreach (object o in controls)
-            {
-                if (o.GetType() == typeof(WebBrowser))
-                {
-                    ((WebBrowser)o).Refresh();
-                }
-            }
-        }
-        public void reload_theme()
-        {
-            if(theme_manager.themeName != null)
-                set_theme(theme_manager.themeName);
+            this.current_shell = rconfig.load<string>("gui.current_shell", "radare");
+            //new Hotkeys();
         }
         /* // some problems found at dynamic tab append
          * public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
@@ -70,7 +60,8 @@ namespace r2pipe_test
                 string control_type = "unknown";
                 if(controlName!=null && controls.ContainsKey(controlName))
                     control_type = controls[controlName].GetType().ToString();
-                setText("output", string.Format("r2.RunCommand(\"{1}\"): target='{0}' type='{2}' cols='{3}'\n", controlName, cmds, control_type, cols != null ? string.Join(", ", cols) : ""), true);
+                setText("output", "", string.Format("{2} r2.RunCommand(\"{1}\"): target='{0}' type='{3}' cols='{4}'\n",
+                    controlName, cmds, current_shell, control_type, cols != null ? string.Join(", ", cols) : ""), true);
             }
             if (r2 == null)
             {
@@ -86,7 +77,20 @@ namespace r2pipe_test
                 Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
                 return null;
             }
-            res = r2.RunCommand(cmds).Replace("\r", "");
+            switch (current_shell)
+            {
+                case "radare2":
+                    res = r2.RunCommand(cmds).Replace("\r", "");
+                    break;
+                case "javascript":
+                    res = invokeJavascript(cmds);
+                    break;
+                default:
+                    Show(string.Format("R2PIPE_WRAPPER: run(): current_shell='{0}'", 
+                                        current_shell), "unknown shell");
+                    break;
+            }
+            if (res == null) return res;
             if(res.StartsWith("[") || res.StartsWith("{"))
             try
             {
@@ -95,14 +99,66 @@ namespace r2pipe_test
             catch (Exception){}
             if (controlName != null)
             {
-                setText(controlName, res, append, json_obj, cols);
+                setText(controlName, cmds, res, append, json_obj, cols);
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
             }
             return res;
         }
-        delegate void SetTextCallback(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
-        public void setText(string controlName, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
+        delegate void SetTextCallback(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
+        public object get_selected_control()
+        {
+            string controlName = null;
+            object control = null;
+            try
+            {
+                controlName = tabcontrol.SelectedTab.Text;
+            }
+            catch (Exception) { }
+            if (controlName == null) return null;
+            if (!controls.ContainsKey(controlName))
+            {
+                string tag = null;
+                try
+                {
+                    tag = tabcontrol.SelectedTab.Text.ToString().ToLower();
+                }
+                catch (Exception) { }
+                if (tag == null) return null;
+                controlName = tag;
+            }
+            control = controls[controlName];
+            return control;
+        }
+        public string invokeJavascript(string cmds)
+        {
+            WebBrowser webBrowser1 = null;
+            object control = null;
+            control = get_selected_control();
+            if (control == null || control.GetType() != typeof(WebBrowser))
+            {
+                Show(string.Format("invokeJavascript(): incompatible control '{0}'\n",
+                    (string)control), "error");
+                return null;
+            }
+            webBrowser1 = (WebBrowser)control;
+            if( webBrowser1.Document != null )
+            {
+                object[] args = { cmds };
+                try
+                {
+                    string res = webBrowser1.Document.InvokeScript("eval", args).ToString();
+                    res += "\n";
+                    return res;
+                }
+                catch (Exception)
+                {
+                    return null; // better manage req
+                }
+            }
+            return null;
+        }
+        public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
         {
             object c = controls[controlName];
             if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
@@ -112,12 +168,12 @@ namespace r2pipe_test
                 if (rtbox.InvokeRequired)
                 {
                     SetTextCallback d = new SetTextCallback(setText);
-                    rtbox.Invoke(d, new object[] { controlName, someText, append, json_obj, cols });
+                    rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols });
                 }
                 else
                 {
                     if (!append) rtbox.Text = "";
-                    rtbox.Text += someText;
+                    rtbox.Text += r2html.encodeutf8(someText);
                 }
             }
             else if (c.GetType() == typeof(ListView))
@@ -157,7 +213,7 @@ namespace r2pipe_test
             }
             else if (c.GetType() == typeof(WebBrowser))
             {
-                sendToWebBrowser(controlName, someText);
+                sendToWebBrowser(controlName, cmds, someText, json_obj);
             }
             else
             {
@@ -180,29 +236,45 @@ namespace r2pipe_test
         {
             return decorators_cb[decoratorName];
         }
-
-        public void sendToWebBrowser(string controlName, string someText)
+        public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj)
         {
             object c = controls[controlName];
             string url;
             if (someText == null && cached_results.ContainsKey(controlName)) 
                 someText = cached_results[controlName];
-            url = BuildWebPage((WebBrowser)c, controlName, someText);
+            url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
             ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             ((WebBrowser)c).Navigate(url);
         }
-        public string Prompt(string text, string caption, string defval="")
+        public void set_theme(string themeName)
+        {
+            theme_manager.set_theme(themeName);
+            foreach (object o in controls)
+            {
+                if (o.GetType() == typeof(WebBrowser))
+                {
+                    ((WebBrowser)o).Refresh();
+                }
+            }
+        }
+        public void reload_theme()
+        {
+            if (theme_manager.themeName != null)
+                set_theme(theme_manager.themeName);
+        }
+        public string Prompt(string text, string caption, string defval = "")
         {
             askForm frm = new askForm();
             string answer = frm.Prompt(text, caption, defval, frm);
             return answer;
         }
-        private string BuildWebPage(WebBrowser wBrowser, string controlName, string someText)
+        private string BuildWebPage(WebBrowser wBrowser, string controlName, string cmds, string someText, dynamic json_obj)
         {
             string tmpName = string.Format("{0}{1}.html", rconfig.tempPath, controlName);
+            tmpName = tmpName.Replace("?", "[question]");
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
-                sw.WriteLine(r2html.convert(someText));
+                sw.WriteLine(r2html.convert(cmds, someText, json_obj));
             }
             return tmpName;                
         }
@@ -299,6 +371,10 @@ namespace r2pipe_test
             this.decorators_cb.Add(name, callback);
             this.decorators_names.Add(name, fieldNames);
         }
+        public void add_shellopt(string name, Func<string> callback)
+        {
+            this.shellopts_cb.Add(name, callback);
+        }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.G) //71 g keyvalue
@@ -309,21 +385,49 @@ namespace r2pipe_test
         }
         public void open(String fileName)
         {
-            this.r2 = new R2Pipe(fileName, rconfig.r2path);
+            if (this.r2 == null)
+                this.r2 = new R2Pipe(fileName, rconfig.r2path);
+            else
+                this.r2.RunCommand("o " + fileName);
             this.fileName = fileName;
             this.r2html = new r2html(this);
         }
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu)
         {
+            ToolStripMenuItem item = find_menucmd(menuName, menu);
+            ToolStripItem newitem = null;
+            if (item == null)
+            {
+                Show(string.Format("Menu '{0}' not found...", menuName), "add_meucmd");
+                return;
+            }
+            newitem  = item.DropDownItems.Add(string.Format("{0} ( {1} )", text, cmds));
+            newitem.Tag = cmds;
+            newitem.Click += new EventHandler(MenuItemClickHandler);
+        }
+        public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
+        {
             foreach (ToolStripMenuItem item in menu.Items)
             {                
                 if (item.Text.Equals(menuName))
                 {
-                    ToolStripItem newitem=item.DropDownItems.Add(string.Format("{0} ( {1} )",text,cmds));
-                    newitem.Tag = cmds;
-                    newitem.Click += new EventHandler(MenuItemClickHandler);
+                    return item;
+                }
+                if (item.HasDropDownItems)
+                {
+                    foreach (object subitem in item.DropDownItems)
+                    {
+                        if(subitem.GetType() == typeof(ToolStripMenuItem))
+                        {
+                            if (((ToolStripMenuItem)subitem).Text.Equals(menuName))
+                            {
+                                return (ToolStripMenuItem)subitem;
+                            }
+                        }
+                    }
                 }
             }
+            return null;
         }
         public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu)
         {
@@ -334,7 +438,6 @@ namespace r2pipe_test
                     ToolStripItem newitem=item.DropDownItems.Add(string.Format("{0}: {1}", text, args));
                     object[] callback_args = new object[] {callback, args};                    
                     newitem.Tag = callback_args;
-                 
                     newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
                 }
             }
@@ -355,6 +458,7 @@ namespace r2pipe_test
         {
             var page = new TabPage(tabname);
             var browser = new WebBrowser();
+            page.Tag = tabname.ToLower();
             browser.Dock = DockStyle.Fill;
             page.Controls.Add(browser);
             tabcontrol.TabPages.Add(page);
@@ -366,13 +470,61 @@ namespace r2pipe_test
         public DialogResult Show(string text, string caption)
         {
             if (controls.ContainsKey("output"))
-                setText("output", string.Format("{0} {1}", caption, text), true);
+                setText("output", "", string.Format("{0} {1}", caption, text), true);
             return MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        public string readFile(string fileName, bool use_guiPath = true)
+        {
+            if (use_guiPath)
+            {
+                fileName = string.Format(@"{0}\{1}", rconfig.dataPath, fileName);
+            }
+            if (!File.Exists(fileName))
+            {
+                Show(string.Format("Wops!\nr2html: readFile():\nfileName='{0}'\nnot found in data path...", fileName), "readfile");
+                return "file not found...";
+            }
+            return System.IO.File.ReadAllText(fileName);
+        }
+        public void next_shell()
+        {
+            string new_shell = current_shell;
+            string first_shell = null;
+            bool use_next = true;
+            foreach (string shellname in shellopts_cb.Keys)
+            {
+                if (first_shell == null) first_shell = shellname;
+                if ( use_next == false )
+                {
+                    new_shell = shellname;
+                    break;
+                }
+                if (shellname.Equals(current_shell)) use_next = false;
+            }
+            if (new_shell.Equals(current_shell)) current_shell = first_shell;
+            else current_shell = new_shell;
+            rconfig.save("gui.current_shell", current_shell);
+            guicontrol.UpdateGUI();
+            shellopts_cb[current_shell]();
+        }
+        public void run_script(string scriptFileName)
+        {
+            // 1. read input from scriptFilename
+            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands> 
+            run("e scr.utf8 = true", "output", true);
+            run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run("pd 100", "dissasembly");
+            run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
+            run("iij", "imports_listview", false, new List<string> { "name", "plt" });
+            run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
+            run("px 2000", "hexview");
+            run("?", "r2help");
         }
         public void exit()
         {
             try
             {
+                rconfig.save("gui.current_shell", "radare2");
                 this.r2.RunCommand("q");
             }
             catch (Exception) { };

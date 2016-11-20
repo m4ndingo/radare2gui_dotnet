@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace r2pipe_test
 {
@@ -13,7 +9,9 @@ namespace r2pipe_test
         public themeManager(RConfig config)
         {
             this.config = config;
-            set_theme(config.load<string>("gui.theme_name"));
+            string themeName = config.load<string>("gui.theme_name");
+            if( themeName != null )
+               set_theme(themeName);
         }
         public void set_theme(string themeName)
         {
@@ -42,6 +40,10 @@ namespace r2pipe_test
                 case "terminal256":
                     config.save("gui.output.bg", "black");
                     config.save("gui.output.fg", "Aquamarine");
+                    break;
+                case "lemon":
+                    config.save("gui.output.bg", "Khaki");
+                    config.save("gui.output.fg", "black");
                     break;
             }
             Console.WriteLine("set_theme: {0}", themeName);

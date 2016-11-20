@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace r2pipe_test
 {    
@@ -15,6 +16,8 @@ namespace r2pipe_test
         private string fileName = null;
         private bool updating_gui = false;
         public TabControl tabcontrol = null;
+        public string themeName = null;
+        public string currentShell = null;
         public Form1()
         {
             InitializeComponent();
@@ -34,29 +37,44 @@ namespace r2pipe_test
             r2pw.add_control("sections_listview",   lstSections);
             r2pw.add_control("hexview",             webBrowser2);
             r2pw.add_control("r2help", webBrowser3);
-            //add+assing "decorators"
-            r2pw.add_decorator("num2hex", num2hex, new List<string>(){
-                "offset","vaddr","paddr","plt"});
+            //add and assign "decorators"
+            r2pw.add_decorator("num2hex", num2hex, new List<string>(){"offset","vaddr","paddr","plt"});
+            r2pw.add_decorator("dec_b64", dec_b64, new List<string>(){"string"});
             //add menu options
-            r2pw.add_menucmd("&View", "Functions", "afl", mainMenu);
-            r2pw.add_menucmd("&View", "File info", "iI", mainMenu);
+            r2pw.add_menucmd("&View", "Functions", "aflj", mainMenu);
+            r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
+            r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
+            r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
+            r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
+            r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
+            r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
+            r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
             r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
+            r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
+            //add shell options
+            r2pw.add_shellopt("radare2", guiPrompt_callback);
+            r2pw.add_shellopt("javascript", guiPrompt_callback);
+            //new auto-generated tabs
+            r2pw.add_control_tab("version ( ?V )", "#todo");
             //load some example file
-            LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
+            //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
+            LoadFile("-");
         }
-        private void UpdateGUI(string args=null)
+        public void UpdateGUI(string args=null)
         {
             Color backColor;
             Color foreColor;
             updating_gui    = true;
             tabcontrol      = tabControl1;
+            currentShell    = rconfig.load<string>("gui.current_shell", "radare.");
+            themeName       = rconfig.load<string>("gui.theme_name", "default");
             backColor       = Color.FromName(rconfig.load<string>("gui.output.bg", "blue"));
             foreColor       = Color.FromName(rconfig.load<string>("gui.output.fg", "white"));
-            Left            = int.Parse(rconfig.load<int>("gui.left"));
-            Top             = int.Parse(rconfig.load<int>("gui.top"));
-            Width           = int.Parse(rconfig.load<int>("gui.width"));
-            Height          = int.Parse(rconfig.load<int>("gui.height"));
+            Left            = int.Parse(rconfig.load<int>("gui.left",Left));
+            Top             = int.Parse(rconfig.load<int>("gui.top",Top));
+            Width           = int.Parse(rconfig.load<int>("gui.width",Width));
+            Height          = int.Parse(rconfig.load<int>("gui.height",Height));
             BackColor = backColor;
             mainMenu.BackColor = backColor;
             mainMenu.ForeColor = foreColor;
@@ -77,27 +95,23 @@ namespace r2pipe_test
             lstSections.BackColor = backColor;
             lstSections.ForeColor = foreColor;
             splitContainer1.Panel1.BackColor = backColor;
-            splitContainer1.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_1.dist"));
-            splitContainer2.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_2.dist"));
+            splitContainer1.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_1.dist", splitContainer1.SplitterDistance));
+            splitContainer2.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_2.dist", splitContainer2.SplitterDistance));
+            slabelTheme.Text = themeName + " theme";
+            button1.Text = currentShell;
             Refresh();
             updating_gui = false;
         }
         private void DoLoadFile()
         {
-            if (!File.Exists(fileName))
+            if (!File.Exists(fileName) && !fileName.Equals("-"))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
             }
             r2pw.open(fileName);
-            r2pw.run("e scr.utf8 = true", "output", true);
-            r2pw.run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
-            r2pw.run("pd 100", "dissasembly");
-            r2pw.run("izj", "strings_listview",false,new List<string> { "vaddr", "section", "type", "string" });
-            r2pw.run("iij", "imports_listview", false, new List<string> { "name", "plt" });
-            r2pw.run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            r2pw.run("px 2000", "hexview");
-            r2pw.run("?", "r2help");
+            r2pw.setText("version ( ?V )", "?V", r2pw.r2.RunCommand("?V"));
+            r2pw.run_script("openfile_post.txt");
         }
         private void CheckR2path()
         {
@@ -166,10 +180,13 @@ namespace r2pipe_test
         {
             string msg=((ListView)sender).SelectedItems[0].Text;
             string res=r2pw.run("? " + msg);
-            string address=res.Split(' ')[1];
-            r2pw.run("pdf @" + address, "dissasembly");
-            r2pw.run("px 2000 @" + address, "hexview");
-            //((WebBrowser)r2pw.controls["dissasembly"]).Focus();
+            if (res != null)
+            {
+                string address = res.Split(' ')[1];
+                r2pw.run("pdf @ " + address, "dissasembly");
+                r2pw.run("px 2000 @ " + address, "hexview");
+                //((WebBrowser)r2pw.controls["dissasembly"]).Focus();
+            }
         }
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
@@ -218,21 +235,33 @@ namespace r2pipe_test
         }
         private void output(string text)
         {
-            r2pw.setText("output", text, true);
+            r2pw.setText("output", "", text, true);
         }
-        private string num2hex()
+        private string guiPrompt_callback()
+        {
+            //MessageBox.Show(currentShell);
+            return null;
+        }
+        private string num2hex() // decorator
         {
             return string.Format("0x{0:x}", int.Parse(r2pw.decorator_param));
+        }
+        private string dec_b64() // decorator
+        {
+            byte[] data = Convert.FromBase64String(r2pw.decorator_param);
+            return Encoding.UTF8.GetString(data);
         }
         private void changeTheme(string themeName)
         {
             if (r2pw != null)
             {
                 r2pw.set_theme(themeName);
-                r2pw.sendToWebBrowser("dissasembly", null);
+                r2pw.sendToWebBrowser("dissasembly", null, null, null);
+                r2pw.sendToWebBrowser("hexview", null, null, null);
+                r2pw.sendToWebBrowser("r2help", null, null, null);
                 UpdateGUI();
             }
-        }
+        } // themes
         private void classicToolStripMenuItem_Click(object sender, EventArgs e)
         {
             changeTheme("classic");
@@ -252,6 +281,56 @@ namespace r2pipe_test
         private void darkToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             changeTheme("terminal256");
+        }
+        private void sandedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            changeTheme("lemon");
+        }
+        private void terminal256ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            changeTheme("terminal256");
+        }
+        private void contorlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            changeTheme("control");
+        }
+        private void classicToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            changeTheme("classic");
+        }
+        private void azuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            changeTheme("azure");
+        }
+        private void pinkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            changeTheme("pink");
+        }
+        private void sandedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            changeTheme("lemon");
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            r2pw.next_shell();
+        }
+        private void cmbCmdline_SelectedValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void cmbCmdline_Enter(object sender, EventArgs e)
+        {
+
+        }
+        private void cmbCmdline_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (cmbCmdline.Focused && cmbCmdline.Text.Length != 0 && e.KeyValue == 38)
+            {
+                string text = cmbCmdline.Text;
+                cmbCmdline.Text = ""; // trick to refresh combo control with text selected
+                cmbCmdline.Text = text;
+                cmbCmdline.SelectionStart = cmbCmdline.Text.Length ;
+            }
         }
     }
 }

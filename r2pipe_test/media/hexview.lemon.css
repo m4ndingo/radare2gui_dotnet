@@ -1,40 +1,43 @@
 body{
-	background:#ff7f8c;
+	background:#ffec94;
 	color:#56baec;
 	font-weight:bold;
 	background-repeat: repeat;
 	background-attachment: fixed;
 }
-.r2code, .tbl{
-	line-height: 1.1em;w
-	hite-space:pre;
+.r2code, .tbl, .tbl_dict{
+	line-height: 1.1em;
+	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
 	font-size:12px;
 	cursor:arrow;
 	font-weight:bold;
 }
+.tbl_dict{
+   border: 0px solid #a4c8e7;
+   padding:0:
+   margin:0;
+   border-spacing: 0;
+   border-collapse: collapse;
+}
 .comment{
-	color:#a0e56c;
+	color:#4ebf22;
 }
-.address, .shorted_address{
-	color:#ff9f80;
-}
+.address, .shorted_address{color:black;}
 .address:hover{text-decoration:underline;}
 .shorted_address:hover{text-decoration:underline;background:#ee0}
-.number{
-	color:#d1f2a5;
-}
+.number{color:green;}
 .hexb{
 	color:#a4c8e7;
 }
 .op_stack{
-	color:#f7d3c6;
+	color:#ffaeae;
 }
 .op_ip{
-	color:#a9da88;
+	color:#a0e56c;
 }
 .op_mov{
-	color:#fffbd4;
+	color:#679;
 }
 .op_add{
 }
@@ -42,7 +45,4 @@ body{
 	color: red;
 }
 .op_nop{
-}
-.group{
-	color:#fffbd4;
 }

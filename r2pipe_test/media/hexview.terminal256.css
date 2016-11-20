@@ -13,13 +13,24 @@ body{
 .number{
 	color:#d07917;
 }
-.r2code{
+.r2code, .tbl, .tbl_dict{
 	line-height: 1.1em;
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
 	font-size:12px;
 	cursor:arrow;
 	font-weight:bold;
+}
+.tbl th{
+	color:white;
+	text-align:left;
+}
+.tbl_dict th{
+	color:white;
+	text-align:left;
+}
+.tbl_dict{
+	font-size:14px;
 }
 .comment{
 	color:#bccad6;
@@ -39,4 +50,19 @@ body{
 }
 .op_stack{
 	color: #b93994;
+}
+.op_ip{
+	color: #4ebf22;
+}
+.op_mov{
+	color: #fff;
+}
+.op_add{
+	color: #d07917;
+}
+.op_err{
+	color: red;
+}
+.op_nop{
+	color: #6060f0;
 }

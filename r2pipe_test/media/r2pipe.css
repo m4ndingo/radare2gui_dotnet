@@ -7,11 +7,40 @@ body{
 	margin:0;
 	padding:0;
 }
-.r2code{line-height: 1.1em;white-space:pre;font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';font-size:12px;cursor:arrow;font-weight:bold;}
+.r2code, .tbl, .tbl_dict{
+	line-height: 1.1em;
+	white-space:pre;
+	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
+	font-size:12px;
+	cursor:arrow;
+	font-weight:bold;
+}
+.tbl_dict{
+   border: 0px solid #a4c8e7;
+   padding:0:
+   margin:0;
+   border-spacing: 0;
+   border-collapse: collapse;
+}
 .comment{color:green;}
 .address, .shorted_address{color:black;}
 .address:hover{text-decoration:underline;}
 .shorted_address:hover{text-decoration:underline;background:#ee0}
 .number{color:green;}
 .hexb{color:blue;}
-
+.group{
+	color: #888;
+}
+.op_stack{
+}
+.op_ip{
+}
+.op_mov{
+}
+.op_add{
+}
+.op_err{
+	color: red;
+}
+.op_nop{
+}

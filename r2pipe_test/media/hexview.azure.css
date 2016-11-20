@@ -13,7 +13,7 @@ body{
 .number{
 	color:#87bdd8;
 }
-.r2code{
+.r2code, .tbl{
 	line-height: 1.1em;
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
@@ -34,5 +34,17 @@ body{
 	text-decoration:underline;
 	background:#ee0;
 }
-
+.op_stack{
+}
+.op_ip{
+}
+.op_mov{
+}
+.op_add{
+}
+.op_err{
+	color: red;
+}
+.op_nop{
+}
 
