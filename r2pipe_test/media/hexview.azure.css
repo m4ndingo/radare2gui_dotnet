@@ -1,0 +1,38 @@
+body{
+	background:#f0ffff;
+	color:#667292;
+	font-weight:bold;
+	background-repeat: repeat;
+	background-attachment: fixed;
+	padding:0;
+	margin:0;
+}
+.hexb{
+	color:#87bdd8;
+}
+.number{
+	color:#87bdd8;
+}
+.r2code{
+	line-height: 1.1em;
+	white-space:pre;
+	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
+	font-size:12px;
+	cursor:arrow;
+	font-weight:bold;
+}
+.comment{
+	color:#bccad6;
+}
+.address, .shorted_address{
+	color:#8d9db6;
+	}
+.address:hover{
+	text-decoration:underline;
+}
+.shorted_address:hover{
+	text-decoration:underline;
+	background:#ee0;
+}
+
+
