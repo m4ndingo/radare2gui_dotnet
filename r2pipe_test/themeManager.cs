@@ -27,7 +27,7 @@ namespace r2pipe_test
                     config.save("gui.output.fg", "black");
                     config.save("gui.hexview.css", "r2pipe.css");
                     break;
-                case "blue":
+                case "azure":
                     config.save("gui.output.bg", "Azure");
                     config.save("gui.output.fg", "DarkSlateGray");
                     break;
@@ -38,6 +38,10 @@ namespace r2pipe_test
                 case "control":
                     config.save("gui.output.bg", "Control");
                     config.save("gui.output.fg", "ControlText");
+                    break;
+                case "terminal256":
+                    config.save("gui.output.bg", "black");
+                    config.save("gui.output.fg", "Aquamarine");
                     break;
             }
             Console.WriteLine("set_theme: {0}", themeName);

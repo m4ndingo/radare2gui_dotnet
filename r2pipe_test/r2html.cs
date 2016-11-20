@@ -47,6 +47,11 @@ namespace r2pipe_test
                 ".hexb{color:#aaf;}\r\n"
                 );
         }
+        private string encodeutf8(string text)
+        {
+            byte[] bytes = Encoding.Default.GetBytes(text);
+            return Encoding.UTF8.GetString(bytes);
+        }
         public string convert(string console_text)
         {
             string html = "";
@@ -63,19 +68,30 @@ namespace r2pipe_test
             {
                 console_text_cut += line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line) + "\n";
             }
+            console_text_cut = encodeutf8(console_text_cut);
             console_text_cut_copy = console_text_cut;
-
-            console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut, "<span class=comment>$1</span>");
-            console_text_cut = (new Regex(@"(- offset -.+)")).Replace(console_text_cut, "<span class=comment>$1</span>");
-            console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "<span class=number>$1</span>$2");
-            console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=number>$2</span>");
-            console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=hexb>$2</span>");
-            console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{4,})([\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut, "$1<span class=address>$2</span>$3");
-            console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut, "[<span class=shorted_address title='$1'>$2</span>]");
-
+            console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut, 
+                "<span class=comment>$1</span>");
+            console_text_cut = (new Regex(@"(- offset -.+)")).Replace(console_text_cut, 
+                "<span class=comment>$1</span>");
+            console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut, 
+                "<span class=number>$1</span>$2");
+            console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "$1<span class=number>$2</span>");
+            console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut, 
+                "$1<span class=hexb>$2</span>");
+            console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{4,})([\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut, 
+                "$1<span class=address>$2</span>$3");
+            console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut, 
+                "<span class=group>[</span><span class=shorted_address title='$1'>$2</span><span class=group>]</span>");
+            console_text_cut = (new Regex(@"([\,\-\+\[\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=group>$1</span>");
+            console_text_cut = (new Regex(@"(push|pop)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=op_stack>$1</span>");
             //webpage temporary hardcoded
             html =  "<!DOCTYPE html>\n";
             html += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
+            html += "<meta charset=\"UTF-8\">\n";
             html += "<html>\r\n";
             html += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
             html += "<body>\r\n";

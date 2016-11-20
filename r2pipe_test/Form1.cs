@@ -25,7 +25,7 @@ namespace r2pipe_test
             UpdateGUI();
             CheckR2path();
             r2pw = new R2PIPE_WRAPPER(rconfig, this);
-            //assign controls
+            //add controls
             r2pw.add_control("output",              txtOutput);
             r2pw.add_control("dissasembly",         webBrowser1);
             r2pw.add_control("strings_listview",    lstStrings);
@@ -33,28 +33,48 @@ namespace r2pipe_test
             r2pw.add_control("imports_listview",    lstImports);
             r2pw.add_control("sections_listview",   lstSections);
             r2pw.add_control("hexview",             webBrowser2);
-            r2pw.add_control("r2help",              webBrowser3);
-            //assign menu optrions
-            r2pw.add_menucmd("View", "Functions", "afl", mainMenu);
-            r2pw.add_menucmd("View", "File info", "iI", mainMenu);
-            r2pw.add_menufcn("Gui", "Update gui", "*", UpdateGUI, mainMenu);
-            r2pw.add_menufcn("Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
+            r2pw.add_control("r2help", webBrowser3);
+            //add+assing "decorators"
+            r2pw.add_decorator("num2hex", num2hex, new List<string>(){
+                "offset","vaddr","paddr","plt"});
+            //add menu options
+            r2pw.add_menucmd("&View", "Functions", "afl", mainMenu);
+            r2pw.add_menucmd("&View", "File info", "iI", mainMenu);
+            r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
+            r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             //load some example file
             LoadFile(@"c:\windows\SysWOW64\notepad.exe");            
         }
         private void UpdateGUI(string args=null)
         {
+            Color backColor;
+            Color foreColor;
             updating_gui    = true;
-            tabcontrol = tabControl1;
+            tabcontrol      = tabControl1;
+            backColor       = Color.FromName(rconfig.load<string>("gui.output.bg", "blue"));
+            foreColor       = Color.FromName(rconfig.load<string>("gui.output.fg", "white"));
             Left            = int.Parse(rconfig.load<int>("gui.left"));
             Top             = int.Parse(rconfig.load<int>("gui.top"));
             Width           = int.Parse(rconfig.load<int>("gui.width"));
             Height          = int.Parse(rconfig.load<int>("gui.height"));
-            txtOutput.BackColor = Color.FromName(rconfig.load<string>("gui.output.bg", "blue"));
-            txtOutput.ForeColor = Color.FromName(rconfig.load<string>("gui.output.fg", "white"));
-            listView1.BackColor = txtOutput.BackColor;
-            listView1.ForeColor = txtOutput.ForeColor;
-            splitContainer1.Panel1.BackColor = txtOutput.BackColor;
+            BackColor = backColor;
+            mainMenu.BackColor = backColor;
+            mainMenu.ForeColor = foreColor;
+            statusStrip1.BackColor = backColor;
+            statusStrip1.ForeColor = foreColor;
+            cmbCmdline.BackColor = backColor;
+            cmbCmdline.ForeColor = foreColor;
+            txtOutput.BackColor = backColor;
+            txtOutput.ForeColor = foreColor;
+            listView1.BackColor = backColor;
+            listView1.ForeColor = foreColor;
+            lstStrings.BackColor = backColor;
+            lstStrings.ForeColor = foreColor;
+            lstImports.BackColor = BackColor;
+            lstImports.ForeColor = foreColor;
+            lstSections.BackColor = backColor;
+            lstSections.ForeColor = foreColor;
+            splitContainer1.Panel1.BackColor = backColor;
             splitContainer1.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_1.dist"));
             splitContainer2.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_2.dist"));
             Refresh();
@@ -68,6 +88,7 @@ namespace r2pipe_test
                 return;
             }
             r2pw.open(fileName);
+            r2pw.run("e scr.utf8 = true", "output", true);
             r2pw.run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             r2pw.run("pd 100", "dissasembly");
             r2pw.run("izj", "strings_listview",false,new List<string> { "vaddr", "section", "type", "string" });
@@ -100,6 +121,7 @@ namespace r2pipe_test
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
             cmbCmdline.Focus();
+            slabel1.Text = string.Format("Binary file '{0}' loaded.",fileName);
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -143,7 +165,7 @@ namespace r2pipe_test
             string msg=((ListView)sender).SelectedItems[0].Text;
             string res=r2pw.run("? " + msg);
             string address=res.Split(' ')[1];
-            r2pw.run("pd @" + address, "dissasembly");
+            r2pw.run("pdf @" + address, "dissasembly");
             r2pw.run("px 2000 @" + address, "hexview");
             //((WebBrowser)r2pw.controls["dissasembly"]).Focus();
         }
@@ -196,6 +218,10 @@ namespace r2pipe_test
         {
             r2pw.setText("output", text, true);
         }
+        private string num2hex()
+        {
+            return string.Format("0x{0:x}", int.Parse(r2pw.decorator_param));
+        }
         private void changeTheme(string themeName)
         {
             if (r2pw != null)
@@ -211,7 +237,7 @@ namespace r2pipe_test
         }
         private void blueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            changeTheme("blue");
+            changeTheme("azure");
         }
         private void darkToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -220,6 +246,10 @@ namespace r2pipe_test
         private void controlToolStripMenuItem_Click(object sender, EventArgs e)
         {
             changeTheme("control");
+        }
+        private void darkToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            changeTheme("terminal256");
         }
     }
 }

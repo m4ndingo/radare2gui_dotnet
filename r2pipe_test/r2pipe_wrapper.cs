@@ -19,10 +19,15 @@ namespace r2pipe_test
         private TabControl tabcontrol       = null;
         private themeManager theme_manager   = null;
         public Dictionary<string, object> controls;
+        public Dictionary<string, Func<string>> decorators_cb;
+        public Dictionary<string, List<string>> decorators_names;
+        public string decorator_param = null;
         private Dictionary<string, string> cached_results;
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
             this.controls = new Dictionary<string, object>();
+            this.decorators_cb = new Dictionary<string, Func<string>>();
+            this.decorators_names = new Dictionary<string, List<string>>();
             this.cached_results = new Dictionary<string, string>();
             this.rconfig  = rconfig;
             this.tabcontrol = ((Form1)frm).tabcontrol;
@@ -126,6 +131,7 @@ namespace r2pipe_test
                         for (int i = 0; i < json_obj.Count; i++)
                         {
                             string col0 = json_obj[i][cols[0]];
+                            col0 = decorate(controlName, cols[0], col0);
                             ListViewItem row_item = new ListViewItem(col0);
                             for (int j = 1; j < cols.Count; j++)
                             {
@@ -133,6 +139,7 @@ namespace r2pipe_test
                                 if (json_obj[i][cname] != null)
                                 {
                                     string value = json_obj[i][cname].ToString();
+                                    value = decorate(controlName, cname, value);
                                     row_item.SubItems.Add(value);
                                 }
                         
@@ -157,6 +164,23 @@ namespace r2pipe_test
                 Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
             }
         }
+        public string decorate(string controlName, string columName, string value)
+        {
+            string decorator = null;
+            foreach (string key in decorators_names.Keys)
+            {
+                if (decorators_names[key].Contains(columName)) decorator = key;
+            }
+            if ( decorator == null ) return value;
+            Func<string> decorator_cb = findDecorator_callback(decorator);
+            decorator_param = value;
+            return decorator_cb();
+        }
+        private Func<string> findDecorator_callback(string decoratorName)
+        {
+            return decorators_cb[decoratorName];
+        }
+
         public void sendToWebBrowser(string controlName, string someText)
         {
             object c = controls[controlName];
@@ -223,7 +247,10 @@ namespace r2pipe_test
         {
             if (address!=null && address.Length>0 && address != lastAddress)
             {
-                run("pd 100 @" + address, "dissasembly");
+                string res;
+                res=run("pdf @" + address, "dissasembly");
+                if(res.Length == 0)
+                    res = run("pd 200 @" + address, "dissasembly");
                 run("px 2000 @" + address, "hexview");
                 lastAddress = address;
             }            
@@ -266,6 +293,11 @@ namespace r2pipe_test
                 ((WebBrowser)control).WebBrowserShortcutsEnabled = true;
                 ((WebBrowser)control).Refresh();
             }
+        }
+        public void add_decorator(string name, Func<string> callback, List<string> fieldNames)
+        {
+            this.decorators_cb.Add(name, callback);
+            this.decorators_names.Add(name, fieldNames);
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
