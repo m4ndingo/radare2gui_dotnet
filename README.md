@@ -3,7 +3,7 @@ Another radare2 gui for windows
 ## Screenshots
 **Dissasembly View**
 
-![r2pipe_dotnet_main](https://cloud.githubusercontent.com/assets/12532269/20451532/bc22606c-adfa-11e6-9dbd-d93236fa06af.png)
+![r3pipe_gui_dotnet_default_theme](https://cloud.githubusercontent.com/assets/12532269/20459474/d6d877ca-aec2-11e6-8ac6-a51134d7bd3c.png)
 
 **Hexadecimal View**
 
