@@ -60,6 +60,8 @@ namespace r2pipe_test
             BackColor = backColor;
             mainMenu.BackColor = backColor;
             mainMenu.ForeColor = foreColor;
+            tabControl1.BackColor = backColor;
+            tabControl1.ForeColor = foreColor;
             statusStrip1.BackColor = backColor;
             statusStrip1.ForeColor = foreColor;
             cmbCmdline.BackColor = backColor;

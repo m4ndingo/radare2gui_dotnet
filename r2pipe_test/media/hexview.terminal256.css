@@ -4,6 +4,8 @@ body{
 	font-weight:bold;
 	background-repeat: repeat;
 	background-attachment: fixed;
+	padding:0;
+	margin:0;
 }
 .hexb{
 	color:#eee;

@@ -196,10 +196,10 @@
             this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(3, 3);
+            this.webBrowser1.Location = new System.Drawing.Point(3, 0);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(418, 130);
+            this.webBrowser1.Size = new System.Drawing.Size(418, 131);
             this.webBrowser1.TabIndex = 4;
             // 
             // HexView
@@ -299,7 +299,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstSections.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstSections.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstSections.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstSections.GridLines = true;
             this.lstSections.HoverSelection = true;
             this.lstSections.Location = new System.Drawing.Point(0, 0);
@@ -325,10 +325,10 @@
             this.webBrowser3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser3.Location = new System.Drawing.Point(3, 3);
+            this.webBrowser3.Location = new System.Drawing.Point(3, 0);
             this.webBrowser3.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser3.Name = "webBrowser3";
-            this.webBrowser3.Size = new System.Drawing.Size(417, 124);
+            this.webBrowser3.Size = new System.Drawing.Size(418, 128);
             this.webBrowser3.TabIndex = 5;
             // 
             // tabControl2
@@ -376,7 +376,7 @@
             this.txtOutput.BackColor = System.Drawing.SystemColors.Window;
             this.txtOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtOutput.ContextMenuStrip = this.ctxMenuOutput;
-            this.txtOutput.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOutput.Font = new System.Drawing.Font("Consolas", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutput.ForeColor = System.Drawing.Color.PaleGreen;
             this.txtOutput.Location = new System.Drawing.Point(-1, 0);
             this.txtOutput.Name = "txtOutput";
