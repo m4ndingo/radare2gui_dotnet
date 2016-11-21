@@ -1,0 +1,9 @@
+# loaded after file is opened to populate controls
+e scr.utf8				output					
+aaa;aflj				functions_listview		
+pd 100					dissasembly				
+izj						strings_listview		
+iij						imports_listview	name plt
+iSj						sections_listview	name size
+px 2000					hexview
+?						r2help

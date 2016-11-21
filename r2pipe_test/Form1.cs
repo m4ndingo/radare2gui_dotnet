@@ -45,13 +45,16 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
-            r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
+            r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
+            r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
+            r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
+            r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
             //add menu function callbacks
             r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
             r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
@@ -61,6 +64,7 @@ namespace r2pipe_test
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //new auto-generated tabs
             r2pw.add_control_tab("version ( ?V )", "#todo");
+            r2pw.add_control_tab("xrefs ( axtj )", "#todo");
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
             LoadFile("-");
@@ -203,16 +207,44 @@ namespace r2pipe_test
                 cmbCmdline.Text = "";
             }
         }
+        private string get_selectedAddress(object sender)
+        {
+            string msg = null;
+            if (sender.GetType() == typeof(ListView))
+            {
+                ListView listview = ((ListView)sender);
+                if( listview.Items.Count > 0 )
+                    msg = listview.SelectedItems[0].Text;
+            }else{
+                r2pw.Show(string.Format("Form1: get_selectedAddress(): can't read address from '{0}'", sender.GetType().ToString()), "error");
+                return null;
+            }
+            return msg;
+        }
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
-            string msg=((ListView)sender).SelectedItems[0].Text;
-            string res=r2pw.run("? " + msg);
-            if (res != null)
+            string address = get_selectedAddress(sender);
+            if (address != null)
             {
-                string address = res.Split(' ')[1];
                 r2pw.run("pdf @ " + address, "dissasembly");
                 r2pw.run("px 2000 @ " + address, "hexview");
-                //((WebBrowser)r2pw.controls["dissasembly"]).Focus();
+                r2pw.run("axtj @ " + address, "xrefs ( axtj )");
+            }
+        }
+        private void menuXrefs_Click(object sender, EventArgs e)
+        {
+            int i;
+            string address = get_selectedAddress(listView1);
+            if (address != null)
+            {
+                TabPage page = null;
+                r2pw.run("axtj @ " + address, "xrefs ( axtj )");
+                for(i=0;i<tabcontrol.TabPages.Count;i++)
+                {
+                    page = tabcontrol.TabPages[i];
+                    if (page.Text == "xrefs ( axtj )")
+                        tabcontrol.SelectedTab = page;
+                }
             }
         }
         private void Form1_ResizeEnd(object sender, EventArgs e)
@@ -367,6 +399,10 @@ namespace r2pipe_test
                     r2pw.lastAddress = null;
                     break;
             }
+        }
+        private void filterResultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.Show(tabControl1.SelectedTab.Text, "filter");
         }
     }
 }

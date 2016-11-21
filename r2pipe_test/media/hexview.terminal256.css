@@ -35,10 +35,10 @@ body{
 .comment{
 	color:#bccad6;
 }
-.address, .shorted_address{
+.address, .shorted_address, .from{
 	color:#4ebf22;
 	}
-.address:hover{
+.address:hover, .from:hover{
 	text-decoration:underline;
 }
 .shorted_address:hover{
@@ -47,6 +47,10 @@ body{
 }
 .group{
 	color: white;
+}
+.op_call{
+	background: #eedb73;
+	color: #000;
 }
 .op_stack{
 	color: #b93994;

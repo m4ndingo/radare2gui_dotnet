@@ -1,0 +1,9 @@
+body{background:#000 url('file:///');color:#ff0;font-weight:bold;background-repeat: repeat;background-attachment: fixed;}
+.r2code_s{font-family:Fixedsys;color:black;position:absolute;left:2px;top:2px;font-weight:bold;}
+.r2code{font-family:Fixedsys;position:absolute;left:0;top:0;padding:0;cursor:arrow;}
+.comment{color:#0f0;}
+.address, .shorted_address{color:#fff;}
+.address:hover{text-decoration:underline;}
+.number{color:#0f0;}
+.hexb{color:#aaf;}
+

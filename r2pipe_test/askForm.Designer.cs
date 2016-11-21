@@ -43,6 +43,7 @@
             this.txtAnswer.Size = new System.Drawing.Size(166, 20);
             this.txtAnswer.TabIndex = 0;
             this.txtAnswer.TextChanged += new System.EventHandler(this.txtAnswer_TextChanged);
+            this.txtAnswer.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtAnswer_KeyUp);
             // 
             // askLabel
             // 

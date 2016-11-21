@@ -56,7 +56,7 @@ namespace r2pipe_test
                     value = (string)default_value;
                 // save value to registry
                 if( value != null )
-                    reg_write(regPath, name, (string)default_value);
+                    reg_write(regPath, name, (string)default_value.ToString());
             }
             return value;
         }

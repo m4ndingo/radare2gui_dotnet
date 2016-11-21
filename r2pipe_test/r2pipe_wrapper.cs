@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using r2pipe;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace r2pipe_test
 {
@@ -143,13 +144,12 @@ namespace r2pipe_test
                             for (int j = 1; j < cols.Count; j++)
                             {
                                 string cname = cols[j];
-                                if (json_obj[i][cname] != null)
+                                if (json_obj[i][cname] != null) 
                                 {
                                     string value = json_obj[i][cname].ToString();
                                     value = decorate(controlName, cname, value);
-                                    row_item.SubItems.Add(value);
+                                    ListViewItem.ListViewSubItem subitem = row_item.SubItems.Add(value);
                                 }
-
                             }
                             lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
                         }
@@ -276,9 +276,8 @@ namespace r2pipe_test
         {
             string tmpName = null;
             tmpName = string.Format("{0}_{1}.html", controlName, cmds);
+            tmpName = (new Regex(@"([\\\/>\~])")).Replace(tmpName, "");
             tmpName = tmpName.Replace("?", "[question]");
-            tmpName = tmpName.Replace(@"\", "[slash]");
-            tmpName = tmpName.Replace(@"/", "[slash]");
             tmpName = rconfig.tempPath + Path.GetFileName(tmpName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
@@ -296,6 +295,10 @@ namespace r2pipe_test
         {
             mouseMoved = false;
         }
+        void webBrowser_MouseMove(Object sender, HtmlElementEventArgs e)
+        {
+            mouseMoved = true;
+        }
         void webBrowser_MouseUp(Object sender, HtmlElementEventArgs e)
         {
             HtmlElement browser = (HtmlElement)sender;
@@ -305,11 +308,14 @@ namespace r2pipe_test
                     HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
                     if (element.OuterText != null)
                     {
-                        string text = null;
+                        string text = element.OuterText.Replace(" ", "");
+                        string innertext = element.InnerText.Replace(" ", ""); ;
                         string tagname = element.TagName;
-                        text = element.OuterText.Replace(" ", "");
                         if (mouseMoved == false && tagname.Equals("SPAN"))
-                            gotoAddress(text);
+                        {
+                            if( text.StartsWith("0x") == true )
+                                gotoAddress(text);
+                        }
                     }
                     break;
             }
@@ -318,10 +324,6 @@ namespace r2pipe_test
                 browser.Focus();
             }
             catch (Exception) { }
-        }
-        void webBrowser_MouseMove(Object sender, HtmlElementEventArgs e)
-        {
-            mouseMoved = true;
         }
         public void gotoAddress(string address)
         {
@@ -333,7 +335,8 @@ namespace r2pipe_test
                     res = run("pd 200 @ " + address, "dissasembly");
                 run("px 2000 @ " + address, "hexview");
                 lastAddress = address;
-            }            
+            }
+            tabcontrol.SelectedIndex = 0;
         }
         public delegate void BeginListviewUpdate(ListView lstview, bool update, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
@@ -351,7 +354,8 @@ namespace r2pipe_test
                     foreach (string cname in cols)
                     {
                         lstview.Columns.Add(cname);
-                        lstview.Columns[i++].Width = col_width;
+                        lstview.Columns[i].Width = col_width;
+                        i++;
                     }
                     lstview.Columns[cols.Count - 1].Width = lstview.Width * 3 / 4; ;
                 }
@@ -361,6 +365,7 @@ namespace r2pipe_test
         }
         public void listviewAdd(ListView lstview, ListViewItem item)
         {
+            item.ToolTipText = item.Text;
             lstview.Items.Add(item);
         }
         public void add_control(string name, object control)
@@ -383,6 +388,36 @@ namespace r2pipe_test
         {
             this.shellopts_cb.Add(name, callback);
         }
+        public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu)
+        {
+            ToolStripMenuItem item = find_menucmd(menuName, menu);
+            if (item != null)
+            {
+                ToolStripItem newitem = null;
+                object[] callback_args = new object[] { callback, args };
+                string menuText = "";
+                if (text.Length > 0)
+                    menuText = string.Format("{0}: {1}", text, args);
+                else
+                    menuText = args;
+                newitem = item.DropDownItems.Add(menuText);
+                newitem.Tag = callback_args;
+                newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
+            }
+        }
+        public void add_control_tab(string tabname, string cmds)
+        {
+            var page = new TabPage(tabname);
+            var browser = new WebBrowser();
+            page.Tag = tabname.ToLower();            
+            browser.Dock = DockStyle.Fill;            
+            page.Controls.Add(browser);
+            tabcontrol.TabPages.Add(page);
+            browser.Navigate("about:" + cmds);
+            page.Select();
+            add_control(tabname, browser);
+            tabcontrol.SelectedTab = page;            
+        }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.G) //71 g keyvalue
@@ -390,17 +425,6 @@ namespace r2pipe_test
                 string address = Prompt("Address:", "goto address");
                 gotoAddress(address);
             }
-        }
-        public void open(String fileName)
-        {
-            if (this.r2 == null)
-                this.r2 = new R2Pipe(fileName, rconfig.r2path);
-            else
-                this.r2.RunCommand("o " + fileName);
-            this.fileName = fileName;
-            this.r2html = new r2html(this);
-            if (!fileName.Equals("-"))
-                rconfig.save("gui.lastfile", fileName);
         }
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu)
         {
@@ -414,6 +438,17 @@ namespace r2pipe_test
             newitem  = item.DropDownItems.Add(string.Format("{0} ( {1} )", text, cmds));
             newitem.Tag = cmds;
             newitem.Click += new EventHandler(MenuItemClickHandler);
+        }
+        public void open(String fileName)
+        {
+            if (this.r2 == null)
+                this.r2 = new R2Pipe(fileName, rconfig.r2path);
+            else
+                this.r2.RunCommand("o " + fileName);
+            this.fileName = fileName;
+            this.r2html = new r2html(this);
+            if (!fileName.Equals("-"))
+                rconfig.save("gui.lastfile", fileName);
         }
         public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
         {
@@ -439,23 +474,6 @@ namespace r2pipe_test
             }
             return null;
         }
-        public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu)
-        {
-            ToolStripMenuItem item = find_menucmd(menuName, menu);
-            if( item != null)
-            {
-                ToolStripItem newitem = null;
-                object[] callback_args = new object[] { callback, args };
-                string menuText = "";
-                if (text.Length > 0)
-                    menuText = string.Format("{0}: {1}", text, args);
-                else
-                    menuText = args;
-                newitem = item.DropDownItems.Add(menuText);
-                newitem.Tag = callback_args;
-                newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
-            }
-        }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
@@ -467,19 +485,6 @@ namespace r2pipe_test
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string cmds = item.Tag.ToString();
             run(cmds, item.Text);
-        }
-        public void add_control_tab(string tabname, string cmds)
-        {
-            var page = new TabPage(tabname);
-            var browser = new WebBrowser();
-            page.Tag = tabname.ToLower();
-            browser.Dock = DockStyle.Fill;
-            page.Controls.Add(browser);
-            tabcontrol.TabPages.Add(page);
-            browser.Navigate("about:"+cmds);
-            page.Select();
-            add_control(tabname, browser);
-            tabcontrol.SelectedTab = page;
         }
         public DialogResult Show(string text, string caption)
         {
@@ -534,6 +539,7 @@ namespace r2pipe_test
             run("px 2000", "hexview");
             run("?", "r2help");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
         }
         public void exit()

@@ -17,7 +17,7 @@ namespace r2pipe_test
         }
         private string htmlize(string console_text)
         {
-            int maxlen_line = 100;
+            int maxlen_line = int.Parse(r2pw.rconfig.load<int>("gui.max_line_length", 100));
             string html = "";
             string console_text_cut = "";
             string console_text_cut_copy = "";
@@ -47,9 +47,11 @@ namespace r2pipe_test
                 "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"(push|pop|cli)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
-            console_text_cut = (new Regex(@"(l?call|l?jmp|je|jne|jbe?|ret)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(l?jmp|je|jne|jbe?|ret)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
-            console_text_cut = (new Regex(@"(mov|lea|clc|xchg|setne|qword|dword|byte)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"l?call", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=op_call>call</span>");
+            console_text_cut = (new Regex(@"(mov[sxd]*|lea|clc|xchg|setne|qword|dword|byte)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
             console_text_cut = (new Regex(@"(add|sub|inc|dec|idiv|imul|sbb)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_add>$1</span>$2");
@@ -72,7 +74,8 @@ namespace r2pipe_test
             string html_body = "", html_header = "";
             string css_filename = "";            
             string themeName = "classic";
-            string js_filename = r2pw.rconfig.load<string>("gui.scripts.js_def", "r2html_tmp.js");
+            string js_filename = r2pw.rconfig.load<string>(
+                "gui.scripts.js_def", "r2html.js");
 
             if (r2pw.rconfig.dataPath == null)
             {

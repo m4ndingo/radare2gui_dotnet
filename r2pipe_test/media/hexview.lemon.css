@@ -23,9 +23,17 @@ body{
 .comment{
 	color:#4ebf22;
 }
-.address, .shorted_address{color:black;}
-.address:hover{text-decoration:underline;}
-.shorted_address:hover{text-decoration:underline;background:#ee0}
+.address, .shorted_address, .from {
+	color:black;
+	cursor:default;
+}
+.address:hover, .from:hover{
+	text-decoration:underline;
+}
+.shorted_address:hover{
+	text-decoration:underline;
+	background:#ee0;
+}
 .number{color:green;}
 .hexb{
 	color:#a4c8e7;
