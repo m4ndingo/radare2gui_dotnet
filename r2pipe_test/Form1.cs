@@ -40,18 +40,22 @@ namespace r2pipe_test
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){"offset","vaddr","paddr","plt"});
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>(){"string"});
-            //add menu options
-            r2pw.add_menucmd("&View", "Functions", "aflj", mainMenu);
+            //add menu options and function callbacks
+            r2pw.add_menucmd("&View", "Functions", "aaa;aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
+            r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
+            r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
+            r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
+            //add menu function callbacks
             r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
             r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
-            r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
+            r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
@@ -67,7 +71,7 @@ namespace r2pipe_test
             Color foreColor;
             updating_gui    = true;
             tabcontrol      = tabControl1;
-            currentShell    = rconfig.load<string>("gui.current_shell", "radare.");
+            currentShell    = rconfig.load<string>("gui.current_shell", "radare2");
             themeName       = rconfig.load<string>("gui.theme_name", "default");
             backColor       = Color.FromName(rconfig.load<string>("gui.output.bg", "blue"));
             foreColor       = Color.FromName(rconfig.load<string>("gui.output.fg", "white"));
@@ -137,7 +141,30 @@ namespace r2pipe_test
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
             cmbCmdline.Focus();
-            slabel1.Text = string.Format("Binary file '{0}' loaded.",fileName);
+            tabControl1.SelectedTab = tabControl1.TabPages[0];
+        }
+        private void save_gui_config()
+        {
+            if (updating_gui) return;
+            rconfig.save("gui.left", Left);
+            rconfig.save("gui.top", Top);
+            rconfig.save("gui.width", Width);
+            rconfig.save("gui.height", Height);
+            rconfig.save("gui.splitter_1.dist", splitContainer1.SplitterDistance);
+            rconfig.save("gui.splitter_2.dist", splitContainer2.SplitterDistance);
+            rconfig.save("gui.output.bg", txtOutput.BackColor.Name);
+            rconfig.save("gui.output.fg", txtOutput.ForeColor.Name);
+            if( !r2pw.fileName.Equals("-") )
+                rconfig.save("gui.lastfile", r2pw.fileName);
+            UpdateGUI();
+        }
+        public void show_message(string text)
+        {
+            slabel1.Text = text;
+        }
+        public void script_executed_cb()
+        {
+            show_message(string.Format("Binary file '{0}' loaded.", fileName));
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -195,19 +222,6 @@ namespace r2pipe_test
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             r2pw.exit();
-        }
-        private void save_gui_config()
-        {
-            if (updating_gui) return;
-            rconfig.save("gui.left", Left);
-            rconfig.save("gui.top", Top);
-            rconfig.save("gui.width", Width);
-            rconfig.save("gui.height", Height);
-            rconfig.save("gui.splitter_1.dist",splitContainer1.SplitterDistance);
-            rconfig.save("gui.splitter_2.dist",splitContainer2.SplitterDistance);
-            rconfig.save("gui.output.bg", txtOutput.BackColor.Name);
-            rconfig.save("gui.output.fg", txtOutput.ForeColor.Name);
-            UpdateGUI();
         }
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
@@ -330,6 +344,28 @@ namespace r2pipe_test
                 cmbCmdline.Text = ""; // trick to refresh combo control with text selected
                 cmbCmdline.Text = text;
                 cmbCmdline.SelectionStart = cmbCmdline.Text.Length ;
+            }
+        }
+        private void ctxTabsItemClose_Click(object sender, EventArgs e)
+        {
+            tabControl1.TabPages.Remove(tabControl1.SelectedTab);
+        }
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(txtOutput.SelectedText.Replace("\n","\r\n"));
+        }
+        private void webBrowser1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            bool controlPressed = e.Modifiers == Keys.Control;
+            switch (e.KeyValue)
+            {
+                case 69: // e key
+                    r2pw.gotoAddress("entry0");
+                    break;
+                case 27: // esc key
+                    webBrowser1.GoBack();
+                    r2pw.lastAddress = null;
+                    break;
             }
         }
     }

@@ -12,7 +12,7 @@ body{
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
 	font-size:12px;
-	cursor:arrow;
+	cursor: default;
 	font-weight:bold;
 }
 .tbl_dict{

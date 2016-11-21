@@ -16,6 +16,7 @@ namespace r2pipe_test
         public string guiPath  = null;
         public string dataPath = null;
         public string regPath  = null;
+        public string lastFileName = null;
         public RConfig()
         {
             ReloadConfig();
@@ -26,22 +27,23 @@ namespace r2pipe_test
             tempPath = System.IO.Path.GetTempPath();
             guiPath  = Directory.GetCurrentDirectory();
             dataPath = reg_read(regPath, "gui.datapath");
+            lastFileName = load<string>("gui.lastfile", "-");
         }
         public void save(string name, object value)
         {
             if (value is Int32) value = value.ToString();
-            reg_write(@"SOFTWARE\r2pipe_gui_dotnet", name, (string)value);
+            reg_write(regPath, name, (string)value);
             ReloadConfig();
         }
         public string load<T>(string name, object default_value=null)
         {
             string value;
-            value=reg_read(@"SOFTWARE\r2pipe_gui_dotnet", name);
+            value=reg_read(regPath, name);
             if (value == null)
             {
                 if (typeof(T) == typeof(int))
                 {
-                    if (default_value != null)
+                    if (default_value != null) // read default
                     {
                         value = ((int)default_value).ToString();
                     }
@@ -52,6 +54,9 @@ namespace r2pipe_test
                 }
                 else
                     value = (string)default_value;
+                // save value to registry
+                if( value != null )
+                    reg_write(regPath, name, (string)default_value);
             }
             return value;
         }

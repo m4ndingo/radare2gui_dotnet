@@ -16,7 +16,7 @@ namespace r2pipe_test
         public RConfig rconfig      = null;
         public r2html r2html       = null;
         private bool mouseMoved     = false;
-        private string lastAddress  = null;
+        public string lastAddress  = null;
         private TabControl tabcontrol = null;
         private Form1 guicontrol    = null;
         private themeManager theme_manager   = null;
@@ -77,6 +77,8 @@ namespace r2pipe_test
                 Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
                 return null;
             }
+            Cursor.Current = Cursors.WaitCursor;
+            this.guicontrol.show_message(cmds);
             switch (current_shell)
             {
                 case "radare2":
@@ -90,6 +92,7 @@ namespace r2pipe_test
                                         current_shell), "unknown shell");
                     break;
             }
+            Cursor.Current = Cursors.Default;
             if (res == null) return res;
             if(res.StartsWith("[") || res.StartsWith("{"))
             try
@@ -104,6 +107,69 @@ namespace r2pipe_test
                 cached_results.Add(controlName, res);
             }
             return res;
+        }
+        public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
+        {
+            object c = controls[controlName];
+            if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
+            if (c.GetType() == typeof(RichTextBox))
+            {
+                RichTextBox rtbox = (RichTextBox)c;
+                if (rtbox.InvokeRequired)
+                {
+                    SetTextCallback d = new SetTextCallback(setText);
+                    rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols });
+                }
+                else
+                {
+                    if (!append) rtbox.Text = "";
+                    
+                    rtbox.Text += r2html.encodeutf8(someText);
+                }
+            }
+            else if (c.GetType() == typeof(ListView))
+            {
+                if (json_obj != null)
+                {
+                    try // sometimes fails
+                    {
+                        ListView lstview = (ListView)c;
+                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
+                        for (int i = 0; i < json_obj.Count; i++)
+                        {
+                            string col0 = json_obj[i][cols[0]];
+                            col0 = decorate(controlName, cols[0], col0);
+                            ListViewItem row_item = new ListViewItem(col0);
+                            for (int j = 1; j < cols.Count; j++)
+                            {
+                                string cname = cols[j];
+                                if (json_obj[i][cname] != null)
+                                {
+                                    string value = json_obj[i][cname].ToString();
+                                    value = decorate(controlName, cname, value);
+                                    row_item.SubItems.Add(value);
+                                }
+
+                            }
+                            lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
+                        }
+                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
+                    }
+                    catch (Exception) { }
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
+                }
+            }
+            else if (c.GetType() == typeof(WebBrowser))
+            {
+                sendToWebBrowser(controlName, cmds, someText, json_obj);
+            }
+            else
+            {
+                Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
+            }
         }
         delegate void SetTextCallback(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
         public object get_selected_control()
@@ -158,68 +224,6 @@ namespace r2pipe_test
             }
             return null;
         }
-        public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
-        {
-            object c = controls[controlName];
-            if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
-            if (c.GetType() == typeof(RichTextBox))
-            {
-                RichTextBox rtbox = (RichTextBox)c;
-                if (rtbox.InvokeRequired)
-                {
-                    SetTextCallback d = new SetTextCallback(setText);
-                    rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols });
-                }
-                else
-                {
-                    if (!append) rtbox.Text = "";
-                    rtbox.Text += r2html.encodeutf8(someText);
-                }
-            }
-            else if (c.GetType() == typeof(ListView))
-            {
-                if (json_obj != null)
-                {
-                    try // sometimes fails
-                    {
-                        ListView lstview = (ListView)c;
-                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
-                        for (int i = 0; i < json_obj.Count; i++)
-                        {
-                            string col0 = json_obj[i][cols[0]];
-                            col0 = decorate(controlName, cols[0], col0);
-                            ListViewItem row_item = new ListViewItem(col0);
-                            for (int j = 1; j < cols.Count; j++)
-                            {
-                                string cname = cols[j];
-                                if (json_obj[i][cname] != null)
-                                {
-                                    string value = json_obj[i][cname].ToString();
-                                    value = decorate(controlName, cname, value);
-                                    row_item.SubItems.Add(value);
-                                }
-                        
-                            }
-                            lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
-                        }
-                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
-                    }
-                    catch (Exception) { }
-                }
-                else
-                {
-                    Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
-                }
-            }
-            else if (c.GetType() == typeof(WebBrowser))
-            {
-                sendToWebBrowser(controlName, cmds, someText, json_obj);
-            }
-            else
-            {
-                Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
-            }
-        }
         public string decorate(string controlName, string columName, string value)
         {
             string decorator = null;
@@ -270,8 +274,12 @@ namespace r2pipe_test
         }
         private string BuildWebPage(WebBrowser wBrowser, string controlName, string cmds, string someText, dynamic json_obj)
         {
-            string tmpName = string.Format("{0}{1}.html", rconfig.tempPath, controlName);
+            string tmpName = null;
+            tmpName = string.Format("{0}_{1}.html", controlName, cmds);
             tmpName = tmpName.Replace("?", "[question]");
+            tmpName = tmpName.Replace(@"\", "[slash]");
+            tmpName = tmpName.Replace(@"/", "[slash]");
+            tmpName = rconfig.tempPath + Path.GetFileName(tmpName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
                 sw.WriteLine(r2html.convert(cmds, someText, json_obj));
@@ -295,10 +303,10 @@ namespace r2pipe_test
             {
                 case MouseButtons.Left:
                     HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
-                    string text = null;
-                    string tagname = element.TagName;
                     if (element.OuterText != null)
                     {
+                        string text = null;
+                        string tagname = element.TagName;
                         text = element.OuterText.Replace(" ", "");
                         if (mouseMoved == false && tagname.Equals("SPAN"))
                             gotoAddress(text);
@@ -320,10 +328,10 @@ namespace r2pipe_test
             if (address!=null && address.Length>0 && address != lastAddress)
             {
                 string res;
-                res=run("pdf @" + address, "dissasembly");
+                res=run("pdf @ " + address, "dissasembly");
                 if(res.Length == 0)
-                    res = run("pd 200 @" + address, "dissasembly");
-                run("px 2000 @" + address, "hexview");
+                    res = run("pd 200 @ " + address, "dissasembly");
+                run("px 2000 @ " + address, "hexview");
                 lastAddress = address;
             }            
         }
@@ -391,6 +399,8 @@ namespace r2pipe_test
                 this.r2.RunCommand("o " + fileName);
             this.fileName = fileName;
             this.r2html = new r2html(this);
+            if (!fileName.Equals("-"))
+                rconfig.save("gui.lastfile", fileName);
         }
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu)
         {
@@ -431,15 +441,19 @@ namespace r2pipe_test
         }
         public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu)
         {
-            foreach (ToolStripMenuItem item in menu.Items)
-            {                
-                if (item.Text.Equals(menuName))
-                {
-                    ToolStripItem newitem=item.DropDownItems.Add(string.Format("{0}: {1}", text, args));
-                    object[] callback_args = new object[] {callback, args};                    
-                    newitem.Tag = callback_args;
-                    newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
-                }
+            ToolStripMenuItem item = find_menucmd(menuName, menu);
+            if( item != null)
+            {
+                ToolStripItem newitem = null;
+                object[] callback_args = new object[] { callback, args };
+                string menuText = "";
+                if (text.Length > 0)
+                    menuText = string.Format("{0}: {1}", text, args);
+                else
+                    menuText = args;
+                newitem = item.DropDownItems.Add(menuText);
+                newitem.Tag = callback_args;
+                newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
             }
         }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
@@ -510,15 +524,17 @@ namespace r2pipe_test
         public void run_script(string scriptFileName)
         {
             // 1. read input from scriptFilename
-            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands> 
+            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>
             run("e scr.utf8 = true", "output", true);
-            run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             run("pd 100", "dissasembly");
+            run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("px 2000", "hexview");
             run("?", "r2help");
+            run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            guicontrol.script_executed_cb();
         }
         public void exit()
         {
