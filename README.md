@@ -9,7 +9,6 @@ Another radare2 gui for windows ( alpha 1.0 )
 
 ![hexview_lemon](https://cloud.githubusercontent.com/assets/12532269/20545911/2c376e50-b112-11e6-885a-82e315de21d6.png)
 
-
 **Sections**
 
 ![r2pipeguidotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20545956/8533dcbe-b112-11e6-9e5d-0496e209f663.png)
@@ -20,7 +19,7 @@ Another radare2 gui for windows ( alpha 1.0 )
 
 **Nice Themes ^^**
 
-![r3pipe_gui_dotnet_terlinal256_theme](https://cloud.githubusercontent.com/assets/12532269/20459127/22927e56-aeb7-11e6-92a6-b3d9bb0eb3ca.png)
+![r2pipeguidotnet_terminal256theme](https://cloud.githubusercontent.com/assets/12532269/20546298/7e6447fa-b114-11e6-9fea-76627bc734a7.png)
 
 # Compilation
 ## Packages required
