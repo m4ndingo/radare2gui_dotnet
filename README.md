@@ -3,7 +3,7 @@ Another radare2 gui for windows
 ## Screenshots
 **Dissasembly View**
 
-![r3pipe_gui_dotnet_default_theme](https://cloud.githubusercontent.com/assets/12532269/20459474/d6d877ca-aec2-11e6-8ac6-a51134d7bd3c.png)
+![r2pipe_gui_last](https://cloud.githubusercontent.com/assets/12532269/20506528/0776869a-b055-11e6-8f99-0e0710ea07e8.png)
 
 **Hexadecimal View**
 
@@ -38,7 +38,13 @@ Since Nuget installs r2pipe compiled with the .net framework 4.5.1, you have to 
 You can download r2pipe from https://github.com/radare/radare2-r2pipe/ and compile against other framework versions. Open the solution (.sln) and compile the dll, then add to this project if needed :) 
 
 ## radare2 binaries for Windows
-By the moment, follow these instructions: https://radare.gitbooks.io/radare2book/content/introduction/windows_compilation.html
+### download from builts
+Precompiled radare2 binaries can be found here: http://bin.rada.re/
+
+Download the zip with the latest windows binary files ( ex: http://bin.rada.re/radare2-w32-1.0.2.zip ) and extract them to some folder.
+
+### compile radare2.exe from sources ( and other files )
+Follow these instructions: https://radare.gitbooks.io/radare2book/content/introduction/windows_compilation.html
 
 ![r2pipe_dotnet_sf2](https://cloud.githubusercontent.com/assets/12532269/20446745/854239ba-addb-11e6-81c4-7dd25c48e37f.png)
 

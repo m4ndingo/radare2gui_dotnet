@@ -17,7 +17,7 @@ namespace r2pipe_test
         }
         private string htmlize(string console_text)
         {
-            int maxlen_line = int.Parse(r2pw.rconfig.load<int>("gui.max_line_length", 100));
+            int maxlen_line = int.Parse(r2pw.rconfig.load<int>("gui.max_line_length", 150));
             string html = "";
             string console_text_cut = "";
             string console_text_cut_copy = "";
@@ -42,18 +42,17 @@ namespace r2pipe_test
                 "$1<span class=number>$2</span>");
             console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>[</span><span class=shorted_address title='$1'>$2</span><span class=group>]</span>");
-            //fcn.00010116
             console_text_cut = (new Regex(@"(\s)(fcn\.[0-9a-f]{4,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"(push|pop|cli)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
-            console_text_cut = (new Regex(@"(l?jmp|je|jne|jbe?|ret)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
-            console_text_cut = (new Regex(@"l?call", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"\b[rl]?call", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_call>call</span>");
-            console_text_cut = (new Regex(@"(mov[sxd]*|lea|clc|xchg|setne|qword|dword|byte)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(\bmov[wsxd]*|lea|clc|xchg|setne|qword|dword|byte|std|ldd)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
-            console_text_cut = (new Regex(@"(add|sub|inc|dec|idiv|imul|sbb)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(add|subi?|inc|dec|i?div|[if]?mul|sbb|sbci?|adc)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_add>$1</span>$2");
             console_text_cut = (new Regex(@"(nop)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_nop>$1</span>");
