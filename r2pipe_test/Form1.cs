@@ -360,14 +360,6 @@ namespace r2pipe_test
         {
             r2pw.next_shell();
         }
-        private void cmbCmdline_SelectedValueChanged(object sender, EventArgs e)
-        {
-
-        }
-        private void cmbCmdline_Enter(object sender, EventArgs e)
-        {
-
-        }
         private void cmbCmdline_KeyUp(object sender, KeyEventArgs e)
         {
             if (cmbCmdline.Focused && cmbCmdline.Text.Length != 0 && e.KeyValue == 38)

@@ -11,34 +11,38 @@ namespace r2pipe_test
 {
     public class R2PIPE_WRAPPER
     {
-        public IR2Pipe r2          = null;
-        public String current_shell = "";
-        public String fileName      = "";
-        public RConfig rconfig      = null;
-        public r2html r2html       = null;
-        private bool mouseMoved     = false;
-        public string lastAddress  = null;
-        private TabControl tabcontrol = null;
-        private Form1 guicontrol    = null;
-        private themeManager theme_manager   = null;
-        public Dictionary<string, object> controls;
-        public Dictionary<string, Func<string>> decorators_cb;
-        public Dictionary<string, List<string>> decorators_names;
-        public string decorator_param = null;
-        public Dictionary<string, Func<string>> shellopts_cb;
-        private Dictionary<string, string> cached_results;
+        // class vars
+        public      IR2Pipe  r2                 =  null  ;
+        public       String  current_shell      =  ""    ;
+        public       String  fileName           =  ""    ;
+        public      RConfig  rconfig            =  null  ;
+        public       r2html  r2html             =  null  ;
+        private   TabControl tabcontrol         =  null  ;
+        private        Form1 guicontrol         =  null  ;
+        private themeManager theme_manager      =  null  ;
+        private         bool mouseMoved         = false  ;
+        public        string lastAddress        =  null  ;
+        public        string decorator_param    =  null  ;
+        // gui objects
+        public  Dictionary<string, object>       controls          ;
+        public  Dictionary<string, Func<string>> decorators_cb     ;
+        public  Dictionary<string, List<string>> decorators_names  ;
+        public  Dictionary<string, Func<string>> shellopts_cb      ;
+        private Dictionary<string, string>       cached_results    ;
+        // r2pipe gui commands wrapper
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
-            this.controls = new Dictionary<string, object>();
-            this.decorators_cb = new Dictionary<string, Func<string>>();
-            this.decorators_names = new Dictionary<string, List<string>>();
-            this.shellopts_cb = new Dictionary<string, Func<string>>();
-            this.cached_results = new Dictionary<string, string>();
-            this.rconfig  = rconfig;
-            this.guicontrol = frm;
-            this.tabcontrol = ((Form1)frm).tabcontrol;
-            this.theme_manager = new themeManager(rconfig);
-            this.current_shell = rconfig.load<string>("gui.current_shell", "radare");
+            this.rconfig            = rconfig;
+            this.guicontrol         = frm;
+            this.tabcontrol         = ((Form1)frm).tabcontrol;
+            this.theme_manager      = new themeManager(rconfig);
+            this.controls           = new Dictionary<string, object>();
+            this.decorators_cb      = new Dictionary<string, Func<string>>();
+            this.decorators_names   = new Dictionary<string, List<string>>();
+            this.shellopts_cb       = new Dictionary<string, Func<string>>();
+            this.cached_results     = new Dictionary<string, string>();
+            this.current_shell = 
+                rconfig.load<string>("gui.current_shell", "radare");
             //new Hotkeys();
         }
         /* // some problems found at dynamic tab append

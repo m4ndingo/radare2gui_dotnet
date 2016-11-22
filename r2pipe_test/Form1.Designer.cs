@@ -414,7 +414,6 @@
             this.cmbCmdline.Name = "cmbCmdline";
             this.cmbCmdline.Size = new System.Drawing.Size(362, 21);
             this.cmbCmdline.TabIndex = 4;
-            this.cmbCmdline.SelectedValueChanged += new System.EventHandler(this.cmbCmdline_SelectedValueChanged);
             this.cmbCmdline.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbCmdline_KeyPress);
             this.cmbCmdline.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cmbCmdline_KeyUp);
             // 

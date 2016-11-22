@@ -21,7 +21,6 @@ namespace r2pipe_test
         {
             answer = txtAnswer.Text;
         }
-
         private void txtAnswer_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape) this.Close();
