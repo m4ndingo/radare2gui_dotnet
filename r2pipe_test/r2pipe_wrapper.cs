@@ -118,7 +118,14 @@ namespace r2pipe_test
         }
         public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
         {
-            object c = controls[controlName];
+            object c = null;
+            if (!controls.ContainsKey(controlName))
+            {
+                // some problems trying to use: add_control_* here ...
+                Show(string.Format("setText: control {0} not found, please 'add_control'",controlName),"error");
+                return;
+            }
+            c = controls[controlName];
             if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
             if (c.GetType() == typeof(RichTextBox))
             {
@@ -294,9 +301,13 @@ namespace r2pipe_test
         }
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            ((WebBrowser)sender).Document.Body.MouseUp += new HtmlElementEventHandler(webBrowser_MouseUp);
-            ((WebBrowser)sender).Document.Body.MouseDown += new HtmlElementEventHandler(webBrowser_MouseDown);
-            ((WebBrowser)sender).Document.Body.MouseMove += new HtmlElementEventHandler(webBrowser_MouseMove);
+            try // because may be already hooked
+            {
+                ((WebBrowser)sender).Document.Body.MouseUp += new HtmlElementEventHandler(webBrowser_MouseUp);
+                ((WebBrowser)sender).Document.Body.MouseDown += new HtmlElementEventHandler(webBrowser_MouseDown);
+                ((WebBrowser)sender).Document.Body.MouseMove += new HtmlElementEventHandler(webBrowser_MouseMove);
+            }
+            catch (Exception) { }
         }
         void webBrowser_MouseDown(Object sender, HtmlElementEventArgs e)
         {
@@ -373,11 +384,13 @@ namespace r2pipe_test
         public void listviewAdd(ListView lstview, ListViewItem item)
         {
             item.ToolTipText = item.Text;
+            item.ImageIndex = 1;
             lstview.Items.Add(item);
         }
-        public void add_control(string name, object control)
+        public bool add_control(string name, object control)
         {
-            this.controls.Add(name, control);
+            if (controls.ContainsKey(name)) return false;
+            controls.Add(name, control);
             if (control.GetType() == typeof(WebBrowser))
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
@@ -385,6 +398,7 @@ namespace r2pipe_test
                 ((WebBrowser)control).WebBrowserShortcutsEnabled = true;
                 ((WebBrowser)control).Refresh();
             }
+            return true;
         }
         public void add_decorator(string name, Func<string> callback, List<string> fieldNames)
         {
@@ -414,16 +428,37 @@ namespace r2pipe_test
         }
         public void add_control_tab(string tabname, string cmds)
         {
+            if (controls.ContainsKey(tabname)) return;
             var page = new TabPage(tabname);
-            var browser = new WebBrowser();
-            page.Tag = tabname.ToLower();            
-            browser.Dock = DockStyle.Fill;            
-            page.Controls.Add(browser);
-            tabcontrol.TabPages.Add(page);
-            browser.Navigate("about:" + cmds);
-            page.Select();
-            add_control(tabname, browser);
-            tabcontrol.SelectedTab = page;            
+            WebBrowser browser = null;
+            try
+            {
+                browser = new WebBrowser();
+            }
+            catch (Exception e)
+            {
+                Show(e.ToString(), "add_control_tab: browser");
+            }
+            page.Tag = tabname.ToLower();
+            page.ImageIndex = 1;
+            if (browser != null)
+            {
+                browser.Dock = DockStyle.Fill;
+                browser.Navigate("about:" + cmds);
+                page.Controls.Add(browser);
+            }
+            try
+            {
+                tabcontrol.TabPages.Add(page);
+                page.Select();
+                tabcontrol.SelectedTab = page;
+            }
+            catch (Exception e)
+            {
+                Show(e.ToString(), "add_control_tab: page");
+            }
+            if (browser != null)
+                add_control(tabname, browser);
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -433,7 +468,7 @@ namespace r2pipe_test
                 gotoAddress(address);
             }
         }
-        public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu)
+        public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu, string decorator = null)
         {
             ToolStripMenuItem item = find_menucmd(menuName, menu);
             ToolStripItem newitem = null;
@@ -538,15 +573,14 @@ namespace r2pipe_test
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>
             run("e scr.utf8 = true", "output", true);
-            run("pdf", "dissasembly");
             run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run("pdf", "dissasembly");
             run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("px 2000", "hexview");
-            run("?", "r2help");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
-            run("axtj @ entry0", "xrefs ( axtj )");
+            // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
         }
         public void exit()

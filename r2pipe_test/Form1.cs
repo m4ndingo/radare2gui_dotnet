@@ -18,16 +18,18 @@ namespace r2pipe_test
         public TabControl tabcontrol = null;
         public string themeName = null;
         public string currentShell = null;
+        List<string> locked_tabs = null;    // tab names used in Form1 design
         public Form1()
         {
             InitializeComponent();
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            rconfig = new RConfig();
+            rconfig     = new RConfig();
+            locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections"};
             UpdateGUI();
             CheckR2path();
-            r2pw = new R2PIPE_WRAPPER(rconfig, this);
+            r2pw        = new R2PIPE_WRAPPER(rconfig, this);        // init here
             //add controls
             r2pw.add_control("output",              txtOutput);
             r2pw.add_control("dissasembly",         webBrowser1);
@@ -36,14 +38,16 @@ namespace r2pipe_test
             r2pw.add_control("imports_listview",    lstImports);
             r2pw.add_control("sections_listview",   lstSections);
             r2pw.add_control("hexview",             webBrowser2);
-            r2pw.add_control("r2help", webBrowser3);
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){"offset","vaddr","paddr","plt"});
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>(){"string"});
             //add menu options and function callbacks
+            r2pw.add_menucmd("&View", "Disassembly", "pdf", mainMenu);
+            r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu, "num2hex");
             r2pw.add_menucmd("&View", "Functions", "aaa;aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
+            r2pw.add_menucmd("&View", "Sections", "iSj", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
@@ -51,6 +55,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
+            r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
             r2pw.add_menucmd("r2", "Metadata", "C?", mainMenu);
             r2pw.add_menucmd("r2", "ESIL", "ae?", mainMenu);
@@ -58,6 +63,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
             //add menu function callbacks
             r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
+            r2pw.add_menufcn("&Gui", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
             r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
             r2pw.add_menufcn("Architecture", "", "avr", changeArch, mainMenu);
@@ -66,8 +72,8 @@ namespace r2pipe_test
             r2pw.add_shellopt("radare2", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //new auto-generated tabs
-            r2pw.add_control_tab("xrefs ( axtj )", "#todo");
-            r2pw.add_control_tab("version ( ?V )", "#todo");
+            //r2pw.add_control_tab("xrefs ( axtj )", "#todo");
+            //r2pw.add_control_tab("version ( ?V )", "#todo");
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
             LoadFile("-");
@@ -113,6 +119,10 @@ namespace r2pipe_test
             Refresh();
             updating_gui = false;
         }
+        public void purgeR2pipeGuiRegistry(string args = null)
+        {
+            todo("purge registry", "code pending ...\n"+@"remove 'HKEY_CURRENT_USER\Software\r2pipe_gui_dotnet' manually from registry");
+        }
         private void DoLoadFile()
         {
             if (!File.Exists(fileName) && !fileName.Equals("-"))
@@ -121,7 +131,7 @@ namespace r2pipe_test
                 return;
             }
             r2pw.open(fileName);
-            r2pw.setText("version ( ?V )", "?V", r2pw.r2.RunCommand("?V"));
+            // r2pw.setText("version ( ?V )", "?V", r2pw.r2.RunCommand("?V"));
             r2pw.run_script("openfile_post.txt");
         }
         private void CheckR2path()
@@ -230,10 +240,12 @@ namespace r2pipe_test
             string address = get_selectedAddress(sender);
             if (address != null)
             {
-                r2pw.run("pdf @ " + address, "dissasembly");
                 r2pw.run("px 2000 @ " + address, "hexview");
                 r2pw.run("axtj @ " + address, "xrefs ( axtj )");
+                r2pw.run("pdf @ " + address, "dissasembly");
             }
+            if (!locked_tabs.Contains(tabControl1.SelectedTab.Text))
+                tabControl1.SelectedIndex = 0;
         }
         private void menuXrefs_Click(object sender, EventArgs e)
         {
@@ -242,6 +254,7 @@ namespace r2pipe_test
             if (address != null)
             {
                 TabPage page = null;
+                r2pw.add_control_tab("xrefs ( axtj )", "#todo");
                 r2pw.run("axtj @ " + address, "xrefs ( axtj )");
                 for(i=0;i<tabcontrol.TabPages.Count;i++)
                 {
@@ -310,9 +323,9 @@ namespace r2pipe_test
             if (r2pw != null)
             {
                 r2pw.set_theme(themeName);
+                // gui controls to refresh
                 r2pw.sendToWebBrowser("dissasembly", null, null, null);
                 r2pw.sendToWebBrowser("hexview", null, null, null);
-                r2pw.sendToWebBrowser("r2help", null, null, null);
                 UpdateGUI();
             }
         } // themes
@@ -380,7 +393,10 @@ namespace r2pipe_test
         }
         private void ctxTabsItemClose_Click(object sender, EventArgs e)
         {
+            string controlName = tabControl1.SelectedTab.Text;
+            if (locked_tabs.Contains(controlName)) return;
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
+            r2pw.controls.Remove(controlName);
         }
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -420,6 +436,30 @@ namespace r2pipe_test
                 r2pw.run("pd", "dissasembly");
                 r2pw.run("px 2000", "hexview");
             }
+        }
+        private string todo(string caption = "#todo", string tip = "no code yet")
+        {
+            return r2pw.Show("#todo: " + tip, caption).ToString();
+        }
+        private void windowsControlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("Windows control", "check best control for render " + tabControl1.SelectedTab.Text + " data");
+        }
+        private void textToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("Text Formated Output", "use 'output' control and maximize the results");
+        }
+        private void jsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("Json Formated Output", "ListView required for " + tabControl1.SelectedTab.Text);
+        }
+        private void floatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("Floating Form", "new form with webbrowser control required");
+        }
+        private void HTMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("HTML Formated Output", "WeBrowser required for "+tabControl1.SelectedTab.Text);
         }
     }
 }
