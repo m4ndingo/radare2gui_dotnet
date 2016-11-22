@@ -12,7 +12,7 @@ Another radare2 gui for windows ( alpha 1.0 )
 
 **Sections**
 
-![r2pipe_dotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20448572/f699b27e-ade4-11e6-9aa3-ae690cd98905.png)
+![r2pipeguidotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20545956/8533dcbe-b112-11e6-9e5d-0496e209f663.png)
 
 **Themes**
 
