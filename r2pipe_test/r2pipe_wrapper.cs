@@ -12,17 +12,17 @@ namespace r2pipe_test
     public class R2PIPE_WRAPPER
     {
         // class vars
-        public      IR2Pipe  r2                 =  null  ;
-        public       String  current_shell      =  ""    ;
-        public       String  fileName           =  ""    ;
-        public      RConfig  rconfig            =  null  ;
-        public       r2html  r2html             =  null  ;
-        private   TabControl tabcontrol         =  null  ;
-        private        Form1 guicontrol         =  null  ;
-        private themeManager theme_manager      =  null  ;
-        private         bool mouseMoved         = false  ;
-        public        string lastAddress        =  null  ;
-        public        string decorator_param    =  null  ;
+        public       IR2Pipe  r2                 =  null  ;
+        public        String  current_shell      =  ""    ;
+        public        String  fileName           =  ""    ;
+        public       RConfig  rconfig            =  null  ;
+        public        r2html  r2html             =  null  ;
+        private   TabControl  tabcontrol         =  null  ;
+        private        Form1  guicontrol         =  null  ;
+        private themeManager  theme_manager      =  null  ;
+        private         bool  mouseMoved         = false  ;
+        public        string  lastAddress        =  null  ;
+        public        string  decorator_param    =  null  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
