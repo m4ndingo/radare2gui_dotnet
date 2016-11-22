@@ -53,18 +53,22 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
+            r2pw.add_menucmd("r2", "Metadata", "C?", mainMenu);
+            r2pw.add_menucmd("r2", "ESIL", "ae?", mainMenu);
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
             //add menu function callbacks
             r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
             r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
+            r2pw.add_menufcn("Architecture", "", "avr", changeArch, mainMenu);
+            r2pw.add_menufcn("Architecture", "", "x86", changeArch, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //new auto-generated tabs
-            r2pw.add_control_tab("version ( ?V )", "#todo");
             r2pw.add_control_tab("xrefs ( axtj )", "#todo");
+            r2pw.add_control_tab("version ( ?V )", "#todo");
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
             LoadFile("-");
@@ -141,6 +145,7 @@ namespace r2pipe_test
                 CheckR2path();
                 return;
             }
+            clearControls();
             this.fileName = fileName;
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
@@ -288,6 +293,10 @@ namespace r2pipe_test
             //MessageBox.Show(currentShell);
             return null;
         }
+        private void changeArch(String arch)
+        {
+            r2pw.run(string.Format("e asm.arch = {0}; aaa", arch));
+        }
         private string num2hex() // decorator
         {
             return string.Format("0x{0:x}", int.Parse(r2pw.decorator_param));
@@ -395,6 +404,23 @@ namespace r2pipe_test
         private void filterResultsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.Show(tabControl1.SelectedTab.Text, "filter");
+        }
+        private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.run("o-*");            
+            clearControls();
+        }
+        private void clearControls()
+        {
+            listView1.Clear();
+            lstStrings.Clear();
+            lstImports.Clear();
+            lstSections.Clear();
+            if (r2pw.r2 != null)
+            {
+                r2pw.run("pd", "dissasembly");
+                r2pw.run("px 2000", "hexview");
+            }
         }
     }
 }

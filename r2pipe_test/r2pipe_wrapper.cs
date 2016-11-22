@@ -45,7 +45,7 @@ namespace r2pipe_test
                 rconfig.load<string>("gui.current_shell", "radare");
             //new Hotkeys();
         }
-        /* // some problems found at dynamic tab append
+        /* // some problems found at dynamic tab append also timeouts
          * public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
         {
             if (r2 == null) return null; // may happend if gui closed when sending commands (r2.exit)
@@ -68,7 +68,7 @@ namespace r2pipe_test
                 setText("output", "", string.Format("{2} r2.RunCommand(\"{1}\"): target='{0}' type='{3}' cols='{4}'\n",
                     controlName, cmds, current_shell, control_type, cols != null ? string.Join(", ", cols) : ""), true);
             }
-            if (r2 == null)
+            if (r2 == null && cmds!=null)
             {
                 Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
@@ -84,18 +84,21 @@ namespace r2pipe_test
             }
             Cursor.Current = Cursors.WaitCursor;
             this.guicontrol.show_message(cmds);
-            switch (current_shell)
+            if (cmds != null)
             {
-                case "radare2":
-                    res = r2.RunCommand(cmds).Replace("\r", "");
-                    break;
-                case "javascript":
-                    res = invokeJavascript(cmds);
-                    break;
-                default:
-                    Show(string.Format("R2PIPE_WRAPPER: run(): current_shell='{0}'", 
-                                        current_shell), "unknown shell");
-                    break;
+                switch (current_shell)
+                {
+                    case "radare2":
+                        res = r2.RunCommand(cmds).Replace("\r", "");
+                        break;
+                    case "javascript":
+                        res = invokeJavascript(cmds);
+                        break;
+                    default:
+                        Show(string.Format("R2PIPE_WRAPPER: run(): current_shell='{0}'",
+                                            current_shell), "unknown shell");
+                        break;
+                }
             }
             Cursor.Current = Cursors.Default;
             if (res == null) return res;
@@ -310,7 +313,7 @@ namespace r2pipe_test
             {
                 case MouseButtons.Left:
                     HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
-                    if (element.OuterText != null)
+                    if ( element!=null && element.OuterText != null )
                     {
                         string text = element.OuterText.Replace(" ", "");
                         string innertext = element.InnerText.Replace(" ", ""); ;
@@ -535,7 +538,7 @@ namespace r2pipe_test
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>
             run("e scr.utf8 = true", "output", true);
-            run("pd 100", "dissasembly");
+            run("pdf", "dissasembly");
             run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
