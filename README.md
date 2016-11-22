@@ -1,5 +1,5 @@
 # radare2gui_dotnet
-Another radare2 gui for windows
+Another radare2 gui for windows ( alpha 1.0 )
 ## Screenshots
 **Dissasembly View**
 
@@ -7,7 +7,8 @@ Another radare2 gui for windows
 
 **Hexadecimal View**
 
-![r2pipe_dotnet_hexview](https://cloud.githubusercontent.com/assets/12532269/20447475/51ef978e-addf-11e6-87dc-ae4fd4fc4b8f.png)
+![hexview_lemon](https://cloud.githubusercontent.com/assets/12532269/20545911/2c376e50-b112-11e6-885a-82e315de21d6.png)
+
 
 **Sections**
 
