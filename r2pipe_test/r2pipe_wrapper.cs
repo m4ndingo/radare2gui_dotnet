@@ -14,15 +14,15 @@ namespace r2pipe_test
         // class vars
         public       IR2Pipe  r2                 =  null  ;
         public        String  current_shell      =  ""    ;
-        public        String  fileName           =  ""    ;
-        public       RConfig  rconfig            =  null  ;
-        public        r2html  r2html             =  null  ;
-        private   TabControl  tabcontrol         =  null  ;
         private        Form1  guicontrol         =  null  ;
         private themeManager  theme_manager      =  null  ;
+        public       RConfig  rconfig            =  null  ;
+        private   TabControl  tabcontrol         =  null  ;
+        public        String  fileName           =  ""    ;
+        public        r2html  r2html             =  null  ;
         private         bool  mouseMoved         = false  ;
-        public        string  lastAddress        =  null  ;
         public        string  decorator_param    =  null  ;
+        public        string  lastAddress        =  null  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
