@@ -101,6 +101,9 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.floatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.wordWrapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -155,6 +158,7 @@
             this.columnHeader1});
             this.listView1.ContextMenuStrip = this.ctxFunctions;
             this.listView1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.listView1.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
@@ -220,7 +224,7 @@
             this.jsonToolStripMenuItem,
             this.HTMLToolStripMenuItem});
             this.ctxTabs.Name = "ctxTabs";
-            this.ctxTabs.Size = new System.Drawing.Size(165, 170);
+            this.ctxTabs.Size = new System.Drawing.Size(165, 148);
             // 
             // toolStripSeparator4
             // 
@@ -287,7 +291,7 @@
             this.txtOutput.ForeColor = System.Drawing.Color.PaleGreen;
             this.txtOutput.Location = new System.Drawing.Point(1, 0);
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(475, 68);
+            this.txtOutput.Size = new System.Drawing.Size(471, 68);
             this.txtOutput.TabIndex = 2;
             this.txtOutput.Text = "";
             this.txtOutput.WordWrap = false;
@@ -297,12 +301,13 @@
             // 
             this.ctxMenuOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem,
+            this.wordWrapToolStripMenuItem,
             this.toolStripSeparator2,
             this.themeToolStripMenuItem,
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
             this.ctxMenuOutput.Name = "ctxMenuOutput";
-            this.ctxMenuOutput.Size = new System.Drawing.Size(112, 82);
+            this.ctxMenuOutput.Size = new System.Drawing.Size(135, 104);
             // 
             // copyToolStripMenuItem
             // 
@@ -646,14 +651,14 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstSections.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstSections.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstSections.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstSections.FullRowSelect = true;
-            this.lstSections.HoverSelection = true;
+            this.lstSections.HideSelection = false;
             this.lstSections.LargeImageList = this.imageList1;
-            this.lstSections.Location = new System.Drawing.Point(0, 0);
+            this.lstSections.Location = new System.Drawing.Point(1, 0);
             this.lstSections.Margin = new System.Windows.Forms.Padding(0);
             this.lstSections.Name = "lstSections";
-            this.lstSections.Size = new System.Drawing.Size(476, 132);
+            this.lstSections.Size = new System.Drawing.Size(471, 132);
             this.lstSections.SmallImageList = this.imageList1;
             this.lstSections.StateImageList = this.imageList1;
             this.lstSections.TabIndex = 1;
@@ -682,8 +687,8 @@
             this.lstImports.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstImports.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
+            this.lstImports.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstImports.FullRowSelect = true;
-            this.lstImports.HoverSelection = true;
             this.lstImports.Location = new System.Drawing.Point(1, 0);
             this.lstImports.Name = "lstImports";
             this.lstImports.Size = new System.Drawing.Size(470, 128);
@@ -715,8 +720,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstStrings.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstStrings.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstStrings.FullRowSelect = true;
-            this.lstStrings.HoverSelection = true;
             this.lstStrings.Location = new System.Drawing.Point(0, 0);
             this.lstStrings.Name = "lstStrings";
             this.lstStrings.Size = new System.Drawing.Size(472, 132);
@@ -800,6 +805,27 @@
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(161, 6);
+            // 
+            // wordWrapToolStripMenuItem
+            // 
+            this.wordWrapToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableToolStripMenuItem,
+            this.disableToolStripMenuItem});
+            this.wordWrapToolStripMenuItem.Name = "wordWrapToolStripMenuItem";
+            this.wordWrapToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.wordWrapToolStripMenuItem.Text = "Word Wrap";
+            // 
+            // enableToolStripMenuItem
+            // 
+            this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
+            this.enableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.enableToolStripMenuItem.Text = "Enable";
+            // 
+            // disableToolStripMenuItem
+            // 
+            this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
+            this.disableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.disableToolStripMenuItem.Text = "Disable";
             // 
             // Form1
             // 
@@ -916,6 +942,9 @@
         private System.Windows.Forms.ListView lstSections;
         private System.Windows.Forms.ToolStripMenuItem floatToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem wordWrapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem disableToolStripMenuItem;
     }
 }
 

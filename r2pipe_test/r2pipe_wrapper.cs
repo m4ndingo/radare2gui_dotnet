@@ -373,9 +373,10 @@ namespace r2pipe_test
                     {
                         lstview.Columns.Add(cname);
                         lstview.Columns[i].Width = col_width;
+                        lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
                         i++;
                     }
-                    lstview.Columns[cols.Count - 1].Width = lstview.Width * 3 / 4; ;
+                    // lstview.Columns[cols.Count - 1].Width = lstview.Width / 4; ;
                 }
             }
             else lstview.EndUpdate();
