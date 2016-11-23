@@ -295,6 +295,8 @@ namespace r2pipe_test
         {
             string tmpName = null;
             MatchCollection mc_addresses = null;
+            // webpage(s) will be saved to temp path 
+            // other support files will be referenced
             tmpName = string.Format("{0}_{1}.html", controlName, cmds);
             tmpName = (new Regex(@"([\\\/>\~])")).Replace(tmpName, "");
             tmpName = tmpName.Replace("?", "[question]");
@@ -584,6 +586,14 @@ namespace r2pipe_test
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
+        }
+        public string find_dataPath(string def="")
+        {
+            string path = Prompt("gui media path?", "Please, locate your data path...", def);
+            rconfig.save("gui.datapath", path);
+            rconfig.save("gui.hexview.css", "r2pipe.css");
+            rconfig.save("gui.theme_name", guicontrol.themeName);
+            return path;
         }
         public void exit()
         {

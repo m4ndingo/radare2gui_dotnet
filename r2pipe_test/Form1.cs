@@ -63,9 +63,8 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
             //add menu function callbacks
-            r2pw.add_menufcn("&Gui", "Update gui", "*", UpdateGUI, mainMenu);
-            r2pw.add_menufcn("&Gui", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
-            r2pw.add_menufcn("&Gui", "Enum registry vars", "*", dumpGuiVars, mainMenu);
+            r2pw.add_menufcn("Misc", "Enum registry vars", "*", dumpGuiVars, mainMenu);
+            r2pw.add_menufcn("Misc", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
             r2pw.add_menufcn("Architecture", "", "avr", changeArch, mainMenu);
             r2pw.add_menufcn("Architecture", "", "x86", changeArch, mainMenu);
@@ -129,7 +128,12 @@ namespace r2pipe_test
         }
         public void purgeR2pipeGuiRegistry(string args = null)
         {
-            todo("purge registry", "code pending ...\n"+@"remove 'HKEY_CURRENT_USER\Software\r2pipe_gui_dotnet' manually from registry");
+            DialogResult res;
+            res = MessageBox.Show( 
+                "wipe configuration (reg) and terminate the gui?", 
+                "wipe gui reg",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (res == DialogResult.Yes) bye_gui(true);
         }
         private void DoLoadFile()
         {
@@ -162,7 +166,7 @@ namespace r2pipe_test
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
             }
-            if (r2pw.r2 != null) // set arch
+            if (r2pw.r2 != null && !fileName.Equals("-") ) // set arch if filename != '-'
             {                
                 string new_arch = null;
                 new_arch = r2pw.run("e asm.arch","output",true).Replace("\n", "");
@@ -229,8 +233,7 @@ namespace r2pipe_test
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(r2pw!=null) r2pw.exit();
-            Environment.Exit(0);
+            bye_gui();
         }
         private void cmbCmdline_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -457,8 +460,9 @@ namespace r2pipe_test
         }
         private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.run("o-*");            
+            r2pw.run("o-*;o -");            
             clearControls();
+            LoadFile("-");
         }
         private void clearControls()
         {
@@ -496,18 +500,15 @@ namespace r2pipe_test
         {
             todo("HTML Formated Output", "WeBrowser required for "+tabControl1.SelectedTab.Text);
         }
-
         private void enableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtOutput.WordWrap = true;
         }
-
         private void disableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtOutput.WordWrap = false;
 
         }
-
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             string pc = ""; // new pc for ESIL emulation
@@ -520,6 +521,52 @@ namespace r2pipe_test
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             ESILcmds("aes");
+        }
+        private void wipe_config()
+        {
+            rconfig.reg_wipeconf();
+            output("configuration wipped...");
+        }
+        private void bye_gui(bool wipeconf=false) // gracefull terminate r2 and the app
+        {
+            if ( r2pw != null ) r2pw.exit();
+            if ( wipeconf     ) wipe_config();
+            Environment.Exit(0);
+        }
+
+        private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.find_dataPath(".");
+        }
+
+        private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
+        {
+            changeTheme("classic");
+        }
+
+        private void lemonToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            changeTheme("lemon");
+        }
+
+        private void azuToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            changeTheme("azure");
+        }
+
+        private void contorlToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            changeTheme("control");
+        }
+
+        private void pinkToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            changeTheme("pink");
+        }
+
+        private void terminal256ToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            changeTheme("terminal256");
         }
     }
 }

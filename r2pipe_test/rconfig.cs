@@ -105,5 +105,33 @@ namespace r2pipe_test
             catch (Exception) { }
             return null;
         }
+        public void reg_del(string subkey, string name)
+        {
+            RegistryKey key;
+            try
+            {
+                key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(subkey, true);
+                key.DeleteValue(name);
+                key.Close();
+            }
+            catch (Exception e) {
+                MessageBox.Show(string.Format(
+                    "reg_del:\n{0}\nsubkey='{1}' name='{2}')",
+                    e.ToString(), subkey, name), "error");
+            }
+        }
+        public void reg_wipeconf()
+        {
+            if( regPath == null )
+            {
+                MessageBox.Show("W0ps!\n\nno regPath internal var set?", "reg_wipeconf");
+                return;
+            }
+            foreach (string name in reg_enumkeys())
+            {
+                reg_del(regPath, name);
+                Console.WriteLine(">> wipe {0}", name);
+            }
+        }
     }
 }

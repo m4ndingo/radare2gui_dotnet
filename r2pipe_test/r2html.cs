@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace r2pipe_test
 {
@@ -26,7 +27,7 @@ namespace r2pipe_test
             {
                 string line_cut= line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line);
                 line_cut = line_cut.Replace("<", "&lt");
-                console_text_cut += line_cut + "\n";
+                console_text_cut += line_cut + "\r\n";
             }
 
             Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
@@ -81,13 +82,15 @@ namespace r2pipe_test
             string themeName = "classic";
             string js_filename = r2pw.rconfig.load<string>(
                 "gui.scripts.js_def", "r2html.js");
-
             if (r2pw.rconfig.dataPath == null)
             {
-                string datapath = r2pw.Prompt("gui media path?", "Please, locate your data path...");
-                r2pw.rconfig.save("gui.datapath", datapath);
-                r2pw.rconfig.save("gui.theme_name", themeName);
-                r2pw.rconfig.save("gui.hexview.css", "r2pipe.css");
+                r2pw.rconfig.dataPath = 
+                    r2pw.find_dataPath(
+                        string.Format(
+                            @"{0}\..\..\media",
+                            System.IO.Path.GetDirectoryName(Application.ExecutablePath)
+                         )                    
+                    );
             }
             themeName    = r2pw.rconfig.load<string>("gui.theme_name", themeName);
             js_filename  = r2pw.rconfig.load<string>("gui.datapath") + @"\..\scripts\" + js_filename;
@@ -141,14 +144,6 @@ namespace r2pipe_test
             html_body += "var r2output = jQuery.parseJSON('" + js_string + "')\r\n";
             html_body += "</script>\r\n";
             return html_body;
-        }
-        private void WriteTmpFile(string fileName, string content)
-        {
-            string tmpName = string.Format("{0}{1}", r2pw.rconfig.tempPath, fileName);
-            using (StreamWriter sw = new StreamWriter(tmpName))
-            {
-                sw.WriteLine(content);
-            }
         }
     }
 }
