@@ -121,6 +121,8 @@
             this.giuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomTextControlMouseWheelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInBrowserControlnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lstProcesses = new System.Windows.Forms.ListView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -143,6 +145,7 @@
             this.ctxMenuOutput.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.mainMenu.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -242,6 +245,7 @@
             this.tabControl1.Controls.Add(this.Strings);
             this.tabControl1.Controls.Add(this.Imports);
             this.tabControl1.Controls.Add(this.Sections);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.HotTrack = true;
             this.tabControl1.ImageList = this.imageList1;
             this.tabControl1.Location = new System.Drawing.Point(-1, 3);
@@ -942,7 +946,7 @@
             // r2ToolStripMenuItem
             // 
             this.r2ToolStripMenuItem.Name = "r2ToolStripMenuItem";
-            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(84, 22);
+            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.r2ToolStripMenuItem.Text = "r2";
             // 
             // openFileDialog1
@@ -952,13 +956,13 @@
             // advancedToolStripMenuItem
             // 
             this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.advancedToolStripMenuItem.Text = "Miscelanea";
             // 
             // maximizeToolStripMenuItem
             // 
             this.maximizeToolStripMenuItem.Name = "maximizeToolStripMenuItem";
-            this.maximizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.maximizeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.maximizeToolStripMenuItem.Text = "Maximize";
             this.maximizeToolStripMenuItem.Click += new System.EventHandler(this.maximizeToolStripMenuItem_Click);
             // 
@@ -972,7 +976,7 @@
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
             // 
             // giuToolStripMenuItem
             // 
@@ -994,6 +998,41 @@
             this.openInBrowserControlnToolStripMenuItem.Name = "openInBrowserControlnToolStripMenuItem";
             this.openInBrowserControlnToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.openInBrowserControlnToolStripMenuItem.Text = "Open in Browser = Control+n";
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.lstProcesses);
+            this.tabPage1.ImageIndex = 1;
+            this.tabPage1.Location = new System.Drawing.Point(4, 23);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(472, 128);
+            this.tabPage1.TabIndex = 6;
+            this.tabPage1.Text = "Processes";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lstProcesses
+            // 
+            this.lstProcesses.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.lstProcesses.AllowColumnReorder = true;
+            this.lstProcesses.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstProcesses.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstProcesses.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstProcesses.FullRowSelect = true;
+            this.lstProcesses.HideSelection = false;
+            this.lstProcesses.LargeImageList = this.imageList1;
+            this.lstProcesses.Location = new System.Drawing.Point(1, -1);
+            this.lstProcesses.Margin = new System.Windows.Forms.Padding(0);
+            this.lstProcesses.Name = "lstProcesses";
+            this.lstProcesses.Size = new System.Drawing.Size(471, 131);
+            this.lstProcesses.SmallImageList = this.imageList1;
+            this.lstProcesses.StateImageList = this.imageList1;
+            this.lstProcesses.TabIndex = 2;
+            this.lstProcesses.TileSize = new System.Drawing.Size(64, 30);
+            this.lstProcesses.UseCompatibleStateImageBehavior = false;
+            this.lstProcesses.View = System.Windows.Forms.View.Details;
             // 
             // Form1
             // 
@@ -1036,6 +1075,7 @@
             this.statusStrip1.PerformLayout();
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1133,6 +1173,8 @@
         private System.Windows.Forms.ToolStripMenuItem giuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomTextControlMouseWheelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openInBrowserControlnToolStripMenuItem;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.ListView lstProcesses;
     }
 }
 

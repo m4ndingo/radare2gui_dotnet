@@ -138,7 +138,9 @@ namespace r2pipe_test
         {
             string js_string = JsonConvert.SerializeObject(json_obj);
             string html_body = "";
-            js_string = js_string.Replace(@"'", @"\'");            
+            //js_string = r2pw.escape_json(js_string);
+            js_string = js_string.Replace(@"'", @"\'");
+            js_string = js_string.Replace(@"\", @"\\");
             html_body += "<script>\r\n";
             html_body += "var r2cmds   = '" + cmds + "';\r\n";
             html_body += "var r2output = jQuery.parseJSON('" + js_string + "')\r\n";

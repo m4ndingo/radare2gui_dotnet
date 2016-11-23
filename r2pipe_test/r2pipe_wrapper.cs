@@ -105,9 +105,14 @@ namespace r2pipe_test
             if(res.StartsWith("[") || res.StartsWith("{"))
             try
             {
-                json_obj = JsonConvert.DeserializeObject(res);
+
+                string resultString = escape_json(res);
+                json_obj = JsonConvert.DeserializeObject(resultString);
             }
-            catch (Exception){}
+            catch (Exception e)
+            {
+                if (cmds.EndsWith("j")) Show(e.ToString(), "json deserialize error");
+            }
             if (controlName != null)
             {
                 setText(controlName, cmds, res, append, json_obj, cols);
@@ -591,7 +596,8 @@ namespace r2pipe_test
             run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("px 2000", "hexview");
+            run("dpj", "processes_listView", false, new List<string> { "pid", "status", "path" });
+            run("pxa 2000", "hexview");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
 
             // run("axtj @ entry0", "xrefs ( axtj )");
@@ -604,6 +610,14 @@ namespace r2pipe_test
             rconfig.save("gui.hexview.css", "r2pipe.css");
             rconfig.save("gui.theme_name", guicontrol.themeName);
             return path;
+        }
+        public string escape_json(string r2_json)
+        {
+            return Regex.Replace(r2_json,
+                @"(?<!\\)  # lookbehind: Check that previous character isn't a \
+                \\         # match a \
+                (?!\\)     # lookahead: Check that the following character isn't a \",
+                @"\\", RegexOptions.IgnorePatternWhitespace);
         }
         public void exit()
         {

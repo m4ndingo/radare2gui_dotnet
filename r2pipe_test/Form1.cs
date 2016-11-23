@@ -38,11 +38,13 @@ namespace r2pipe_test
             r2pw.add_control("functions_listview",  listView1);
             r2pw.add_control("imports_listview",    lstImports);
             r2pw.add_control("sections_listview",   lstSections);
-            r2pw.add_control("hexview",             webBrowser2);
+            r2pw.add_control("processes_listView",  lstProcesses);
+            r2pw.add_control("hexview", webBrowser2);
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){"offset","vaddr","paddr","plt"});
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>(){"string"});
             //add menu options and function callbacks
+            r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
             r2pw.add_menucmd("&View", "Disassembly", "pdf", mainMenu);
             r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu, "num2hex");
             r2pw.add_menucmd("&View", "Functions", "aaa;aflj", mainMenu);
@@ -57,6 +59,8 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
+            r2pw.add_menucmd("r2", "Dbg cmds", "d?", mainMenu);
+            r2pw.add_menucmd("r2", "Processes", "dp?", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
             r2pw.add_menucmd("r2", "Search", "/?", mainMenu);
             r2pw.add_menucmd("r2", "Metadata", "C?", mainMenu);
@@ -74,10 +78,7 @@ namespace r2pipe_test
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
-            r2pw.add_shellopt("javascript", guiPrompt_callback);            
-            //new auto-generated tabs
-            //r2pw.add_control_tab("xrefs ( axtj )", "#todo");
-            //r2pw.add_control_tab("version ( ?V )", "#todo");
+            r2pw.add_shellopt("javascript", guiPrompt_callback);
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
             LoadFile("-");
@@ -115,6 +116,8 @@ namespace r2pipe_test
             lstImports.ForeColor = foreColor;
             lstSections.BackColor = backColor;
             lstSections.ForeColor = foreColor;
+            lstProcesses.BackColor = backColor;
+            lstProcesses.ForeColor = foreColor;
             tsDebug.BackColor = backColor;
             tsDebug.ForeColor = foreColor;
             splitContainer1.Panel1.BackColor = backColor;
@@ -272,7 +275,7 @@ namespace r2pipe_test
             string address = get_selectedAddress(sender);
             if (address != null)
             {
-                r2pw.run("px 2000 @ " + address, "hexview");
+                r2pw.run("pxa 2000 @ " + address, "hexview");
                 r2pw.run("axtj @ " + address, "xrefs ( axtj )");
                 r2pw.run("pdf @ " + address, "dissasembly");
             }
