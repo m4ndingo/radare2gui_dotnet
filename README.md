@@ -1,5 +1,5 @@
 # radare2gui_dotnet
-Another radare2 gui for windows
+Another radare2 gui for windows ( alpha 1.0 )
 ## Screenshots
 **Dissasembly View**
 
@@ -7,21 +7,19 @@ Another radare2 gui for windows
 
 **Hexadecimal View**
 
-![r2pipe_dotnet_hexview](https://cloud.githubusercontent.com/assets/12532269/20447475/51ef978e-addf-11e6-87dc-ae4fd4fc4b8f.png)
+![hexview_lemon](https://cloud.githubusercontent.com/assets/12532269/20545911/2c376e50-b112-11e6-885a-82e315de21d6.png)
 
 **Sections**
 
-![r2pipe_dotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20448572/f699b27e-ade4-11e6-9aa3-ae690cd98905.png)
+![r2pipeguidotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20545956/8533dcbe-b112-11e6-9e5d-0496e209f663.png)
 
-**Themes**
+**radare2 usage help ( ? )**
 
-***Azure***
+![r2pipeguidotnet_needhelp](https://cloud.githubusercontent.com/assets/12532269/20546023/fdb2993c-b112-11e6-8175-81cc901dfee1.png)
 
-![r3pipe_gui_dotnet_azure_theme](https://cloud.githubusercontent.com/assets/12532269/20457847/d841df30-ae94-11e6-9975-89a970b702af.png)
+**Nice Themes ^^**
 
-***Terminal256***
-
-![r3pipe_gui_dotnet_terlinal256_theme](https://cloud.githubusercontent.com/assets/12532269/20459127/22927e56-aeb7-11e6-92a6-b3d9bb0eb3ca.png)
+![r2pipeguidotnet_terminal256theme](https://cloud.githubusercontent.com/assets/12532269/20546339/c067189e-b114-11e6-8d96-cb0c2c3e7a4e.png)
 
 # Compilation
 ## Packages required
