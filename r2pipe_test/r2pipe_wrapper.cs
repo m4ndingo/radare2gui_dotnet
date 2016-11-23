@@ -83,7 +83,7 @@ namespace r2pipe_test
                 return null;
             }
             Cursor.Current = Cursors.WaitCursor;
-            this.guicontrol.show_message(cmds);
+            update_statusbar(cmds);
             if (cmds != null)
             {
                 switch (current_shell)
@@ -463,6 +463,7 @@ namespace r2pipe_test
             }
             if (browser != null)
                 add_control(tabname, browser);
+            guicontrol.autoresize_output();
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -494,7 +495,9 @@ namespace r2pipe_test
             this.fileName = fileName;
             this.r2html = new r2html(this);
             if (!fileName.Equals("-"))
+            {
                 rconfig.save("gui.lastfile", fileName);
+            }
         }
         public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
         {
@@ -537,6 +540,12 @@ namespace r2pipe_test
             if (controls.ContainsKey("output"))
                 setText("output", "", string.Format("{0} {1}", caption, text), true);
             return MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private void update_statusbar(string cmds)
+        {
+            this.guicontrol.show_message(
+                string.Format("[{0} {1} ] > {2}",
+                    guicontrol.fileType, Path.GetFileName(fileName), cmds));
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {
@@ -584,6 +593,7 @@ namespace r2pipe_test
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("px 2000", "hexview");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
         }

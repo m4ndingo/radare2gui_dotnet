@@ -14,6 +14,7 @@ namespace r2pipe_test
         R2PIPE_WRAPPER r2pw = null;
         private RConfig rconfig = null;
         private string fileName = null;
+        public string fileType = null;
         private bool updating_gui = false;
         public TabControl tabcontrol = null;
         public string themeName = null;
@@ -63,8 +64,8 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
             //add menu function callbacks
-            r2pw.add_menufcn("Misc", "Enum registry vars", "*", dumpGuiVars, mainMenu);
-            r2pw.add_menufcn("Misc", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
+            r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
+            r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
             r2pw.add_menufcn("Architecture", "", "avr", changeArch, mainMenu);
             r2pw.add_menufcn("Architecture", "", "x86", changeArch, mainMenu);
@@ -126,20 +127,18 @@ namespace r2pipe_test
             Refresh();
             updating_gui = false;
         }
-        public void purgeR2pipeGuiRegistry(string args = null)
-        {
-            DialogResult res;
-            res = MessageBox.Show( 
-                "wipe configuration (reg) and terminate the gui?", 
-                "wipe gui reg",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (res == DialogResult.Yes) bye_gui(true);
-        }
         private void DoLoadFile()
         {
             r2pw.open(fileName);
             // r2pw.setText("version ( ?V )", "?V", r2pw.r2.RunCommand("?V"));
             r2pw.run_script("openfile_post.txt");
+            if (!fileName.Equals("-"))
+            {
+                fileType = r2pw.run("e file.type").Replace("\n", "");
+                output(string.Format("{0} file loaded", fileType));
+                if (fileType.Length > 0) // used only in statusbar
+                    fileType = " " + fileType; 
+            }
         }
         private void CheckR2path()
         {
@@ -209,6 +208,10 @@ namespace r2pipe_test
                 slabel1.Text = text;
             }
             catch (Exception e) { r2pw.Show(e.ToString(), "show_message"); } // manage this, script_executed_cb fails on this when prompt
+            try
+            {
+                cmbCmdline.Focus();
+            }catch(Exception) { };
         }
         public void script_executed_cb()
         {
@@ -526,17 +529,6 @@ namespace r2pipe_test
         {
             ESILcmds("aes");
         }
-        private void wipe_config()
-        {
-            rconfig.reg_wipeconf();
-            output("configuration wipped...");
-        }
-        private void bye_gui(bool wipeconf=false) // gracefull terminate r2 and the app
-        {
-            if ( r2pw != null ) r2pw.exit();
-            if ( wipeconf     ) wipe_config();
-            Environment.Exit(0);
-        }
 
         private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -571,6 +563,71 @@ namespace r2pipe_test
         private void terminal256ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             changeTheme("terminal256");
+        }
+
+        private void maximizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            maximize_output();
+        }
+        private void maximize_output()
+        {
+            splitContainer1.SplitterDistance = 0;
+            splitContainer2.SplitterDistance = 0;
+            txtOutput.Refresh();
+            cmbCmdline.Focus();
+        }
+        private void wipe_config()
+        {
+            rconfig.reg_wipeconf();
+            output("configuration wipped...");
+        }
+        public void purgeR2pipeGuiRegistry(string args = null)
+        {
+            DialogResult res;
+            res = MessageBox.Show(
+                "wipe configuration (reg) and terminate the gui?",
+                "wipe gui reg",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (res == DialogResult.Yes) bye_gui(true);
+        }
+        private void bye_gui(bool wipeconf = false) // gracefull terminate r2 and the app
+        {
+            if (r2pw != null) r2pw.exit();
+            if (wipeconf) wipe_config();
+            Environment.Exit(0);
+        }
+        public void autoresize_output() // useful after output maximized
+        {
+            // left "functions" splitter
+            if (tabControl1.SelectedTab.Text.Equals("Dissasembly"))
+            {
+                if (splitContainer1.SplitterDistance == 118)
+                    todo("elf", "invalid distance");
+                else if (splitContainer1.SplitterDistance < 118)
+                {
+                    splitContainer1.SplitterDistance = 150;
+                    listView1.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
+                }
+            }
+            // up-down splitter
+            if (splitContainer2.SplitterDistance < 25)
+                todo("elf", "invalid distance");
+            else if (splitContainer2.SplitterDistance >= 25)
+                splitContainer2.SplitterDistance = Height/2;
+        }
+        private void tabControl1_Click(object sender, EventArgs e)
+        {
+            autoresize_output();
+        }
+
+        private void maximizeOutputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            autoresize_output();
+        }
+
+        private void tabControl2_Click(object sender, EventArgs e)
+        {
+            maximize_output();
         }
     }
 }
