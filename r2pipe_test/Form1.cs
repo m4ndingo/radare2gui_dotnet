@@ -155,7 +155,11 @@ namespace r2pipe_test
         }
         private void LoadFile(String fileName)
         {
-            Text = String.Format("r2pipe gui .net v1.0alpha - {0}", fileName);
+            string version = System.Reflection.Assembly.GetExecutingAssembly()
+                                           .GetName()
+                                           .Version
+                                           .ToString();
+            Text = String.Format("R2pipe-Gui .net ( alpha {0} ) - {1}", version, fileName);
             if (!File.Exists(rconfig.r2path))
             {
                 CheckR2path();
