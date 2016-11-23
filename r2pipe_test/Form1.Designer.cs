@@ -104,6 +104,9 @@
             this.wordWrapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hideR2RunCmdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.yesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -302,12 +305,13 @@
             this.ctxMenuOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem,
             this.wordWrapToolStripMenuItem,
+            this.hideR2RunCmdToolStripMenuItem,
             this.toolStripSeparator2,
             this.themeToolStripMenuItem,
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
             this.ctxMenuOutput.Name = "ctxMenuOutput";
-            this.ctxMenuOutput.Size = new System.Drawing.Size(153, 126);
+            this.ctxMenuOutput.Size = new System.Drawing.Size(153, 148);
             // 
             // copyToolStripMenuItem
             // 
@@ -818,16 +822,37 @@
             // enableToolStripMenuItem
             // 
             this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
-            this.enableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.enableToolStripMenuItem.Text = "Enable";
+            this.enableToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.enableToolStripMenuItem.Text = "yes ( condensed )";
             this.enableToolStripMenuItem.Click += new System.EventHandler(this.enableToolStripMenuItem_Click);
             // 
             // disableToolStripMenuItem
             // 
             this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
-            this.disableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.disableToolStripMenuItem.Text = "Disable";
+            this.disableToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.disableToolStripMenuItem.Text = "no ( long lines )";
             this.disableToolStripMenuItem.Click += new System.EventHandler(this.disableToolStripMenuItem_Click);
+            // 
+            // hideR2RunCmdToolStripMenuItem
+            // 
+            this.hideR2RunCmdToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.yesToolStripMenuItem,
+            this.noToolStripMenuItem});
+            this.hideR2RunCmdToolStripMenuItem.Name = "hideR2RunCmdToolStripMenuItem";
+            this.hideR2RunCmdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.hideR2RunCmdToolStripMenuItem.Text = "r2.RunCmd";
+            // 
+            // yesToolStripMenuItem
+            // 
+            this.yesToolStripMenuItem.Name = "yesToolStripMenuItem";
+            this.yesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.yesToolStripMenuItem.Text = "hide";
+            // 
+            // noToolStripMenuItem
+            // 
+            this.noToolStripMenuItem.Name = "noToolStripMenuItem";
+            this.noToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.noToolStripMenuItem.Text = "un-hide";
             // 
             // Form1
             // 
@@ -947,6 +972,9 @@
         private System.Windows.Forms.ToolStripMenuItem wordWrapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hideR2RunCmdToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem yesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noToolStripMenuItem;
     }
 }
 
