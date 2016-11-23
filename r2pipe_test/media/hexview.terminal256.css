@@ -18,7 +18,7 @@ body{
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
 	font-size:12px;
-	cursor:arrow;
+	cursor:pointer;
 	font-weight:bold;
 }
 .tbl th{
@@ -44,6 +44,9 @@ body{
 .shorted_address:hover{
 	text-decoration:underline;
 	background:#ee0;
+}
+.address_selected, .from_selected {
+    background:#ee4;
 }
 .group{
 	color: white;

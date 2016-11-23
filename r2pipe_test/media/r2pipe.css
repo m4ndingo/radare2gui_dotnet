@@ -13,21 +13,38 @@ body{
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
 	font-size:12px;
 	cursor: default;
-	font-weight:bold;
+	font-weight:bold;    
 }
 .tbl_dict{
    border: 0px solid #a4c8e7;
-   padding:0:
+   padding:0;
    margin:0;
    border-spacing: 0;
    border-collapse: collapse;
 }
-.comment{color:green;}
-.address, .shorted_address{color:black;}
-.address:hover{text-decoration:underline;}
-.shorted_address:hover{text-decoration:underline;background:#ee0}
-.number{color:green;}
-.hexb{color:blue;}
+.comment{
+    color:green;
+}
+.address, .shorted_address{
+    color:black;
+}
+.address:hover, .from:hover{
+    text-decoration:underline;
+}
+.shorted_address:hover{
+    text-decoration:underline;
+    background:#ee0
+}
+.address_selected, .from_selected {
+    background:#ee4;
+}
+.number{
+    color:green;
+
+}
+.hexb{
+    color:blue;
+}
 .group{
 	color: #888;
 }

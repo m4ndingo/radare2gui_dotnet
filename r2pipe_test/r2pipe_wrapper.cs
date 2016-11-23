@@ -262,7 +262,11 @@ namespace r2pipe_test
                 someText = cached_results[controlName];
             url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
             ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
-            ((WebBrowser)c).Navigate(url);
+            try
+            {
+                ((WebBrowser)c).Navigate(url);
+            }
+            catch (Exception) { } // better manage
         }
         public void set_theme(string themeName)
         {
@@ -284,18 +288,20 @@ namespace r2pipe_test
         {
             askForm frm = new askForm();
             string answer = frm.Prompt(text, caption, defval, frm);
+            if ( answer != null ) answer = answer.Replace("\n", "");
             return answer;
         }
         private string BuildWebPage(WebBrowser wBrowser, string controlName, string cmds, string someText, dynamic json_obj)
         {
             string tmpName = null;
+            MatchCollection mc_addresses = null;
             tmpName = string.Format("{0}_{1}.html", controlName, cmds);
             tmpName = (new Regex(@"([\\\/>\~])")).Replace(tmpName, "");
             tmpName = tmpName.Replace("?", "[question]");
             tmpName = rconfig.tempPath + Path.GetFileName(tmpName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
-                sw.WriteLine(r2html.convert(cmds, someText, json_obj));
+                sw.WriteLine(r2html.convert(cmds, someText, json_obj, ref mc_addresses));
             }
             return tmpName;                
         }
@@ -331,17 +337,13 @@ namespace r2pipe_test
                         string tagname = element.TagName;
                         if (mouseMoved == false && tagname.Equals("SPAN"))
                         {
-                            if( text.StartsWith("0x") == true )
+                            bool selected = element.OuterHtml.Contains("_selected");
+                            if( selected && text.StartsWith("0x") == true )
                                 gotoAddress(text);
                         }
                     }
                     break;
             }
-            try
-            { // can be frozen
-                browser.Focus();
-            }
-            catch (Exception) { }
         }
         public void gotoAddress(string address)
         {
@@ -367,16 +369,15 @@ namespace r2pipe_test
                 if (cols != null)
                 {
                     int i = 0;
-                    int col_width = lstview.Width / cols.Count;
+                    int col_width = ( lstview.Width - 20 ) / cols.Count;
                     lstview.Columns.Clear();
-                    foreach (string cname in cols)
+                    foreach (string cname in cols) // add values (rows) to listview
                     {
                         lstview.Columns.Add(cname);
                         lstview.Columns[i].Width = col_width;
                         lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
                         i++;
                     }
-                    // lstview.Columns[cols.Count - 1].Width = lstview.Width / 4; ;
                 }
             }
             else lstview.EndUpdate();
@@ -573,7 +574,7 @@ namespace r2pipe_test
         {
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>
-            run("e scr.utf8 = true", "output", true);
+            run("e scr.utf8 = true", "output", true);            
             run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             run("pdf", "dissasembly");
             run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });

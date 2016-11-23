@@ -47,7 +47,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Functions", "aaa;aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
-            r2pw.add_menucmd("&View", "Sections", "iSj", mainMenu);
+            r2pw.add_menucmd("&View", "Sections", "S=", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
@@ -57,6 +57,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
+            r2pw.add_menucmd("r2", "Search", "/?", mainMenu);
             r2pw.add_menucmd("r2", "Metadata", "C?", mainMenu);
             r2pw.add_menucmd("r2", "ESIL", "ae?", mainMenu);
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
@@ -68,9 +69,12 @@ namespace r2pipe_test
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
             r2pw.add_menufcn("Architecture", "", "avr", changeArch, mainMenu);
             r2pw.add_menufcn("Architecture", "", "x86", changeArch, mainMenu);
+            r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
+            r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
+            r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
-            r2pw.add_shellopt("javascript", guiPrompt_callback);
+            r2pw.add_shellopt("javascript", guiPrompt_callback);            
             //new auto-generated tabs
             //r2pw.add_control_tab("xrefs ( axtj )", "#todo");
             //r2pw.add_control_tab("version ( ?V )", "#todo");
@@ -111,9 +115,13 @@ namespace r2pipe_test
             lstImports.ForeColor = foreColor;
             lstSections.BackColor = backColor;
             lstSections.ForeColor = foreColor;
+            tsDebug.BackColor = backColor;
+            tsDebug.ForeColor = foreColor;
             splitContainer1.Panel1.BackColor = backColor;
             splitContainer1.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_1.dist", splitContainer1.SplitterDistance));
             splitContainer2.SplitterDistance = int.Parse(rconfig.load<int>("gui.splitter_2.dist", splitContainer2.SplitterDistance));
+            WindowState = rconfig.load<string>("gui.window.state", "normal").Equals("normal") ?
+                FormWindowState.Normal : FormWindowState.Maximized;
             slabelTheme.Text = themeName + " theme";
             button1.Text = currentShell;
             Refresh();
@@ -125,11 +133,6 @@ namespace r2pipe_test
         }
         private void DoLoadFile()
         {
-            if (!File.Exists(fileName) && !fileName.Equals("-"))
-            {
-                r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
-                return;
-            }
             r2pw.open(fileName);
             // r2pw.setText("version ( ?V )", "?V", r2pw.r2.RunCommand("?V"));
             r2pw.run_script("openfile_post.txt");
@@ -154,8 +157,21 @@ namespace r2pipe_test
                 CheckR2path();
                 return;
             }
+            if (!File.Exists(fileName) && !fileName.Equals("-"))
+            {
+                r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
+                return;
+            }
+            if (r2pw.r2 != null) // set arch
+            {                
+                string new_arch = null;
+                new_arch = r2pw.run("e asm.arch","output",true).Replace("\n", "");
+                new_arch = r2pw.Prompt("Arch:", "Select arch", new_arch);
+                r2pw.run("e asm.arch = " + new_arch, "output", true);
+            }
             clearControls();
             this.fileName = fileName;
+           
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
             cmbCmdline.Focus();
@@ -174,11 +190,17 @@ namespace r2pipe_test
             rconfig.save("gui.output.fg", txtOutput.ForeColor.Name);
             if( !r2pw.fileName.Equals("-") )
                 rconfig.save("gui.lastfile", r2pw.fileName);
+            rconfig.save("gui.window.state", WindowState == FormWindowState.Normal ?
+                "normal" : "maximized");
             UpdateGUI();
         }
         public void show_message(string text)
         {
-            slabel1.Text = text;
+            try
+            {
+                slabel1.Text = text;
+            }
+            catch (Exception e) { r2pw.Show(e.ToString(), "show_message"); } // manage this, script_executed_cb fails on this when prompt
         }
         public void script_executed_cb()
         {
@@ -305,13 +327,26 @@ namespace r2pipe_test
             //MessageBox.Show(currentShell);
             return null;
         }
+        private void ESILcmds(string cmds) {
+            r2pw.run(cmds,"output",true);
+            if(cmds.StartsWith("ae"))
+                r2pw.run("pdf", "dissasembly");
+        }
         private void changeArch(String arch)
         {
+            string nbits = r2pw.run("e asm.bits");
             r2pw.run(string.Format("e asm.arch = {0}; aaa", arch));
+            try
+            {
+                rconfig.save("gui.hexdigits", int.Parse(nbits));
+            }
+            catch (Exception e) { r2pw.Show(e.ToString(),"changeArch");}
         }
         private string num2hex() // decorator
         {
-            return string.Format("0x{0:x}", int.Parse(r2pw.decorator_param));
+            int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
+            string format = "0x{0:x" + (hexdigits/2).ToString() + "}";
+            return string.Format(format, int.Parse(r2pw.decorator_param));
         }
         private string dec_b64() // decorator
         {
@@ -471,6 +506,20 @@ namespace r2pipe_test
         {
             txtOutput.WordWrap = false;
 
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            string pc = ""; // new pc for ESIL emulation
+            ESILcmds("aei");
+            pc = r2pw.run("aer~pc");
+            pc = r2pw.Prompt("pc", "New pc (avr)", pc);
+            if( pc!= null )
+                ESILcmds("aer pc = " + pc);
+        }
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            ESILcmds("aes");
         }
     }
 }

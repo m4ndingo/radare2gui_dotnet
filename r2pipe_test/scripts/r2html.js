@@ -1,5 +1,6 @@
 var html = "";
 var keys = [];
+
 // #TODO: generate decorators from gui ...
 var decorators = {"num2hex":["offset","vaddr","paddr","plt","from"]}
 
@@ -15,7 +16,14 @@ function inList(psString, laList)
 }
 function text2html(varname, value)
 {
-	return "<span class="+varname+" name="+varname+">0x"+value.toString(16)+"</span>";
+    var sAddress = "0x" + value.toString(16);
+    var id = varname + "_" + sAddress;
+    if (!inList(sAddress, addresses))
+    {
+        addresses = addresses.concat(sAddress);
+        add_select_event(varname, "address", "address_selected");
+    }
+	return "<span class="+varname+" name="+varname+" id="+id+">"+sAddress+"</span>";
 }
 function decorate(varname, value)
 {
@@ -32,7 +40,7 @@ function decorate(varname, value)
 function readDict(dict)
 {
 	var html="";
-	html+= "<table class=tbl_dict border=0>\r\n";
+	html += "<table class=tbl_dict border=0 id=out_dict contenteditable=true>\r\n";
 	for (var key in dict) {
 		value = dict[key];
 		if(typeof(value) == "object") 
@@ -47,7 +55,7 @@ function readDict(dict)
 if ( r2output != null )
 {
 	for(var k in r2output[0]) keys.push(k);
-	html  = "<table class=tbl border=0>\r\n";
+	html  = "<table class=tbl border=0 id=out contenteditable=true>\r\n";
 	html += "<tr>\r\n";
 	html += "<th>"+keys.join("</th><th>")+"</th>";
 	html += "</tr><tr>\r\n";
@@ -65,7 +73,36 @@ if ( r2output != null )
 
 	html+=readDict(r2output);
 	document.write(html);
-
-	//document.write(keys);
-	//document.write(JSON.stringify(r2output));
 }
+
+var r2code = document.getElementById('r2code');
+if (r2code) r2code.contentEditable = true;
+
+function add_select_event(id,cname,cname_selected)
+{
+    $(id).click(function () {
+        clear_selected_addresses();
+        if ($(this).hasClass(cname))
+            $(id).removeClass(cname).addClass(cname_selected);
+        else
+            $(id).removeClass(cname_selected).addClass(cname);
+    });
+}
+function clear_selected_addresses() {        
+    for (i = 0; i < addresses.length, address = addresses[i]; i++)
+    {
+        var id = "#address_" + address;
+        if ($(id).hasClass("address_selected"))
+            $(id).removeClass("address_selected").addClass("address");
+    }
+}
+
+if (typeof addresses !== 'undefined') {
+    for (i = 0; i < addresses.length, address=addresses[i]; i++) {
+        add_select_event("#address_" + address, "address", "address_selected"); // html render
+        add_select_event("#from_" + address, "from", "from_selected"); // json decodes
+    }
+}
+//document.write(keys);
+//document.write(JSON.stringify(r2output));
+

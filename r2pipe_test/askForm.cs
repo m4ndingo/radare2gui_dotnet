@@ -23,7 +23,8 @@ namespace r2pipe_test
         }
         private void txtAnswer_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) this.Close();
+            if (e.KeyCode == Keys.Escape ||
+                e.KeyCode == Keys.Enter) this.Close();
         }
     }
 }
