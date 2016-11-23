@@ -461,5 +461,16 @@ namespace r2pipe_test
         {
             todo("HTML Formated Output", "WeBrowser required for "+tabControl1.SelectedTab.Text);
         }
+
+        private void enableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtOutput.WordWrap = true;
+        }
+
+        private void disableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtOutput.WordWrap = false;
+
+        }
     }
 }

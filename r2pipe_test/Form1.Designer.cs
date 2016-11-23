@@ -307,7 +307,7 @@
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
             this.ctxMenuOutput.Name = "ctxMenuOutput";
-            this.ctxMenuOutput.Size = new System.Drawing.Size(135, 104);
+            this.ctxMenuOutput.Size = new System.Drawing.Size(153, 126);
             // 
             // copyToolStripMenuItem
             // 
@@ -812,7 +812,7 @@
             this.enableToolStripMenuItem,
             this.disableToolStripMenuItem});
             this.wordWrapToolStripMenuItem.Name = "wordWrapToolStripMenuItem";
-            this.wordWrapToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.wordWrapToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.wordWrapToolStripMenuItem.Text = "Word Wrap";
             // 
             // enableToolStripMenuItem
@@ -820,12 +820,14 @@
             this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
             this.enableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.enableToolStripMenuItem.Text = "Enable";
+            this.enableToolStripMenuItem.Click += new System.EventHandler(this.enableToolStripMenuItem_Click);
             // 
             // disableToolStripMenuItem
             // 
             this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
             this.disableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.disableToolStripMenuItem.Text = "Disable";
+            this.disableToolStripMenuItem.Click += new System.EventHandler(this.disableToolStripMenuItem_Click);
             // 
             // Form1
             // 
