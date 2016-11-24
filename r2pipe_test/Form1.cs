@@ -59,6 +59,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
+            r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
             r2pw.add_menucmd("r2", "Dbg cmds", "d?", mainMenu);
             r2pw.add_menucmd("r2", "Processes", "dp?", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
@@ -185,7 +186,7 @@ namespace r2pipe_test
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
             cmbCmdline.Focus();
-            tabControl1.SelectedTab = tabControl1.TabPages[0];
+            tabControl1.SelectedTab = tabControl1.TabPages[1]; // def tan when start gui
         }
         private void save_gui_config()
         {
@@ -486,9 +487,10 @@ namespace r2pipe_test
                 r2pw.run("px 2000", "hexview");
             }
         }
-        private string todo(string caption = "#todo", string tip = "no code yet")
+        private string todo(string caption = "#todo", string tip = "no code yet", object sender=null)
         {
-            return r2pw.Show("#todo: " + tip, caption).ToString();
+            if (sender == null) sender = this;
+            return r2pw.Show(tip, caption+" "+sender.GetType().ToString()).ToString();
         }
         private void windowsControlToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -496,7 +498,20 @@ namespace r2pipe_test
         }
         private void textToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("Text Formated Output", "use 'output' control and maximize the results");
+            string cmds = null;
+            string tabTitle = selected_tab_title();
+            // send to output control as string
+            maximize_output();
+            if (tabTitle == "Dissasembly") cmds = "pd 20";
+            if (tabTitle == "Hex view") cmds = "pxa";
+            if (tabTitle == "Strings") cmds = "iz";
+            if (tabTitle == "Sections") cmds = "iS";
+            if (tabTitle == "Imports") cmds = "ii";
+            if (tabTitle == "Processes") cmds = "dp";
+            if (cmds != null)
+                r2pw.run(cmds, "output", true);
+            else
+                output("no cmds found for: " + tabTitle);
         }
         private void jsonToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -559,6 +574,11 @@ namespace r2pipe_test
         private void terminal256ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             changeTheme("terminal256");
+        }
+        private string selected_tab_title()
+        {
+            string text = tabControl1.SelectedTab.Text;
+            return text;
         }
         private void maximizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -653,6 +673,10 @@ namespace r2pipe_test
         private void lstProcesses_Click(object sender, EventArgs e)
         {
             hide_search();
+        }
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("refresh", "find control and resend commands",sender);
         }
     }
 }

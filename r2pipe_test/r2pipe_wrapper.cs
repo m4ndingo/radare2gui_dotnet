@@ -216,6 +216,7 @@ namespace r2pipe_test
                 try
                 {
                     tag = tabcontrol.SelectedTab.Text.ToString().ToLower();
+                    tag = tag.Replace(" ", ""); // "Hex view"? space (no spaces on controlName(s))
                 }
                 catch (Exception) { }
                 if (tag == null) return null;
@@ -609,7 +610,6 @@ namespace r2pipe_test
             run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
             run("pxa 2000", "hexview");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
-
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
         }
