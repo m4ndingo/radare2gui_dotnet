@@ -56,7 +56,7 @@ namespace r2pipe_test
                 Show(string.Format("run: {0} Timed out",cmds),"run");
             return null;
         }*/
-        public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
+        public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null, string filter = null)
         {
             string res = "";
             dynamic json_obj = null;
@@ -65,8 +65,15 @@ namespace r2pipe_test
                 string control_type = "unknown";
                 if(controlName!=null && controls.ContainsKey(controlName))
                     control_type = controls[controlName].GetType().ToString();
-                setText("output", "", string.Format("{2} r2.RunCommand(\"{1}\"): target='{0}' type='{3}' cols='{4}'\n",
-                    controlName, cmds, current_shell, control_type, cols != null ? string.Join(", ", cols) : ""), true);
+                setText("output", "", 
+                    string.Format(
+                        "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
+                        controlName, 
+                        cmds,
+                        filter != null ? "~"+filter : "",
+                        current_shell, control_type,
+                        cols   != null ? string.Join(", ", cols) : ""),
+                    true);
             }
             if (r2 == null && cmds!=null)
             {
@@ -86,13 +93,16 @@ namespace r2pipe_test
             update_statusbar(cmds);
             if (cmds != null)
             {
+                string cmds_new = cmds;
+                if (filter != null) // apply filter (~) to cmds
+                    cmds_new = string.Format("{0}~{1}", cmds, filter);
                 switch (current_shell)
                 {
                     case "radare2":
-                        res = r2.RunCommand(cmds).Replace("\r", "");
+                        res = r2.RunCommand(cmds_new).Replace("\r", "");
                         break;
                     case "javascript":
-                        res = invokeJavascript(cmds);
+                        res = invokeJavascript(cmds, filter);
                         break;
                     default:
                         Show(string.Format("R2PIPE_WRAPPER: run(): current_shell='{0}'",
@@ -100,9 +110,7 @@ namespace r2pipe_test
                         break;
                 }
             }
-            Cursor.Current = Cursors.Default;
-            if (res == null) return res;
-            if(res.StartsWith("[") || res.StartsWith("{"))
+            if(res != null && (res.StartsWith("[") || res.StartsWith("{")))
             try
             {
 
@@ -119,6 +127,7 @@ namespace r2pipe_test
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
             }
+            Cursor.Current = Cursors.Default;
             return res;
         }
         public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
@@ -149,12 +158,12 @@ namespace r2pipe_test
             }
             else if (c.GetType() == typeof(ListView))
             {
+                ListView lstview = (ListView)c;
+                lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
                 if (json_obj != null)
                 {
                     try // sometimes fails
                     {
-                        ListView lstview = (ListView)c;
-                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
                         for (int i = 0; i < json_obj.Count; i++)
                         {
                             string col0 = json_obj[i][cols[0]];
@@ -172,7 +181,6 @@ namespace r2pipe_test
                             }
                             lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
                         }
-                        lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
                     }
                     catch (Exception) { }
                 }
@@ -180,6 +188,7 @@ namespace r2pipe_test
                 {
                     Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
                 }
+                lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
             }
             else if (c.GetType() == typeof(WebBrowser))
             {
@@ -215,7 +224,7 @@ namespace r2pipe_test
             control = controls[controlName];
             return control;
         }
-        public string invokeJavascript(string cmds)
+        public string invokeJavascript(string cmds, string filter = null)
         {
             WebBrowser webBrowser1 = null;
             object control = null;
@@ -546,11 +555,12 @@ namespace r2pipe_test
                 setText("output", "", string.Format("{0} {1}", caption, text), true);
             return MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        private void update_statusbar(string cmds)
+        private void update_statusbar(string cmds) // called from run
         {
+            string seekpos = r2.RunCommand("s").Replace("\n", "").Replace("\r", "");
             this.guicontrol.show_message(
-                string.Format("[{0} {1} ] > {2}",
-                    guicontrol.fileType, Path.GetFileName(fileName), cmds));
+                string.Format("{0} {1} [{2}] > {3}",
+                    guicontrol.fileType, Path.GetFileName(fileName), seekpos, cmds));
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {
@@ -596,12 +606,16 @@ namespace r2pipe_test
             run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("dpj", "processes_listView", false, new List<string> { "pid", "status", "path" });
+            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
             run("pxa 2000", "hexview");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
 
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
+        }
+        public void show_processes(string filter=null)
+        {
+            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" }, filter);
         }
         public string find_dataPath(string def="")
         {

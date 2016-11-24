@@ -532,42 +532,34 @@ namespace r2pipe_test
         {
             ESILcmds("aes");
         }
-
         private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.find_dataPath(".");
         }
-
         private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
             changeTheme("classic");
         }
-
         private void lemonToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             changeTheme("lemon");
         }
-
         private void azuToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             changeTheme("azure");
         }
-
         private void contorlToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             changeTheme("control");
         }
-
         private void pinkToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             changeTheme("pink");
         }
-
         private void terminal256ToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             changeTheme("terminal256");
         }
-
         private void maximizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             maximize_output();
@@ -622,15 +614,45 @@ namespace r2pipe_test
         {
             autoresize_output();
         }
-
         private void maximizeOutputToolStripMenuItem_Click(object sender, EventArgs e)
         {
             autoresize_output();
         }
-
         private void tabControl2_Click(object sender, EventArgs e)
         {
             maximize_output();
+        }
+        private void tabControl1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            
+        }
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            r2pw.show_processes(txtSearch.Text);
+            txtSearch.Focus();
+        }
+        private void tabControl1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) hide_search();
+        }
+        private void hide_search()
+        {
+            txtSearch.Visible = false;
+        }
+        private void show_search(string text)
+        {
+            txtSearch.Visible = true;
+            txtSearch.Text += text;
+            txtSearch.Focus();
+            txtSearch.SelectionStart = txtSearch.TextLength;
+        }
+        private void lstProcesses_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            show_search(e.KeyChar.ToString());
+        }
+        private void lstProcesses_Click(object sender, EventArgs e)
+        {
+            hide_search();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace r2pipe_test
             {
                 string line_cut= line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line);
                 line_cut = line_cut.Replace("<", "&lt");
-                console_text_cut += line_cut + "\r\n";
+                console_text_cut += line_cut + "\n";
             }
 
             Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
