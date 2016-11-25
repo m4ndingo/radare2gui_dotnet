@@ -604,7 +604,7 @@ namespace r2pipe_test
             run("e scr.utf8 = true", "output", true);            
             run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             run("pdf", "dissasembly");
-            run("izj", "strings_listview", false, new List<string> { "vaddr", "section", "type", "string" });
+            run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });

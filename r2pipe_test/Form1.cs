@@ -678,5 +678,19 @@ namespace r2pipe_test
         {
             todo("refresh", "find control and resend commands",sender);
         }
+
+        private void runToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string ooss_command = null;
+            maximize_output();
+            ooss_command = r2pw.Prompt("ooss command:", "run ( ! )", "!!notepad");
+            if (ooss_command != null)
+                r2pw.run(ooss_command, "output", true);
+        }
+
+        private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            todo("implement", "move panels to maximice tabs space");
+        }
     }
 }
