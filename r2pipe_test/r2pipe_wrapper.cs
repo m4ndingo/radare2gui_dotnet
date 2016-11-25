@@ -123,6 +123,7 @@ namespace r2pipe_test
             }
             if (controlName != null)
             {
+                // send results and "others" to control (ex: listview)
                 setText(controlName, cmds, res, append, json_obj, cols);
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
@@ -182,7 +183,7 @@ namespace r2pipe_test
                             lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
                         }
                     }
-                    catch (Exception) { }
+                    catch (Exception e) { MessageBox.Show(e.ToString()); }
                 }
                 else
                 {
@@ -600,14 +601,16 @@ namespace r2pipe_test
         public void run_script(string scriptFileName)
         {
             // 1. read input from scriptFilename
-            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>
-            run("e scr.utf8 = true", "output", true);            
+            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
+            run("e scr.utf8 = true", "output", true);
+            run("Ps default");
             run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             run("pdf", "dissasembly");
             run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
+            run("dmj", "maps_listView", false, new List<string> {"name","addr","addr_end","type","perm" });
             run("pxa 2000", "hexview");
             run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
             // run("axtj @ entry0", "xrefs ( axtj )");

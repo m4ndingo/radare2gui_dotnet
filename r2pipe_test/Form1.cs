@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace r2pipe_test
-{    
+{   
     public partial class Form1 : Form
     {        
         R2PIPE_WRAPPER r2pw = null;
@@ -27,7 +27,7 @@ namespace r2pipe_test
         private void Form1_Load(object sender, EventArgs e)
         {
             rconfig     = new RConfig();
-            locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections"};
+            locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps"};
             UpdateGUI();
             CheckR2path();
             r2pw        = new R2PIPE_WRAPPER(rconfig, this);        // init here
@@ -39,9 +39,11 @@ namespace r2pipe_test
             r2pw.add_control("imports_listview",    lstImports);
             r2pw.add_control("sections_listview",   lstSections);
             r2pw.add_control("processes_listView",  lstProcesses);
+            r2pw.add_control("maps_listView",       lstMaps);
             r2pw.add_control("hexview", webBrowser2);
             //add and assign "decorators"
-            r2pw.add_decorator("num2hex", num2hex, new List<string>(){"offset","vaddr","paddr","plt"});
+            r2pw.add_decorator("num2hex", num2hex, new List<string>(){
+                "offset","vaddr","paddr","plt","addr","addr_end"});
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>(){"string"});
             //add menu options and function callbacks
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
@@ -79,6 +81,7 @@ namespace r2pipe_test
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
+            r2pw.add_shellopt("run ( !! )", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
@@ -182,7 +185,8 @@ namespace r2pipe_test
             }
             clearControls();
             this.fileName = fileName;
-           
+
+            Refresh();
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
             cmbCmdline.Focus();
@@ -360,7 +364,7 @@ namespace r2pipe_test
         {
             int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
             string format = "0x{0:x" + (hexdigits/2).ToString() + "}";
-            return string.Format(format, int.Parse(r2pw.decorator_param));
+            return string.Format(format, Int64.Parse(r2pw.decorator_param));
         }
         private string dec_b64() // decorator
         {
@@ -508,6 +512,7 @@ namespace r2pipe_test
             if (tabTitle == "Sections") cmds = "iS";
             if (tabTitle == "Imports") cmds = "ii";
             if (tabTitle == "Processes") cmds = "dp";
+            if (tabTitle == "Maps") cmds = "dm";
             if (cmds != null)
                 r2pw.run(cmds, "output", true);
             else
@@ -546,10 +551,6 @@ namespace r2pipe_test
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             ESILcmds("aes");
-        }
-        private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            r2pw.find_dataPath(".");
         }
         private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
@@ -621,7 +622,8 @@ namespace r2pipe_test
                 else if (splitContainer1.SplitterDistance < 118)
                 {
                     splitContainer1.SplitterDistance = 150;
-                    listView1.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
+                    if(listView1.Items.Count>0)
+                        listView1.AutoResizeColumn(0, ColumnHeaderAutoResizeStyle.ColumnContent);
                 }
             }
             // up-down splitter
@@ -676,7 +678,8 @@ namespace r2pipe_test
         }
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("refresh", "find control and resend commands",sender);
+            r2pw.run("dmj", "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
+            //todo("refresh "+selected_tab_title(), "find control and resend commands",sender);            
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
@@ -691,6 +694,27 @@ namespace r2pipe_test
         private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
             todo("implement", "move panels to maximice tabs space");
+        }
+
+        private void openfileposttxtToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.run_script("openfile_post.txt");
+        }
+
+        private void notesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.run("Pn -");
+        }
+
+        private void pathsToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            r2pw.find_dataPath(rconfig.load<string>("gui.datapath","."));
+            changeTheme(themeName);
+        }
+
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+
         }
     }
 }

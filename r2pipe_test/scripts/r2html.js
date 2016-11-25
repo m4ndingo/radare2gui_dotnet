@@ -2,7 +2,7 @@ var html = "";
 var keys = [];
 
 // #TODO: generate decorators from gui ...
-var decorators = {"num2hex":["offset","vaddr","paddr","plt","from"]}
+var decorators = {"num2hex":["offset","vaddr","paddr","plt","from","addr","addr_end"]}
 
 // thx stackoverflow, WebBrowser for .net is O_o=*x!< compatibility 
 // with modern webbrowsers s*x... need a better .net control
