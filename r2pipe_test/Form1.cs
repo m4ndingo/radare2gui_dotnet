@@ -81,7 +81,6 @@ namespace r2pipe_test
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
-            r2pw.add_shellopt("run ( !! )", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
