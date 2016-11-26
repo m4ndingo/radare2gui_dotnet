@@ -46,7 +46,6 @@
             this.ctxTabsItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.windowsControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.jsonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HTMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Dissasembly = new System.Windows.Forms.TabPage();
@@ -219,7 +218,7 @@
             this.menuXrefs,
             this.refreshToolStripMenuItem1});
             this.ctxFunctions.Name = "ctxFunctions";
-            this.ctxFunctions.Size = new System.Drawing.Size(153, 70);
+            this.ctxFunctions.Size = new System.Drawing.Size(136, 48);
             // 
             // menuXrefs
             // 
@@ -268,6 +267,7 @@
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(480, 155);
+            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 2;
             this.tabControl1.Tag = "";
             this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
@@ -285,11 +285,10 @@
             this.ctxTabsItemClose,
             this.toolStripSeparator5,
             this.windowsControlToolStripMenuItem,
-            this.toolStripSeparator9,
             this.jsonToolStripMenuItem,
             this.HTMLToolStripMenuItem});
             this.ctxTabs.Name = "ctxTabs";
-            this.ctxTabs.Size = new System.Drawing.Size(165, 198);
+            this.ctxTabs.Size = new System.Drawing.Size(165, 192);
             // 
             // refreshToolStripMenuItem
             // 
@@ -338,18 +337,15 @@
             // 
             // windowsControlToolStripMenuItem
             // 
+            this.windowsControlToolStripMenuItem.Enabled = false;
             this.windowsControlToolStripMenuItem.Name = "windowsControlToolStripMenuItem";
             this.windowsControlToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.windowsControlToolStripMenuItem.Text = "Windows control";
             this.windowsControlToolStripMenuItem.Click += new System.EventHandler(this.windowsControlToolStripMenuItem_Click);
             // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(161, 6);
-            // 
             // jsonToolStripMenuItem
             // 
+            this.jsonToolStripMenuItem.Enabled = false;
             this.jsonToolStripMenuItem.Name = "jsonToolStripMenuItem";
             this.jsonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.jsonToolStripMenuItem.Text = "Json";
@@ -357,6 +353,7 @@
             // 
             // HTMLToolStripMenuItem
             // 
+            this.HTMLToolStripMenuItem.Enabled = false;
             this.HTMLToolStripMenuItem.Name = "HTMLToolStripMenuItem";
             this.HTMLToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.HTMLToolStripMenuItem.Text = "HTML";
@@ -377,6 +374,7 @@
             // 
             // tsDebug
             // 
+            this.tsDebug.AllowItemReorder = true;
             this.tsDebug.Dock = System.Windows.Forms.DockStyle.Right;
             this.tsDebug.GripMargin = new System.Windows.Forms.Padding(0);
             this.tsDebug.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
@@ -1324,7 +1322,6 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.TabPage tabMaps;
         private System.Windows.Forms.ListView lstMaps;
         private System.Windows.Forms.ToolStripMenuItem postScriptToolStripMenuItem;

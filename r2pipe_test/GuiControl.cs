@@ -47,9 +47,9 @@ namespace r2pipe_test
             this.r2pw = r2pw;
             controls = new List<GuiControl>();
         }
-        public void add_control(string name, object control, string tabTitle = null, string cmds = null)
+        public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
         {
-            GuiControl gui_control;
+            GuiControl gui_control = null;
             try
             {
                 gui_control = new GuiControl(control, name, cmds, tabTitle);
@@ -59,6 +59,7 @@ namespace r2pipe_test
             {
                 r2pw.Show(e.ToString(), "GuiControls: add_control()");
             }
+            return gui_control;
         }
         public void dump(string dummy=null)
         {

@@ -144,7 +144,7 @@ namespace r2pipe_test
                 fileType = r2pw.run("e file.type");
                 if( fileType!=null )
                     fileType = fileType.Replace("\n", "");
-                output(string.Format("{0} file loaded", fileType));
+                //output(string.Format("{0} file loaded", fileType));
                 if (fileType.Length > 0) // used only in statusbar
                     fileType = " " + fileType;
             }
@@ -512,7 +512,7 @@ namespace r2pipe_test
             string tabTitle = selected_tab("title");
             string tabTag   = selected_tab("tag");
             // send to output control as string
-            maximize_output();
+            maximize("output");
             if ( tabTag != null ) cmds = tabTag;
             if (tabTitle == "Dissasembly") cmds = "pd 20";
             if (tabTitle == "Hex view") cmds = "pxa";
@@ -536,7 +536,23 @@ namespace r2pipe_test
         }
         private void floatToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("Floating Form", "new form with webbrowser control required");
+            webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, "webcont");
+            WebBrowser webbrowser = new WebBrowser();
+
+            webbrowser.Dock = DockStyle.Fill;
+            webFrm.Controls.Add(webbrowser);
+            string tabTitle = selected_tab("title");
+            webFrm.Text  = tabTitle;
+            webFrm.Width = Width - splitContainer1.SplitterDistance;
+            webFrm.Height = Height;
+            String timeStamp = DateTime.Now.Millisecond.ToString();
+            GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            GuiControl gui_control = r2pw.add_control(
+                gui_control_tab.name + "_" + timeStamp, webbrowser, "popup", gui_control_tab.cmds);
+            refresh_control(gui_control);
+            //r2pw.run(gui_control.cmds, "webcont");
+            webFrm.Show();
+            //todo("Floating Form", "new form with webbrowser control required");
         }
         private void HTMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -600,12 +616,15 @@ namespace r2pipe_test
         }
         private void maximizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            maximize_output();
+            maximize("output");
         }
-        private void maximize_output()
+        private void maximize(string controlName="")
         {
             splitContainer1.SplitterDistance = 0;
-            splitContainer2.SplitterDistance = 0;
+            if (controlName.Equals("output"))
+                splitContainer2.SplitterDistance = 0;
+            else
+                splitContainer2.SplitterDistance = Height;
             txtOutput.Refresh();
             cmbCmdline.Focus();
         }
@@ -666,7 +685,7 @@ namespace r2pipe_test
         }
         private void tabControl2_Click(object sender, EventArgs e)
         {
-            maximize_output();
+            maximize("output");
         }
         private void tabControl1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -731,7 +750,8 @@ namespace r2pipe_test
             }
             else
             {
-                output("refresh_control: '" + control.name + "' no cmds found ( complete add_cmd() args )");
+                if( control!=null )
+                    output("refresh_control: '" + control.name + "' no cmds found ( complete add_cmd() args )");
             }
         }
         private void refresh_tab()
@@ -747,14 +767,14 @@ namespace r2pipe_test
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string ooss_command = null;
-            maximize_output();
+            maximize("output");
             ooss_command = r2pw.Prompt("ooss command:", "run ( ! )", "!!notepad");
             if (ooss_command != null)
                 r2pw.run(ooss_command, "output", true);
         }
         private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("implement", "move panels to maximice tabs space");
+            maximize();
         }
         private void openfileposttxtToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -767,6 +787,7 @@ namespace r2pipe_test
         }
         private void editPnToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            UpdateGUI();
             r2pw.run("Pn -");
         }
         private void showPnToolStripMenuItem_Click(object sender, EventArgs e)

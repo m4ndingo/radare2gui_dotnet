@@ -456,11 +456,15 @@ namespace r2pipe_test
             item.ImageIndex = 1;
             lstview.Items.Add(item);
         }
-        public bool add_control(string name, object control, string tabTitle = null, string cmds = null)
+        public void unregister_control(string controlName)
         {
-            if (controls.ContainsKey(name)) return false;
-            controls.Add(name, control);
-            gui_controls.add_control(name, control, tabTitle, cmds);
+            controls.Remove(controlName);
+        }
+        public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
+        {
+            if (!controls.ContainsKey(name))
+                controls.Add(name, control);
+            GuiControl gui_control = gui_controls.add_control(name, control, tabTitle, cmds);
             if (control.GetType() == typeof(WebBrowser))
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
@@ -468,7 +472,7 @@ namespace r2pipe_test
                 ((WebBrowser)control).WebBrowserShortcutsEnabled = true;
                 ((WebBrowser)control).Refresh();
             }
-            return true;
+            return gui_control;
         }
         public void add_decorator(string name, Func<string> callback, List<string> fieldNames)
         {
