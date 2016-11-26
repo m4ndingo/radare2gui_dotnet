@@ -183,7 +183,8 @@ namespace r2pipe_test
                 {
                     new_arch = new_arch.Replace("\n", "");
                     new_arch = r2pw.Prompt("Arch:", "Select arch", new_arch, this);
-                    r2pw.run("e asm.arch = " + new_arch, "output", true); // no wait
+                    changeArch(new_arch);
+                    //r2pw.run("e asm.arch = " + new_arch, "output", true); // no wait
                 }
             }
             clearControls();
@@ -328,11 +329,11 @@ namespace r2pipe_test
         {
             List<string> keys = rconfig.reg_enumkeys();
             if (args == "*") args = r2pw.Prompt("filter results", "Enum registry vars", args);
-            output(string.Format("filter: {0}\n", args));
+            output(string.Format("filter: {0}", args));
             foreach (string varname in keys)
             {
                 string value = rconfig.load<string>(varname);
-                output(string.Format("{0} = {1}\n", varname, value));
+                output(string.Format("{0} = {1}", varname, value));
             }
         }
         private void dumpGuiVar(string varname)
@@ -724,8 +725,8 @@ namespace r2pipe_test
                         column_titles = control.column_titles;
                     }
                 }
-                output( "refresh_control: " + control.name + "@" + control.tabTitle + 
-                        " cmds:" + control.cmds);
+                //output( "refresh_control: " + control.name + "@" + control.tabTitle + 
+                //        " cmds:" + control.cmds);
                 r2pw.run(control.cmds, control.name, false, column_titles); // no wait
             }
             else
@@ -772,7 +773,6 @@ namespace r2pipe_test
         {
             r2pw.run("Pn","Notes");
         }
-
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             GuiControl gui_control = find_control_by_name("functions_listview");

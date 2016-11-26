@@ -335,7 +335,7 @@ namespace r2pipe_test
         public string Prompt(string text, string caption, string defval = "", Form owner = null)
         {
             askForm frm = new askForm();
-            string answer = frm.Prompt(text, caption, defval, frm, owner);
+            string answer = frm.Prompt(text, caption, defval, frm, owner == null ? guicontrol: owner);
             if ( answer != null ) answer = answer.Replace("\n", "");
             return answer;
         }

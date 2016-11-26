@@ -70,7 +70,7 @@ namespace r2pipe_test
         }
         public GuiControl findControlBy_name(string name)
         {
-            r2pw.output(string.Format("findControlByName: name='{0}'", name));
+            //r2pw.output(string.Format("findControlByName: name='{0}'", name));
             foreach (GuiControl c in controls)
             {
                 if (name.Equals(c.name))
@@ -80,7 +80,7 @@ namespace r2pipe_test
         }
         public GuiControl findControlBy_tabTitle(string tabTitle)
         {
-            r2pw.output(string.Format("findControlByTitle: tabTitle='{0}'", tabTitle));
+            //r2pw.output(string.Format("findControlByTitle: tabTitle='{0}'", tabTitle));
             foreach (GuiControl c in controls)
             {
                 if (tabTitle.Equals(c.tabTitle)) 
