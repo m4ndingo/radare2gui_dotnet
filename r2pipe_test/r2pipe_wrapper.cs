@@ -23,6 +23,7 @@ namespace r2pipe_test
         public           string  decorator_param    =   null  ;
         public           string  lastAddress        =   null  ;
         private            bool  mouseMoved         =  false  ;
+        public      GuiControls  gui_controls       =   null  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
@@ -36,6 +37,7 @@ namespace r2pipe_test
             this.guicontrol         = frm;
             this.tabcontrol         = ((Form1)frm).tabcontrol;
             this.theme_manager      = new themeManager(rconfig);
+            this.gui_controls       = new GuiControls(this);
             this.controls           = new Dictionary<string, object>();
             this.decorators_cb      = new Dictionary<string, Func<string>>();
             this.decorators_names   = new Dictionary<string, List<string>>();
@@ -45,17 +47,17 @@ namespace r2pipe_test
                 rconfig.load<string>("gui.current_shell", "radare");
             //new Hotkeys();
         }
-        /* // some problems found at dynamic tab append also timeouts
-         * public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null)
+        // some problems found at dynamic tab append also timeouts     
+        public string run_task(String cmds, String controlName=null, Boolean append = false, List<string> cols = null, string filter = null)
         {
             if (r2 == null) return null; // may happend if gui closed when sending commands (r2.exit)
-            var task = Task.Run(() => run_task(cmds,controlName, append, cols));
+            var task = Task.Run(() => run(cmds,controlName, append, cols));
             if (task.Wait(TimeSpan.FromSeconds(int.Parse(rconfig.load<int>("r2.cmd_timeout",6)))))
                 return task.Result;
             else
                 Show(string.Format("run: {0} Timed out",cmds),"run");
             return null;
-        }*/
+        }
         public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null, string filter = null)
         {
             string res = "";
@@ -75,8 +77,9 @@ namespace r2pipe_test
                         cols   != null ? string.Join(", ", cols) : ""),
                     true);
             }
-            if (r2 == null && cmds!=null)
+            if (r2 == null)
             {
+                if( cmds!=null ) cmds="";
                 Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
@@ -99,7 +102,7 @@ namespace r2pipe_test
                 switch (current_shell)
                 {
                     case "radare2":
-                        res = r2.RunCommand(cmds_new).Replace("\r", "");
+                        res = r2.RunCommand(cmds_new);
                         break;
                     case "javascript":
                         res = invokeJavascript(cmds, filter);
@@ -109,6 +112,8 @@ namespace r2pipe_test
                                             current_shell), "unknown shell");
                         break;
                 }
+                if (res != null)
+                    res = res.Replace("\r", "");
             }
             if(res != null && (res.StartsWith("[") || res.StartsWith("{")))
             try
@@ -148,21 +153,45 @@ namespace r2pipe_test
                 if (rtbox.InvokeRequired)
                 {
                     SetTextCallback d = new SetTextCallback(setText);
-                    rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols });
+                    try
+                    {
+                        rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols });
+                    }
+                    catch (Exception e) // may fail on closing gui
+                    {
+                        Show(e.ToString(), "setText callback invoke");
+                    }
                 }
                 else
                 {
                     if (!append) rtbox.Text = "";
-                    
+
                     rtbox.Text += r2html.encodeutf8(someText);
                 }
             }
             else if (c.GetType() == typeof(ListView))
             {
                 ListView lstview = (ListView)c;
-                lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, true, cols });
+                if (cols == null)
+                {
+                    cols = save_active_cols(controlName, lstview);
+                }
+                try
+                {
+                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate), 
+                        new object[] { lstview, true, controlName, cols });
+                }
+                catch (Exception e) // may fail on closing gui
+                {
+                    Show(e.ToString(),"setText(): listViewUpdate()");
+                }
                 if (json_obj != null)
                 {
+                    if ( cols == null )
+                    {
+                        output("setText(): cols are null");
+                        return;
+                    }
                     try // sometimes fails
                     {
                         for (int i = 0; i < json_obj.Count; i++)
@@ -189,7 +218,14 @@ namespace r2pipe_test
                 {
                     Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
                 }
-                lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, null });
+                try
+                {
+                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, controlName, null });
+                }
+                catch (Exception e) // may fail when closing gui
+                {
+                    Show(e.ToString(), "listViewUpdate");
+                }
             }
             else if (c.GetType() == typeof(WebBrowser))
             {
@@ -266,10 +302,6 @@ namespace r2pipe_test
             decorator_param = value;
             return decorator_cb();
         }
-        private Func<string> findDecorator_callback(string decoratorName)
-        {
-            return decorators_cb[decoratorName];
-        }
         public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj)
         {
             object c = controls[controlName];
@@ -300,10 +332,10 @@ namespace r2pipe_test
             if (theme_manager.themeName != null)
                 set_theme(theme_manager.themeName);
         }
-        public string Prompt(string text, string caption, string defval = "")
+        public string Prompt(string text, string caption, string defval = "", Form owner = null)
         {
             askForm frm = new askForm();
-            string answer = frm.Prompt(text, caption, defval, frm);
+            string answer = frm.Prompt(text, caption, defval, frm, owner);
             if ( answer != null ) answer = answer.Replace("\n", "");
             return answer;
         }
@@ -376,13 +408,30 @@ namespace r2pipe_test
             }
             tabcontrol.SelectedIndex = 0;
         }
-        public delegate void BeginListviewUpdate(ListView lstview, bool update, List<string> cols);
+        public delegate void BeginListviewUpdate(ListView lstview, bool update, string controlName, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
-        public void listviewUpdate(ListView lstview, bool update = true, List<string> cols = null)
+        public List<string> save_active_cols(string controlName, ListView lstview)
+        {
+            List<string> cols = new List<string>();
+            foreach (ColumnHeader item in lstview.Columns)
+            {
+                cols.Add(item.Text);
+            }
+            output("#todo: save cols of " + controlName+"\n"+cols.ToString());
+            GuiControl control = gui_controls.findControlBy_name(controlName);
+            control.set_columnTitles(cols);
+            output(control.ToString());
+            return cols;
+        }
+        public void listviewUpdate(ListView lstview, bool update = true, string controlName = null, List<string> cols = null)
         {
             if (update)
             {
                 lstview.BeginUpdate();
+                if (cols == null)
+                {
+                    cols = save_active_cols(controlName, lstview);
+                }
                 lstview.Clear();
                 if (cols != null)
                 {
@@ -407,10 +456,11 @@ namespace r2pipe_test
             item.ImageIndex = 1;
             lstview.Items.Add(item);
         }
-        public bool add_control(string name, object control)
+        public bool add_control(string name, object control, string tabTitle = null, string cmds = null)
         {
             if (controls.ContainsKey(name)) return false;
             controls.Add(name, control);
+            gui_controls.add_control(name, control, tabTitle, cmds);
             if (control.GetType() == typeof(WebBrowser))
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
@@ -459,7 +509,7 @@ namespace r2pipe_test
             {
                 Show(e.ToString(), "add_control_tab: browser");
             }
-            page.Tag = tabname.ToLower();
+            page.Tag = cmds; // tabname.ToLower();
             page.ImageIndex = 1;
             if (browser != null)
             {
@@ -478,7 +528,7 @@ namespace r2pipe_test
                 Show(e.ToString(), "add_control_tab: page");
             }
             if (browser != null)
-                add_control(tabname, browser);
+                add_control(tabname, browser, tabname, cmds);
             guicontrol.autoresize_output();
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -514,30 +564,6 @@ namespace r2pipe_test
             {
                 rconfig.save("gui.lastfile", fileName);
             }
-        }
-        public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
-        {
-            foreach (ToolStripMenuItem item in menu.Items)
-            {                
-                if (item.Text.Equals(menuName))
-                {
-                    return item;
-                }
-                if (item.HasDropDownItems)
-                {
-                    foreach (object subitem in item.DropDownItems)
-                    {
-                        if(subitem.GetType() == typeof(ToolStripMenuItem))
-                        {
-                            if (((ToolStripMenuItem)subitem).Text.Equals(menuName))
-                            {
-                                return (ToolStripMenuItem)subitem;
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
         }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
         {
@@ -598,24 +624,6 @@ namespace r2pipe_test
             guicontrol.UpdateGUI();
             shellopts_cb[current_shell]();
         }
-        public void run_script(string scriptFileName)
-        {
-            // 1. read input from scriptFilename
-            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
-            run("e scr.utf8 = true", "output", true);
-            run("Ps default");
-            run("aa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
-            run("pdf", "dissasembly");
-            run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
-            run("iij", "imports_listview", false, new List<string> { "name", "plt" });
-            run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
-            run("dmj", "maps_listView", false, new List<string> {"name","addr","addr_end","type","perm" });
-            run("pxa 2000", "hexview");
-            run("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
-            // run("axtj @ entry0", "xrefs ( axtj )");
-            guicontrol.script_executed_cb();
-        }
         public void show_processes(string filter=null)
         {
             run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" }, filter);
@@ -628,6 +636,38 @@ namespace r2pipe_test
             rconfig.save("gui.theme_name", guicontrol.themeName);
             return path;
         }
+        public string findControlBy_tabTitle(string title)
+        {
+            return gui_controls.findControlBy_tabTitle(title).ToString();
+        }
+        private Func<string> findDecorator_callback(string decoratorName)
+        {
+            return decorators_cb[decoratorName];
+        }
+        public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
+        {
+            foreach (ToolStripMenuItem item in menu.Items)
+            {
+                if (item.Text.Equals(menuName))
+                {
+                    return item;
+                }
+                if (item.HasDropDownItems)
+                {
+                    foreach (object subitem in item.DropDownItems)
+                    {
+                        if (subitem.GetType() == typeof(ToolStripMenuItem))
+                        {
+                            if (((ToolStripMenuItem)subitem).Text.Equals(menuName))
+                            {
+                                return (ToolStripMenuItem)subitem;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
         public string escape_json(string r2_json)
         {
             return Regex.Replace(r2_json,
@@ -635,6 +675,36 @@ namespace r2pipe_test
                 \\         # match a \
                 (?!\\)     # lookahead: Check that the following character isn't a \",
                 @"\\", RegexOptions.IgnorePatternWhitespace);
+        }
+        public void output(string text)
+        {
+            setText("output", "", text + "\n", true);
+        }
+        public string FindFile(string FileName, string Title)
+        {
+            return Prompt(FileName + " location?", Title, FileName, guicontrol);
+            /*
+            openFileDialog1.FileName = FileName;
+            openFileDialog1.Title = Title;
+            openFileDialog1.ShowDialog();*/
+        }
+        public void run_script(string scriptFileName)
+        {
+            // 1. read input from scriptFilename
+            // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
+            run("e scr.utf8 = true", "output", true);
+            run_task("aa;pxa 2000", "hexview");
+            run("Ps default"); // defaul project
+            run("aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run("pdf", "dissasembly");
+            run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
+            run("iij", "imports_listview", false, new List<string> { "name", "plt" });
+            run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
+            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
+            run("dmj", "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
+            run_task("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            // run("axtj @ entry0", "xrefs ( axtj )");
+            guicontrol.script_executed_cb();
         }
         public void exit()
         {

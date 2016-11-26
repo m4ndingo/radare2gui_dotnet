@@ -72,7 +72,9 @@ namespace r2pipe_test
         }
         public string encodeutf8(string text)
         {
-            byte[] bytes = Encoding.Default.GetBytes(text);
+            byte[] bytes = {};
+            if ( text!=null )
+                bytes = Encoding.Default.GetBytes(text);
             return Encoding.UTF8.GetString(bytes);
         }
         public string convert(string cmds, string console_text, dynamic json_obj, ref MatchCollection mc) // calls htmlize or htmljsonize

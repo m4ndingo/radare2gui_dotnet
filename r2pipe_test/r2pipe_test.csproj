@@ -89,6 +89,7 @@
       <DependentUpon>askForm.cs</DependentUpon>
     </Compile>
     <None Include="Hotkeys.cs" />
+    <Compile Include="GuiControl.cs" />
     <Compile Include="r2html.cs" />
     <Compile Include="rconfig.cs" />
     <Compile Include="Form1.cs">
