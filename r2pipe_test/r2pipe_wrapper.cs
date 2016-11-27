@@ -54,10 +54,10 @@ namespace r2pipe_test
         {
             if (r2 == null) return null; // may happend if gui closed when sending commands (r2.exit)
             var task = Task.Run(() => run(cmds,controlName, append, cols));
-            if (task.Wait(TimeSpan.FromSeconds(int.Parse(rconfig.load<int>("r2.cmd_timeout",6)))))
+            if (task.Wait(TimeSpan.FromSeconds(int.Parse(rconfig.load<int>("r2.cmd_timeout",12)))))
                 return task.Result;
             else
-                Show(string.Format("run: {0} Timed out",cmds),"run");
+                Show(string.Format("run: {0} Timed out\n",cmds),"run");
             return null;
         }
         public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null, string filter = null)
@@ -590,10 +590,15 @@ namespace r2pipe_test
         }
         private void update_statusbar(string cmds) // called from run
         {
-            seek_address = UInt64.Parse(r2.RunCommand("?v")); // get seek address in decimal ?v
-            this.guicontrol.show_message(
-                string.Format("{0} {1} [0x{2}] > {3}",
-                    guicontrol.fileType, Path.GetFileName(fileName), seek_address, cmds));
+            try // may fail on timeouts
+            {
+                seek_address = UInt64.Parse(r2.RunCommand("?v")); // get seek address in decimal ?v
+                this.guicontrol.show_message(
+                    string.Format("{0} {1} [0x{2}] > {3}",
+                        guicontrol.fileType, Path.GetFileName(fileName), seek_address, cmds));
+
+            }
+            catch (Exception){} // better manage
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {

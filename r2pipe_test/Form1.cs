@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Diagnostics;
 
 namespace r2pipe_test
 {
@@ -832,10 +833,25 @@ namespace r2pipe_test
             GuiControl gui_control = find_control_by_name("functions_listview");
             refresh_control(gui_control);
         }
-
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             update_archs(); // todo: remove option
+        }
+
+        private void shellRadare2exeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = rconfig.load<string>("r2path");
+            startInfo.Arguments = fileName;
+            Process.Start(startInfo);
+        }
+        private void yesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.long_command_output = false;
+        }
+        private void noToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.long_command_output = true;
         }
     }
 }
