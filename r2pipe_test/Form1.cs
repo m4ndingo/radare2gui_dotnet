@@ -43,7 +43,7 @@ namespace r2pipe_test
             r2pw.add_control("hexview", webBrowser2,             "Hex view",    "pxa 2000");
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){
-                "offset", "vaddr", "paddr", "plt", "addr", "addr_end"});
+                "offset", "vaddr", "paddr", "plt", "addr", "addr_end", "eip"});
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>() { "string" });
             //add menu options and function callbacks
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
@@ -59,8 +59,10 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
             r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
+            r2pw.add_menucmd("&View", "ESIL registers", "aerj", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
+            r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
             r2pw.add_menucmd("r2", "Dbg cmds", "d?", mainMenu);
             r2pw.add_menucmd("r2", "Processes", "dp?", mainMenu);
@@ -354,7 +356,10 @@ namespace r2pipe_test
         {
             r2pw.run(cmds, "output", true);
             if (cmds.StartsWith("ae"))
-                r2pw.run("pdf", "dissasembly");
+            {
+                refresh_tab();
+                //r2pw.run("pd", "dissasembly");
+            }
         }
         private void changeArch(String arch)
         {
@@ -536,6 +541,10 @@ namespace r2pipe_test
         }
         private void floatToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            popup_tab();
+        }
+        public void popup_tab()
+        {
             webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, "webcont");
             WebBrowser webbrowser = new WebBrowser();
 
@@ -550,9 +559,7 @@ namespace r2pipe_test
             GuiControl gui_control = r2pw.add_control(
                 gui_control_tab.name + "_" + timeStamp, webbrowser, "popup", gui_control_tab.cmds);
             refresh_control(gui_control);
-            //r2pw.run(gui_control.cmds, "webcont");
             webFrm.Show();
-            //todo("Floating Form", "new form with webbrowser control required");
         }
         private void HTMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -569,12 +576,17 @@ namespace r2pipe_test
         }
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            string pc = ""; // new pc for ESIL emulation
+            string pc = ""; // new eip/pc for ESIL emulation
             ESILcmds("aei");
-            pc = r2pw.run("aer~pc");
-            pc = r2pw.Prompt("pc", "New pc (avr)", pc);
+            pc = r2pw.run("aer~eip[1]");
+            pc = "entry0";
+            pc = r2pw.Prompt("Start address", "New eip", pc).Replace("\n","");
             if (pc != null)
-                ESILcmds("aer pc = " + pc);
+            {
+                ESILcmds("aer eip = " + pc);
+                 r2pw.run("s " + pc);
+                //ESILcmds("aer pc = " + pc);
+            }
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
         {

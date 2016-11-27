@@ -12,18 +12,20 @@ namespace r2pipe_test
     public class R2PIPE_WRAPPER
     {
         // class vars
-        public          IR2Pipe  r2                 =   null  ;
-        public           String  current_shell      =     ""  ;
-        public           String  fileName           =     ""  ;
-        private           Form1  guicontrol         =   null  ;
-        public          RConfig  rconfig            =   null  ;
-        private      TabControl  tabcontrol         =   null  ;
-        private    themeManager  theme_manager      =   null  ;
-        public           r2html  r2html             =   null  ;
-        public           string  decorator_param    =   null  ;
-        public           string  lastAddress        =   null  ;
-        private            bool  mouseMoved         =  false  ;
-        public      GuiControls  gui_controls       =   null  ;
+        public          IR2Pipe  r2                  =   null  ;
+        public           String  current_shell       =     ""  ;
+        public           String  fileName            =     ""  ;
+        private           Form1  guicontrol          =   null  ;
+        public          RConfig  rconfig             =   null  ;
+        private      TabControl  tabcontrol          =   null  ;
+        private    themeManager  theme_manager       =   null  ;
+        public           r2html  r2html              =   null  ;
+        public           string  decorator_param     =   null  ;
+        public           string  lastAddress         =   null  ;
+        private            bool  mouseMoved          =  false  ;
+        public      GuiControls  gui_controls        =   null  ;
+        public             bool  long_command_output =  false  ;
+        public           UInt64  seek_address        =      0  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
@@ -65,16 +67,22 @@ namespace r2pipe_test
             if (controls.ContainsKey("output"))
             {
                 string control_type = "unknown";
+                string output_msg = "";
                 if(controlName!=null && controls.ContainsKey(controlName))
                     control_type = controls[controlName].GetType().ToString();
-                setText("output", "", 
-                    string.Format(
+                if (long_command_output == true)
+                    output_msg = string.Format(
                         "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
-                        controlName, 
+                        controlName,
                         cmds,
-                        filter != null ? "~"+filter : "",
+                        filter != null ? "~" + filter : "",
                         current_shell, control_type,
-                        cols   != null ? string.Join(", ", cols) : ""),
+                        cols != null ? string.Join(", ", cols) : "");
+                else
+                    output_msg = string.Format("[0x{0:x8}]> {1,-20} # {2}\n", 
+                        seek_address, cmds, controlName);
+                setText("output", "", 
+                    output_msg,
                     true);
             }
             if (r2 == null)
@@ -589,10 +597,10 @@ namespace r2pipe_test
         }
         private void update_statusbar(string cmds) // called from run
         {
-            string seekpos = r2.RunCommand("s").Replace("\n", "").Replace("\r", "");
+            seek_address = UInt64.Parse(r2.RunCommand("?v")); // get seek address in decimal ?v
             this.guicontrol.show_message(
-                string.Format("{0} {1} [{2}] > {3}",
-                    guicontrol.fileType, Path.GetFileName(fileName), seekpos, cmds));
+                string.Format("{0} {1} [0x{2}] > {3}",
+                    guicontrol.fileType, Path.GetFileName(fileName), seek_address, cmds));
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {

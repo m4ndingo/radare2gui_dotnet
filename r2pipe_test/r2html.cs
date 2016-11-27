@@ -51,13 +51,13 @@ namespace r2pipe_test
                 "<span class=group>[</span><span class=shorted_address title='$1'>$2</span><span class=group>]</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
                 "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>"));
-            console_text_cut = (new Regex(@"(push|pop|cli)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(push|pop\b|cli)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
             console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
-            console_text_cut = (new Regex(@"\b[rl]?call", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"\b[rl]?call\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_call>call</span>");
-            console_text_cut = (new Regex(@"(\bmov[wsxd]*|lea|clc|xchg|setne|qword|dword|byte|std|ldd)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std|ldd)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
             console_text_cut = (new Regex(@"(add|subi?|inc|dec|i?div|[if]?mul|sbb|sbci?|adc)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_add>$1</span>$2");
