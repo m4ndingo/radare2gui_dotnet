@@ -17,7 +17,7 @@ Another radare2 gui for windows ( alpha 1.0 )
 
 ![r2pipeguidotnet_needhelp](https://cloud.githubusercontent.com/assets/12532269/20546023/fdb2993c-b112-11e6-8175-81cc901dfee1.png)
 
-**Nice Themes ^^**
+**Nice "Themes" ^^**
 
 ![r2pipeguidotnet_terminal256theme](https://cloud.githubusercontent.com/assets/12532269/20546339/c067189e-b114-11e6-8d96-cb0c2c3e7a4e.png)
 
