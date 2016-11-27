@@ -142,6 +142,8 @@
             this.refreshActiveTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.yesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.noToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.cpuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -992,8 +994,9 @@
             // 
             this.optionsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.architectureToolStripMenuItem,
-            this.eSILToolStripMenuItem,
-            this.toolStripSeparator6});
+            this.cpuToolStripMenuItem,
+            this.toolStripSeparator6,
+            this.eSILToolStripMenuItem});
             this.optionsMenu.Name = "optionsMenu";
             this.optionsMenu.Size = new System.Drawing.Size(61, 19);
             this.optionsMenu.Text = "Options";
@@ -1242,6 +1245,21 @@
             this.noToolStripMenuItem1.Text = "no";
             this.noToolStripMenuItem1.Click += new System.EventHandler(this.noToolStripMenuItem1_Click);
             // 
+            // cpuToolStripMenuItem
+            // 
+            this.cpuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.reloadToolStripMenuItem1});
+            this.cpuToolStripMenuItem.Name = "cpuToolStripMenuItem";
+            this.cpuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cpuToolStripMenuItem.Text = "Cpu";
+            // 
+            // reloadToolStripMenuItem1
+            // 
+            this.reloadToolStripMenuItem1.Name = "reloadToolStripMenuItem1";
+            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.reloadToolStripMenuItem1.Text = "Reload";
+            this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1404,6 +1422,8 @@
         private System.Windows.Forms.ToolStripMenuItem refreshActiveTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem yesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem noToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem cpuToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem1;
     }
 }
 

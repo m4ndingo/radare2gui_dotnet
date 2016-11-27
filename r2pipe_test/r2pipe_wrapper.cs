@@ -61,7 +61,7 @@ namespace r2pipe_test
                 Show(string.Format("run: {0} Timed out\n",cmds),"run");
             return null;
         }
-        public string run(String cmds, String controlName=null, Boolean append = false, List<string> cols = null, string filter = null)
+        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false)
         {
             string res = "";
             dynamic json_obj = null;
@@ -82,6 +82,10 @@ namespace r2pipe_test
                 else
                     output_msg = string.Format("[0x{0:x8}]> {1,-20} # {2}\n", 
                         seek_address, cmds, controlName);
+                // todo: move to r2pw
+                if ((cmds.StartsWith("d") || cmds.StartsWith("p")) && 
+                        refresh_tab && autorefresh_activetab)
+                    guicontrol.refresh_tab();
                 setText("output", "", 
                     output_msg,
                     true);

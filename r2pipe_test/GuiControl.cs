@@ -81,7 +81,7 @@ namespace r2pipe_test
         }
         public GuiControl findControlBy_tabTitle(string tabTitle)
         {
-            //r2pw.output(string.Format("findControlByTitle: tabTitle='{0}'", tabTitle));
+            if (tabTitle == null) return null;
             foreach (GuiControl c in controls)
             {
                 if (tabTitle.Equals(c.tabTitle)) 

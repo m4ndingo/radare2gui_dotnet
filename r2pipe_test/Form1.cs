@@ -240,6 +240,15 @@ namespace r2pipe_test
                     r2pw.add_menufcn("Architecture", "", arch, changeArch, mainMenu);
             }
         }
+        private void update_cpus()
+        {
+            string cpus = r2pw.run("iL~[1]");
+            foreach (string cpu in cpus.Split('\n'))
+            {
+                if (cpu.Length > 0)
+                    r2pw.add_menufcn("Cpu", "", cpu, changeCpu, mainMenu);
+            }
+        }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string FileName = Prompt("Locate some file", "Open dialog", r2pw.fileName);
@@ -267,11 +276,10 @@ namespace r2pipe_test
         {
             if (e.KeyChar == '\r')
             {
+                string cmds = cmbCmdline.Text;
                 cmbCmdline.Items.Remove("");
-                cmbCmdline.Items.Add(cmbCmdline.Text);
-                r2pw.run(cmbCmdline.Text, "output", true); // append
-                if( r2pw.autorefresh_activetab )
-                    refresh_tab();
+                cmbCmdline.Items.Add(cmds);
+                r2pw.run(cmds, "output", true, null, null, true); // append
                 cmbCmdline.Items.Add("");
                 cmbCmdline.Text = "";
             }
@@ -380,6 +388,17 @@ namespace r2pipe_test
                 rconfig.save("gui.hexdigits", int.Parse(nbits) / 8 );
             }
             catch (Exception e) { r2pw.Show(e.ToString(), "changeArch"); }
+        }
+        private void changeCpu(String cpu)
+        {
+            string nbits = null;
+            r2pw.run(string.Format("e asm.cpu = {0}; aaa", cpu));
+            nbits = r2pw.run("e asm.bits");
+            try
+            {
+                rconfig.save("gui.hexdigits", int.Parse(nbits) / 8);
+            }
+            catch (Exception e) { r2pw.Show(e.ToString(), "changeCpu"); }
         }
         private string num2hex() // decorator
         {
@@ -633,11 +652,15 @@ namespace r2pipe_test
         private string selected_tab(string attr)
         {
             string text = null;
-            if (attr.Equals("title")) text = tabControl1.SelectedTab.Text;
-            if (attr.Equals("tag") && tabControl1.SelectedTab.Tag!=null) 
-                text = tabControl1.SelectedTab.Tag.ToString();
-            if (attr.Equals("controlName"))
-                text = r2pw.findControlBy_tabTitle(attr);
+            try // may fail
+            {
+                if (attr.Equals("title")) text = tabControl1.SelectedTab.Text;
+                if (attr.Equals("tag") && tabControl1.SelectedTab.Tag != null)
+                    text = tabControl1.SelectedTab.Tag.ToString();
+                if (attr.Equals("controlName"))
+                    text = r2pw.findControlBy_tabTitle(attr);
+            }
+            catch (Exception) { } // better manage
             return text;
         }
         private void maximizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -771,8 +794,10 @@ namespace r2pipe_test
                     }
                 }
                 //output( "refresh_control: " + control.name + "@" + control.tabTitle + 
-                //        " cmds:" + control.cmds);
+                //        " cmds:" + control.cmds);                
+                SuspendLayout();
                 r2pw.run(control.cmds, control.name, false, column_titles); // no wait
+                ResumeLayout();
             }
             else
             {
@@ -780,7 +805,7 @@ namespace r2pipe_test
                     output("refresh_control: '" + control.name + "' no cmds found ( complete add_cmd() args )");
             }
         }
-        private void refresh_tab()
+        public void refresh_tab()
         {
             string tabTitle = selected_tab("title");
             GuiControl gui_control =  find_control_by_title(tabTitle);
@@ -865,6 +890,11 @@ namespace r2pipe_test
         private void noToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             r2pw.autorefresh_activetab = false;
+        }
+
+        private void reloadToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            update_cpus(); // todo: remove option
         }
     }
 }
