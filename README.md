@@ -19,7 +19,7 @@ Another radare2 gui for windows ( alpha 1.0 )
 
 **Nice "Themes" ^^**
 
-![esil_inteface](https://cloud.githubusercontent.com/assets/12532269/20647396/c012977e-b493-11e6-86ef-9ccb2e99d4ea.jpg)
+![esil_emulation](https://cloud.githubusercontent.com/assets/12532269/20647429/4c2fc3e4-b494-11e6-96a0-0fbba6b207f6.png)
 
 # Compilation
 ## Packages required
