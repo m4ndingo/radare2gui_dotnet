@@ -236,7 +236,8 @@ namespace r2pipe_test
             string architectures = r2pw.run("iL~[1]");
             foreach (string arch in architectures.Split('\n'))
             {
-                r2pw.add_menufcn("Architecture", "", arch, changeArch, mainMenu);
+                if( arch.Length>0 )
+                    r2pw.add_menufcn("Architecture", "", arch, changeArch, mainMenu);
             }
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,6 +270,8 @@ namespace r2pipe_test
                 cmbCmdline.Items.Remove("");
                 cmbCmdline.Items.Add(cmbCmdline.Text);
                 r2pw.run(cmbCmdline.Text, "output", true); // append
+                if( r2pw.autorefresh_activetab )
+                    refresh_tab();
                 cmbCmdline.Items.Add("");
                 cmbCmdline.Text = "";
             }
@@ -852,6 +855,16 @@ namespace r2pipe_test
         private void noToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.long_command_output = true;
+        }
+
+        private void yesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            r2pw.autorefresh_activetab = true;
+        }
+
+        private void noToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            r2pw.autorefresh_activetab = false;
         }
     }
 }

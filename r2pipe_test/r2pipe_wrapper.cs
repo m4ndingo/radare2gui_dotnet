@@ -26,6 +26,7 @@ namespace r2pipe_test
         public      GuiControls  gui_controls        =   null  ;
         public             bool  long_command_output =  false  ;
         public           UInt64  seek_address        =      0  ;
+        public             bool  autorefresh_activetab = true  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
