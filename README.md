@@ -19,7 +19,7 @@ Another radare2 gui for windows ( alpha 1.0 )
 
 **Nice "Themes" ^^**
 
-![r2pipeguidotnet_terminal256theme](https://cloud.githubusercontent.com/assets/12532269/20546339/c067189e-b114-11e6-8d96-cb0c2c3e7a4e.png)
+![esil_inteface](https://cloud.githubusercontent.com/assets/12532269/20647396/c012977e-b493-11e6-86ef-9ccb2e99d4ea.jpg)
 
 # Compilation
 ## Packages required
