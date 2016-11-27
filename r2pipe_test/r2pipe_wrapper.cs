@@ -340,13 +340,6 @@ namespace r2pipe_test
             if (theme_manager.themeName != null)
                 set_theme(theme_manager.themeName);
         }
-        public string Prompt(string text, string caption, string defval = "", Form owner = null)
-        {
-            askForm frm = new askForm();
-            string answer = frm.Prompt(text, caption, defval, frm, owner == null ? guicontrol: owner);
-            if ( answer != null ) answer = answer.Replace("\n", "");
-            return answer;
-        }
         private string BuildWebPage(WebBrowser wBrowser, string controlName, string cmds, string someText, dynamic json_obj)
         {
             string tmpName = null;
@@ -547,7 +540,7 @@ namespace r2pipe_test
         {
             if (e.KeyCode == Keys.G) //71 g keyvalue
             {
-                string address = Prompt("Address:", "goto address");
+                string address = guicontrol.Prompt("Address:", "goto address");
                 gotoAddress(address);
             }
         }
@@ -642,7 +635,7 @@ namespace r2pipe_test
         }
         public string find_dataPath(string def="")
         {
-            string path = Prompt("gui media path?", "Please, locate your data path...", def);
+            string path = guicontrol.Prompt("gui media path?", "Please, locate your data path...", def);
             rconfig.save("gui.datapath", path);
             rconfig.save("gui.hexview.css", "r2pipe.css");
             rconfig.save("gui.theme_name", guicontrol.themeName);
@@ -691,14 +684,6 @@ namespace r2pipe_test
         public void output(string text)
         {
             setText("output", "", text + "\n", true);
-        }
-        public string FindFile(string FileName, string Title)
-        {
-            return Prompt(FileName + " location?", Title, FileName, guicontrol);
-            /*
-            openFileDialog1.FileName = FileName;
-            openFileDialog1.Title = Title;
-            openFileDialog1.ShowDialog();*/
         }
         public void run_script(string scriptFileName)
         {

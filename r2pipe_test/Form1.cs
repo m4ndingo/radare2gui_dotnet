@@ -77,8 +77,6 @@ namespace r2pipe_test
             r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
-            r2pw.add_menufcn("Architecture", "", "avr", changeArch, mainMenu);
-            r2pw.add_menufcn("Architecture", "", "x86", changeArch, mainMenu);
             r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
@@ -96,9 +94,9 @@ namespace r2pipe_test
             updating_gui = true;
             tabcontrol = tabControl1;
             currentShell = rconfig.load<string>("gui.current_shell", "radare2");
-            themeName = rconfig.load<string>("gui.theme_name", "default");
-            backColor = Color.FromName(rconfig.load<string>("gui.output.bg", "blue"));
-            foreColor = Color.FromName(rconfig.load<string>("gui.output.fg", "white"));
+            themeName = rconfig.load<string>("gui.theme_name", "classic");
+            backColor = Color.FromName(rconfig.load<string>("gui.output.bg", "white"));
+            foreColor = Color.FromName(rconfig.load<string>("gui.output.fg", "black"));
             Left = int.Parse(rconfig.load<int>("gui.left", Left));
             Top = int.Parse(rconfig.load<int>("gui.top", Top));
             Width = int.Parse(rconfig.load<int>("gui.width", Width));
@@ -157,7 +155,7 @@ namespace r2pipe_test
             if (r2path == null || !File.Exists(rconfig.r2path))
             {
                 if (((object)r2pw) != null) r2pw.Show("Form1: CheckR2path(): Path for 'radare2.exe' not found...", "radare2.exe not found");
-                rconfig.save("r2path", r2pw.FindFile("radare2.exe","Please, locate your radare2.exe binary"));
+                rconfig.save("r2path", FindFile("radare2.exe","Please, locate your radare2.exe binary"));
             }
         }
         private void LoadFile(String fileName)
@@ -184,7 +182,7 @@ namespace r2pipe_test
                 if (new_arch != null)
                 {
                     new_arch = new_arch.Replace("\n", "");
-                    new_arch = r2pw.Prompt("Arch:", "Select arch", new_arch, this);
+                    new_arch = Prompt("Arch:", "Select arch", new_arch);
                     changeArch(new_arch);
                     //r2pw.run("e asm.arch = " + new_arch, "output", true); // no wait
                 }
@@ -232,9 +230,17 @@ namespace r2pipe_test
         {
             show_message(string.Format("Binary file '{0}' loaded.", fileName));
         }
+        private void update_archs()
+        {
+            string architectures = r2pw.run("iL~[1]");
+            foreach (string arch in architectures.Split('\n'))
+            {
+                r2pw.add_menufcn("Architecture", "", arch, changeArch, mainMenu);
+            }
+        }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string FileName = r2pw.Prompt("Locate some file", "Open dialog", r2pw.fileName, this);
+            string FileName = Prompt("Locate some file", "Open dialog", r2pw.fileName);
             LoadFile(FileName);
         }
         private void txtOutput_TextChanged(object sender, EventArgs e)
@@ -330,7 +336,7 @@ namespace r2pipe_test
         private void dumpGuiVars(string args)
         {
             List<string> keys = rconfig.reg_enumkeys();
-            if (args == "*") args = r2pw.Prompt("filter results", "Enum registry vars", args);
+            if (args == "*") args = Prompt("filter results", "Enum registry vars", args);
             output(string.Format("filter: {0}", args));
             foreach (string varname in keys)
             {
@@ -464,7 +470,11 @@ namespace r2pipe_test
         }
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(txtOutput.SelectedText.Replace("\n", "\r\n"));
+            try // may fail
+            {
+                Clipboard.SetText(txtOutput.SelectedText.Replace("\n", "\r\n"));
+            }
+            catch (Exception) { }
         }
         private void webBrowser1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -580,7 +590,7 @@ namespace r2pipe_test
             ESILcmds("aei");
             pc = r2pw.run("aer~eip[1]");
             pc = "entry0";
-            pc = r2pw.Prompt("Start address", "New eip", pc).Replace("\n","");
+            pc = Prompt("Start address", "New eip", pc).Replace("\n","");
             if (pc != null)
             {
                 ESILcmds("aer eip = " + pc);
@@ -776,11 +786,22 @@ namespace r2pipe_test
                 refresh_control(gui_control);
             }
         }
+        public string Prompt(string text, string caption, string defval = "")
+        {
+            askForm frm = new askForm();
+            string answer = frm.Prompt(text, caption, defval, frm, this );
+            if (answer != null) answer = answer.Replace("\n", "");
+            return answer;
+        }
+        public string FindFile(string FileName, string Title)
+        {
+            return Prompt(FileName + " location?", Title, FileName);
+        }
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string ooss_command = null;
             maximize("output");
-            ooss_command = r2pw.Prompt("ooss command:", "run ( ! )", "!!notepad");
+            ooss_command = Prompt("ooss command:", "run ( ! )", "!!notepad");
             if (ooss_command != null)
                 r2pw.run(ooss_command, "output", true);
         }
@@ -810,6 +831,11 @@ namespace r2pipe_test
         {
             GuiControl gui_control = find_control_by_name("functions_listview");
             refresh_control(gui_control);
+        }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            update_archs(); // todo: remove option
         }
     }
 }
