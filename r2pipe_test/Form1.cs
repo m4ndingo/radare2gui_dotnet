@@ -50,12 +50,13 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
             r2pw.add_menucmd("&View", "Disassembly", "pdf", mainMenu);
             r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu, "num2hex");
-            r2pw.add_menucmd("&View", "Functions", "aaa;aflj", mainMenu);
+            r2pw.add_menucmd("&View", "Functions", "aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
             r2pw.add_menucmd("&View", "Sections", "S=", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
+            r2pw.add_menucmd("&View", "Exports", "iEj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
             r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
@@ -86,7 +87,7 @@ namespace r2pipe_test
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
-            LoadFile("-");
+            LoadFile("-"); // -- = no file
         }
         public void UpdateGUI(string args = null)
         {
@@ -123,6 +124,8 @@ namespace r2pipe_test
             lstSections.ForeColor = foreColor;
             lstProcesses.BackColor = backColor;
             lstProcesses.ForeColor = foreColor;
+            lstMaps.BackColor = backColor;
+            lstMaps.ForeColor = foreColor;
             tsDebug.BackColor = backColor;
             tsDebug.ForeColor = foreColor;
             splitContainer1.Panel1.BackColor = backColor;
@@ -143,11 +146,12 @@ namespace r2pipe_test
             if (!fileName.Equals("-"))
             {
                 fileType = r2pw.run("e file.type");
-                if( fileType!=null )
+                if (fileType != null)
+                {
                     fileType = fileType.Replace("\n", "");
-                //output(string.Format("{0} file loaded", fileType));
-                if (fileType.Length > 0) // used only in statusbar
-                    fileType = " " + fileType;
+                    if (fileType.Length > 0) // used only in statusbar
+                        fileType = " " + fileType;
+                }
             }
         }
         private void CheckR2path()
@@ -171,7 +175,7 @@ namespace r2pipe_test
                 CheckR2path();
                 return;
             }
-            if (!File.Exists(fileName) && !fileName.Equals("-"))
+            if (fileName!=null && !File.Exists(fileName) && !fileName.StartsWith("-"))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
@@ -290,7 +294,7 @@ namespace r2pipe_test
             if (sender.GetType() == typeof(ListView))
             {
                 ListView listview = ((ListView)sender);
-                if (listview.Items.Count > 0)
+                if ( listview.Items.Count > 0 && listview.SelectedItems.Count > 0 )
                     msg = listview.SelectedItems[0].Text;
             }
             else
@@ -780,7 +784,7 @@ namespace r2pipe_test
         {
             refresh_tab();
         }
-        private void refresh_control(GuiControl control)
+        private void refresh_control(GuiControl control, bool timeout=false)
         {
             if (control!= null && control.cmds != null)
             {
@@ -795,15 +799,19 @@ namespace r2pipe_test
                 }
                 //output( "refresh_control: " + control.name + "@" + control.tabTitle + 
                 //        " cmds:" + control.cmds);                
-                SuspendLayout();
-                r2pw.run(control.cmds, control.name, false, column_titles); // no wait
-                ResumeLayout();
+                //SuspendLayout();
+                if( timeout == false )
+                    r2pw.run(control.cmds, control.name, false, column_titles); // no timeout
+                else
+                    r2pw.run_task(control.cmds, control.name, false, column_titles); // with timeout
+                //ResumeLayout();
             }
+            /*
             else
             {
                 if( control!=null )
                     output("refresh_control: '" + control.name + "' no cmds found ( complete add_cmd() args )");
-            }
+            }*/
         }
         public void refresh_tab()
         {
@@ -859,7 +867,7 @@ namespace r2pipe_test
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             GuiControl gui_control = find_control_by_name("functions_listview");
-            refresh_control(gui_control);
+            refresh_control(gui_control); // need timeout here, but command *j fails sometimes :_/
         }
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
         {

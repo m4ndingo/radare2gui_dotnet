@@ -55,7 +55,7 @@ function readDict(dict)
 if ( r2output != null )
 {
 	for(var k in r2output[0]) keys.push(k);
-	html  = "<table class=tbl border=0 id=out contenteditable=true>\r\n";
+	html  = "<table class=tbl border=0 id=out contenteditable=true width=100%>\r\n";
 	html += "<tr>\r\n";
 	html += "<th>"+keys.join("</th><th>")+"</th>";
 	html += "</tr><tr>\r\n";
@@ -71,7 +71,7 @@ if ( r2output != null )
 	}
 	html+="</table>";
 
-	html+=readDict(r2output);
+	//html+=readDict(r2output);
 	document.write(html);
 }
 

@@ -22,6 +22,23 @@ body{
    border-spacing: 0;
    border-collapse: collapse;
 }
+.tbl{
+    border-collapse:collapse;
+    border:1px solid #aaa;
+}
+.tbl td{
+    display:table-cell;
+    padding:5px;
+    border:1px solid #eee;
+    font-weight:normal;
+}
+.tbl th{
+	color:black;
+    background:#fff;
+	text-align:left;
+    padding:5px;
+    font-weight:normal;
+}
 .comment{
     color:green;
 }

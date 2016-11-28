@@ -25,6 +25,7 @@ namespace r2pipe_test
         {
             this.column_titles = column_titles;
         }
+        
         public override string ToString()
         {
             return string.Format(
@@ -33,9 +34,9 @@ namespace r2pipe_test
                 "cmds     : {2}\n" +
                 "tabTitle : {3}\n" +
                 "column_titles : {4}",
-                control.ToString(),
+                control.ToString(), // access problems
                 name, cmds, tabTitle,
-                column_titles);
+                column_titles.ToString());
         }
     }
     public class GuiControls

@@ -55,7 +55,7 @@ namespace r2pipe_test
         {
             if (r2 == null) return null; // may happend if gui closed when sending commands (r2.exit)
             var task = Task.Run(() => run(cmds,controlName, append, cols));
-            if (task.Wait(TimeSpan.FromSeconds(int.Parse(rconfig.load<int>("r2.cmd_timeout",12)))))
+            if (task.Wait(TimeSpan.FromSeconds(int.Parse(rconfig.load<int>("r2.cmd_timeout",30)))))
                 return task.Result;
             else
                 Show(string.Format("run: {0} Timed out\n",cmds),"run");
@@ -80,15 +80,13 @@ namespace r2pipe_test
                         current_shell, control_type,
                         cols != null ? string.Join(", ", cols) : "");
                 else
-                    output_msg = string.Format("[0x{0:x8}]> {1,-20} # {2}\n", 
+                    output_msg = string.Format("[0x{0:x8}]> {1,-25} # {2}\n", 
                         seek_address, cmds, controlName);
-                // todo: move to r2pw
+                // do after running cmd                
                 if ((cmds.StartsWith("d") || cmds.StartsWith("p")) && 
                         refresh_tab && autorefresh_activetab)
                     guicontrol.refresh_tab();
-                setText("output", "", 
-                    output_msg,
-                    true);
+                setText("output", "", output_msg, true); // send command to output
             }
             if (r2 == null)
             {
@@ -185,44 +183,33 @@ namespace r2pipe_test
             else if (c.GetType() == typeof(ListView))
             {
                 ListView lstview = (ListView)c;
-                if (cols == null)
-                {
+                if (cols == null || cols.Count == 0)
                     cols = save_active_cols(controlName, lstview);
-                }
-                try
-                {
-                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate), 
-                        new object[] { lstview, true, controlName, cols });
-                }
-                catch (Exception e) // may fail on closing gui
-                {
-                    Show(e.ToString(),"setText(): listViewUpdate()");
-                }
+                lstview.Invoke(new BeginListviewUpdate(listviewUpdate),
+                    new object[] { lstview, true, controlName, cols });
                 if (json_obj != null)
                 {
-                    if ( cols == null )
-                    {
-                        output("setText(): cols are null");
-                        return;
-                    }
                     try // sometimes fails
                     {
-                        for (int i = 0; i < json_obj.Count; i++)
+                        if (cols.Count > 0)
                         {
-                            string col0 = json_obj[i][cols[0]];
-                            col0 = decorate(controlName, cols[0], col0);
-                            ListViewItem row_item = new ListViewItem(col0);
-                            for (int j = 1; j < cols.Count; j++)
+                            for (int i = 0; i < json_obj.Count; i++)
                             {
-                                string cname = cols[j];
-                                if (json_obj[i][cname] != null) 
+                                string col0 = json_obj[i][cols[0]];
+                                col0 = decorate(controlName, cols[0], col0);
+                                ListViewItem row_item = new ListViewItem(col0);
+                                for (int j = 1; j < cols.Count; j++)
                                 {
-                                    string value = json_obj[i][cname].ToString();
-                                    value = decorate(controlName, cname, value);
-                                    ListViewItem.ListViewSubItem subitem = row_item.SubItems.Add(value);
+                                    string cname = cols[j];
+                                    if (json_obj[i][cname] != null)
+                                    {
+                                        string value = json_obj[i][cname].ToString();
+                                        value = decorate(controlName, cname, value);
+                                        ListViewItem.ListViewSubItem subitem = row_item.SubItems.Add(value);
+                                    }
                                 }
+                                lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
                             }
-                            lstview.Invoke(new AddToListviewCallback(listviewAdd), new object[] { lstview, row_item });
                         }
                     }
                     catch (Exception e) { MessageBox.Show(e.ToString()); }
@@ -231,6 +218,7 @@ namespace r2pipe_test
                 {
                     Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
                 }
+                
                 try
                 {
                     lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, controlName, null });
@@ -423,10 +411,10 @@ namespace r2pipe_test
             {
                 cols.Add(item.Text);
             }
-            output("#todo: save cols of " + controlName+"\n"+cols.ToString());
+            //output("#todo: save cols of " + controlName+"\n"+cols.ToString());
             GuiControl control = gui_controls.findControlBy_name(controlName);
             control.set_columnTitles(cols);
-            output(control.ToString());
+            //output(control.ToString());
             return cols;
         }
         public void listviewUpdate(ListView lstview, bool update = true, string controlName = null, List<string> cols = null)
@@ -438,11 +426,11 @@ namespace r2pipe_test
                 {
                     cols = save_active_cols(controlName, lstview);
                 }
-                lstview.Clear();
-                if (cols != null)
+                if (cols != null && cols.Count > 0)
                 {
                     int i = 0;
-                    int col_width = ( lstview.Width - 20 ) / cols.Count;
+                    int col_width = (lstview.Width - 20) / cols.Count;
+                    lstview.Clear();
                     lstview.Columns.Clear();
                     foreach (string cname in cols) // add values (rows) to listview
                     {
@@ -452,8 +440,20 @@ namespace r2pipe_test
                         i++;
                     }
                 }
+                
             }
-            else lstview.EndUpdate();
+            else
+            {
+                int i; // resize columns to "fit" contents
+                for (i = 0; i < lstview.Columns.Count; i++)
+                {
+                    lstview.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+                    if (lstview.Columns[i].Width < 100) lstview.Columns[i].Width = 100;
+                    if (lstview.Columns[i].Width > (guicontrol.Width * 20) / 32)
+                        lstview.Columns[i].Width = (guicontrol.Width * 20) / 32;
+                }
+                lstview.EndUpdate();
+            }
 
         }
         public void listviewAdd(ListView lstview, ListViewItem item)
@@ -564,10 +564,9 @@ namespace r2pipe_test
         }
         public void open(String fileName)
         {
-            if (this.r2 == null)
-                this.r2 = new R2Pipe(fileName, rconfig.r2path);
-            else
-                this.r2.RunCommand("o " + fileName);
+            if (this.r2 != null) this.r2.RunCommand("q");
+            this.r2 = null; // remove the object
+            this.r2 = new R2Pipe(fileName, rconfig.r2path);
             this.fileName = fileName;
             this.r2html = new r2html(this);
             if (!fileName.Equals("-"))
@@ -699,17 +698,18 @@ namespace r2pipe_test
         {
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
-            run("e scr.utf8 = true", "output", true);
-            run_task("aa;pxa 2000", "hexview");
+            run("e scr.utf8 = true");
+            run("e scr.interactive = false");
             run("Ps default"); // defaul project
-            run("aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run("aa"); //aaa gives invalid aflj in pipe???
+            run_task("pxa 2000", "hexview");
             run("pdf", "dissasembly");
             run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
             run("dmj", "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
-            run_task("aaa;aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run_task("aflj", "functions_listview", false, new List<string> { "name", "offset" });
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
         }

@@ -52,10 +52,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>E4A1324FCC22C666A2610EF19855AC055C588CB3</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>34FE8F2EDCB4A01C7B92261EF56ACA9D45639A8C</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>r2pipe_test_ClaveTemporal.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>

@@ -21,9 +21,21 @@ body{
 	cursor:pointer;
 	font-weight:bold;
 }
+.tbl{
+    border-collapse:collapse;
+    border:1px solid #aaa;
+}
+.tbl td{
+    display:table-cell;
+    padding:5px;
+    border:1px solid #eee;
+}
 .tbl th{
-	color:white;
+	color:black;
+    background:white;
 	text-align:left;
+    padding:5px;
+    font-weight:normal;
 }
 .tbl_dict th{
 	color:white;
