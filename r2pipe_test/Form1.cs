@@ -184,7 +184,7 @@ namespace r2pipe_test
             if (r2pw.r2 != null && !fileName.Equals("-")) // set arch if filename != '-'
             {
                 string new_arch = null;
-                new_arch = r2pw.run("e asm.arch", "output", true); //no wait
+                new_arch = r2pw.run("e asm.arch");
                 if (new_arch != null)
                 {
                     new_arch = new_arch.Replace("\n", "");
@@ -879,13 +879,6 @@ namespace r2pipe_test
             update_archs(); // todo: remove option
         }
 
-        private void shellRadare2exeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = rconfig.load<string>("r2path");
-            startInfo.Arguments = fileName;
-            Process.Start(startInfo);
-        }
         private void yesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.long_command_output = false;

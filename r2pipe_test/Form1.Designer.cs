@@ -40,9 +40,9 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.ctxTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.floatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.floatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTabsItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -125,8 +125,6 @@
             this.terminal256ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.shellRadare2exeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pathsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshActiveTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -144,6 +142,8 @@
             this.notesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shellRadare2exeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -304,7 +304,7 @@
             this.jsonToolStripMenuItem,
             this.HTMLToolStripMenuItem});
             this.ctxTabs.Name = "ctxTabs";
-            this.ctxTabs.Size = new System.Drawing.Size(165, 214);
+            this.ctxTabs.Size = new System.Drawing.Size(165, 192);
             // 
             // refreshToolStripMenuItem
             // 
@@ -312,6 +312,13 @@
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
+            // floatToolStripMenuItem
+            // 
+            this.floatToolStripMenuItem.Name = "floatToolStripMenuItem";
+            this.floatToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.floatToolStripMenuItem.Text = "Popup tab";
+            this.floatToolStripMenuItem.Click += new System.EventHandler(this.floatToolStripMenuItem_Click);
             // 
             // textToolStripMenuItem
             // 
@@ -324,13 +331,6 @@
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(161, 6);
-            // 
-            // floatToolStripMenuItem
-            // 
-            this.floatToolStripMenuItem.Name = "floatToolStripMenuItem";
-            this.floatToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.floatToolStripMenuItem.Text = "Popup tab";
-            this.floatToolStripMenuItem.Click += new System.EventHandler(this.floatToolStripMenuItem_Click);
             // 
             // zoomToolStripMenuItem
             // 
@@ -1117,24 +1117,9 @@
             // 
             // advancedToolStripMenuItem
             // 
-            this.advancedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.shellRadare2exeToolStripMenuItem,
-            this.toolStripSeparator11});
             this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
             this.advancedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.advancedToolStripMenuItem.Text = "Miscelanea";
-            // 
-            // shellRadare2exeToolStripMenuItem
-            // 
-            this.shellRadare2exeToolStripMenuItem.Name = "shellRadare2exeToolStripMenuItem";
-            this.shellRadare2exeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.shellRadare2exeToolStripMenuItem.Text = "Shell ( radare2.exe )";
-            this.shellRadare2exeToolStripMenuItem.Click += new System.EventHandler(this.shellRadare2exeToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator11
-            // 
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(172, 6);
             // 
             // preferencesToolStripMenuItem
             // 
@@ -1200,8 +1185,11 @@
             // 
             // r2ToolStripMenuItem
             // 
+            this.r2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.shellRadare2exeToolStripMenuItem,
+            this.toolStripSeparator9});
             this.r2ToolStripMenuItem.Name = "r2ToolStripMenuItem";
-            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.r2ToolStripMenuItem.Text = "r2";
             // 
             // giuToolStripMenuItem
@@ -1211,7 +1199,7 @@
             this.openInBrowserControlnToolStripMenuItem,
             this.searchControlfToolStripMenuItem});
             this.giuToolStripMenuItem.Name = "giuToolStripMenuItem";
-            this.giuToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.giuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.giuToolStripMenuItem.Text = "gui";
             // 
             // zoomTextControlMouseWheelToolStripMenuItem
@@ -1235,7 +1223,7 @@
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(102, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(149, 6);
             // 
             // notesToolStripMenuItem
             // 
@@ -1243,22 +1231,33 @@
             this.showPnToolStripMenuItem,
             this.editPnToolStripMenuItem});
             this.notesToolStripMenuItem.Name = "notesToolStripMenuItem";
-            this.notesToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.notesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.notesToolStripMenuItem.Text = "Notes";
             // 
             // showPnToolStripMenuItem
             // 
             this.showPnToolStripMenuItem.Name = "showPnToolStripMenuItem";
-            this.showPnToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.showPnToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.showPnToolStripMenuItem.Text = "Show ( Pn )";
             this.showPnToolStripMenuItem.Click += new System.EventHandler(this.showPnToolStripMenuItem_Click);
             // 
             // editPnToolStripMenuItem
             // 
             this.editPnToolStripMenuItem.Name = "editPnToolStripMenuItem";
-            this.editPnToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.editPnToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.editPnToolStripMenuItem.Text = "Edit ( Pn - )";
             this.editPnToolStripMenuItem.Click += new System.EventHandler(this.editPnToolStripMenuItem_Click);
+            // 
+            // shellRadare2exeToolStripMenuItem
+            // 
+            this.shellRadare2exeToolStripMenuItem.Name = "shellRadare2exeToolStripMenuItem";
+            this.shellRadare2exeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.shellRadare2exeToolStripMenuItem.Text = "Shell ( radare2.exe )";
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(172, 6);
             // 
             // Form1
             // 
@@ -1417,13 +1416,13 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem searchControlfToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem shellRadare2exeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem refreshActiveTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem yesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem noToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem cpuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem shellRadare2exeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
     }
 }
 

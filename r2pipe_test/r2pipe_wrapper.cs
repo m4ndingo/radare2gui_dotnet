@@ -82,10 +82,6 @@ namespace r2pipe_test
                 else
                     output_msg = string.Format("[0x{0:x8}]> {1,-25} # {2}\n", 
                         seek_address, cmds, controlName);
-                // do after running cmd                
-                if ((cmds.StartsWith("d") || cmds.StartsWith("p")) && 
-                        refresh_tab && autorefresh_activetab)
-                    guicontrol.refresh_tab();
                 setText("output", "", output_msg, true); // send command to output
             }
             if (r2 == null)
@@ -144,6 +140,9 @@ namespace r2pipe_test
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
             }
+            if ((cmds.StartsWith("d") || cmds.StartsWith("p")) && 
+                    refresh_tab && autorefresh_activetab)
+                guicontrol.refresh_tab();
             Cursor.Current = Cursors.Default;
             return res;
         }
@@ -698,9 +697,9 @@ namespace r2pipe_test
         {
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
+            run("Ps default"); // defaul project
             run("e scr.utf8 = true");
             run("e scr.interactive = false");
-            run("Ps default"); // defaul project
             run("aa"); //aaa gives invalid aflj in pipe???
             run_task("pxa 2000", "hexview");
             run("pdf", "dissasembly");
