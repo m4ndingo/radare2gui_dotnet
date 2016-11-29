@@ -37,8 +37,7 @@
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "webbrowser_container_form";
-            this.Text = "webbrowser_container_form";
-            this.TopMost = true;
+            this.Text = "webbrowser_container_form";            
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.webbrowser_container_form_FormClosed);
             this.ResumeLayout(false);
 

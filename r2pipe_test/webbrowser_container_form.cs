@@ -20,7 +20,6 @@ namespace r2pipe_test
             this.r2pw = r2pw;
             this.frmName = frmName;
         }
-
         private void webbrowser_container_form_FormClosed(object sender, FormClosedEventArgs e)
         {
             r2pw.unregister_control(frmName);

@@ -58,9 +58,10 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Exports", "iEj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
-            r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
-            r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
+            r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);            
+            r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);            
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
+            r2pw.add_menucmd("&View", "Ascii Art Bar", "p-", mainMenu);
             r2pw.add_menucmd("&View", "ESIL registers", "aerj", mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
@@ -588,14 +589,17 @@ namespace r2pipe_test
             webbrowser.Dock = DockStyle.Fill;
             webFrm.Controls.Add(webbrowser);
             string tabTitle = selected_tab("title");
-            webFrm.Text  = tabTitle;
             webFrm.Width = Width - splitContainer1.SplitterDistance;
             webFrm.Height = Height;
             String timeStamp = DateTime.Now.Millisecond.ToString();
             GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
             GuiControl gui_control = r2pw.add_control(
-                gui_control_tab.name + "_" + timeStamp, webbrowser, "popup", gui_control_tab.cmds);
+                gui_control_tab.name + "_" + timeStamp, webbrowser, "popup" + "_" + timeStamp, gui_control_tab.cmds);
             refresh_control(gui_control);
+            string frmTitle = tabTitle;
+            if ( !tabTitle.Contains("(") )
+                frmTitle = string.Format("{0} ( {1} )", tabTitle, gui_control_tab.cmds);
+            webFrm.Text = frmTitle;
             webFrm.Show();
         }
         private void HTMLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -782,7 +786,7 @@ namespace r2pipe_test
         }
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            refresh_tab();
+            refresh_tab();            
         }
         private void refresh_control(GuiControl control, bool timeout=false)
         {
@@ -822,6 +826,7 @@ namespace r2pipe_test
                 //r2pw.Show("refresh_tab(): gui_control found " + gui_control.ToString() + " for title '" + tabTitle + "'","refresh_tab()");
                 refresh_control(gui_control);
             }
+            refresh_popups();
         }
         public string Prompt(string text, string caption, string defval = "")
         {
@@ -903,6 +908,18 @@ namespace r2pipe_test
         private void reloadToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             update_cpus(); // todo: remove option
+        }
+        private void refreshAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            refresh_popups();
+        }
+        private void refresh_popups()
+        { 
+            foreach (GuiControl c in r2pw.gui_controls.controls)
+            {
+                if(c.tabTitle!= null && c.tabTitle.StartsWith("popup_") )
+                    refresh_control(c);
+            }
         }
     }
 }

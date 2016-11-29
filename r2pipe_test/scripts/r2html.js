@@ -40,38 +40,38 @@ function decorate(varname, value)
 function readDict(dict)
 {
 	var html="";
-	html += "<table class=tbl_dict border=0 id=out_dict contenteditable=true>\r\n";
+	html += "<table class=tbl border=0 id=out_dict contenteditable=true>\r\n";
 	for (var key in dict) {
 		value = dict[key];
 		if(typeof(value) == "object") 
 			value=readDict(value);
 		value = decorate( key, value);
 		html+="<tr valign=top><td class=op_stack nowrap>"+key;
-		html+="</td><td class=group>:</td><td width=100%>"+value+"</td></tr>\r\n";
+		html+="</td><td width=100%>"+value+"</td></tr>\r\n";
 	}
 	html+="</table>";
 	return html;
 }
 if ( r2output != null )
 {
-	for(var k in r2output[0]) keys.push(k);
-	html  = "<table class=tbl border=0 id=out contenteditable=true width=100%>\r\n";
-	html += "<tr>\r\n";
-	html += "<th>"+keys.join("</th><th>")+"</th>";
-	html += "</tr><tr>\r\n";
-	for(i=0;i<r2output.length,row=r2output[i];i++)
-	{
-		html+="<tr>\r\n";
-		for(j=0;j<keys.length,key=keys[j];j++)
-		{
-			value = decorate( key, row[key] );
-			html+="<td nowrap>"+value+"</td>";
-		}
-		html+="</tr>\r\n";
-	}
-	html+="</table>";
-
-	//html+=readDict(r2output);
+    for (var k in r2output[0]) keys.push(k);
+    if (keys.length > 0) {
+        html = "<table class=tbl border=0 id=out contenteditable=true width=100%>\r\n";
+        html += "<tr>\r\n";
+        html += "<th>" + keys.join("</th><th>") + "</th>";
+        html += "</tr><tr>\r\n";
+        for (i = 0; i < r2output.length, row = r2output[i]; i++) {
+            html += "<tr>\r\n";
+            for (j = 0; j < keys.length, key = keys[j]; j++) {
+                value = decorate(key, row[key]);
+                html += "<td nowrap>" + value + "</td>";
+            }
+            html += "</tr>\r\n";
+        }
+        html += "</table>";
+    } else {
+        html += readDict(r2output);
+    }	
 	document.write(html);
 }
 

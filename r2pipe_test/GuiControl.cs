@@ -42,7 +42,7 @@ namespace r2pipe_test
     public class GuiControls
     {
         private R2PIPE_WRAPPER r2pw       = null;
-        private List<GuiControl> controls = null;
+        public  List<GuiControl> controls = null;
         public GuiControls(R2PIPE_WRAPPER r2pw)
         {
             this.r2pw = r2pw;
