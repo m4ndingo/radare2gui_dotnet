@@ -34,7 +34,7 @@ namespace r2pipe_test
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
             //add controls
             r2pw.add_control("output", txtOutput);
-            r2pw.add_control("dissasembly", webBrowser1,         "Dissasembly", "pdf"   );
+            r2pw.add_control("dissasembly", webBrowser1,         "Dissasembly", "pd"   );
             r2pw.add_control("strings_listview", lstStrings,     "Strings",     "izj"   );
             r2pw.add_control("functions_listview", listView1,    "Functions",   "aflj"  );
             r2pw.add_control("imports_listview", lstImports,     "Imports",     "iij"   );
@@ -48,7 +48,7 @@ namespace r2pipe_test
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>() { "string" });
             //add menu options and function callbacks
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
-            r2pw.add_menucmd("&View", "Disassembly", "pdf", mainMenu);
+            r2pw.add_menucmd("&View", "Disassembly", "pd", mainMenu);
             r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu, "num2hex");
             r2pw.add_menucmd("&View", "Functions", "aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
@@ -282,6 +282,7 @@ namespace r2pipe_test
             if (e.KeyChar == '\r')
             {
                 string cmds = cmbCmdline.Text;
+                cmds = cmds.Replace("\r", "");
                 cmbCmdline.Items.Remove("");
                 cmbCmdline.Items.Add(cmds);
                 r2pw.run(cmds, "output", true, null, null, true); // append
@@ -312,7 +313,7 @@ namespace r2pipe_test
             {
                 r2pw.run("pxa 2000 @ " + address, "hexview");
                 r2pw.run("axtj @ " + address, "xrefs ( axtj )");
-                r2pw.run("pdf @ " + address, "dissasembly");
+                r2pw.run("pd @ " + address, "dissasembly");
             }
             if (!locked_tabs.Contains(tabControl1.SelectedTab.Text))
                 tabControl1.SelectedIndex = 0;
@@ -583,24 +584,38 @@ namespace r2pipe_test
         }
         public void popup_tab()
         {
-            webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, "webcont");
             WebBrowser webbrowser = new WebBrowser();
+            string new_controlName  = null;
+            string tabTitle     = selected_tab("title");
+            String timeStamp = DateTime.Now.Millisecond.ToString();
+            new_controlName = genControlName(tabTitle); // generate a short name for the control            
+            new_controlName += "_" + timeStamp; // add some "mark" (timestamp)
+            GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            GuiControl gui_control = r2pw.add_control(
+                new_controlName, webbrowser, "popup" + "_" + timeStamp, gui_control_tab.cmds);
+            webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, gui_control);
 
             webbrowser.Dock = DockStyle.Fill;
             webFrm.Controls.Add(webbrowser);
-            string tabTitle = selected_tab("title");
             webFrm.Width = Width - splitContainer1.SplitterDistance;
             webFrm.Height = Height;
-            String timeStamp = DateTime.Now.Millisecond.ToString();
-            GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
-            GuiControl gui_control = r2pw.add_control(
-                gui_control_tab.name + "_" + timeStamp, webbrowser, "popup" + "_" + timeStamp, gui_control_tab.cmds);
             refresh_control(gui_control);
             string frmTitle = tabTitle;
             if ( !tabTitle.Contains("(") )
                 frmTitle = string.Format("{0} ( {1} )", tabTitle, gui_control_tab.cmds);
             webFrm.Text = frmTitle;
             webFrm.Show();
+        }
+        private string genControlName(string longName)
+        {
+            string controlName = longName;
+            if (controlName.Contains("(")) // trim till "("
+            {
+                int pos = controlName.IndexOf("(");
+                controlName = controlName.Substring(0, pos - 1);
+            }
+            controlName = controlName.Replace(" ", ""); //remove spaces
+            return controlName;
         }
         private void HTMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -657,7 +672,7 @@ namespace r2pipe_test
         {
             changeTheme("terminal256");
         }
-        private string selected_tab(string attr)
+        public string selected_tab(string attr)
         {
             string text = null;
             try // may fail
@@ -788,7 +803,7 @@ namespace r2pipe_test
         {
             refresh_tab();            
         }
-        private void refresh_control(GuiControl control, bool timeout=false)
+        public void refresh_control(GuiControl control, bool timeout=false)
         {
             if (control!= null && control.cmds != null)
             {

@@ -44,6 +44,7 @@ body{
 }
 .address, .shorted_address{
     color:black;
+    text-decoration:underline;
 }
 .address:hover, .from:hover{
     text-decoration:underline;

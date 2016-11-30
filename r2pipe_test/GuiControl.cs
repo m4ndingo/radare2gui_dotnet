@@ -8,15 +8,17 @@ namespace r2pipe_test
 {
     public class GuiControl
     {
-        public object control  = null;
-        public string name = null;
-        public string cmds = null;
-        public string tabTitle = null;
+        public object control   = null;
+        public string name      = null;
+        public string sName     = null;
+        public string cmds      = null;
+        public string tabTitle  = null;
         public List<string> column_titles = null;
-        public GuiControl(object control, string name, string cmds, string tabTitle, List<string> column_titles = null)
+        public GuiControl(object control, string name, string sName, string cmds, string tabTitle, List<string> column_titles = null)
         {
             this.control    = control;
             this.name       = name;
+            this.sName      = sName;
             this.cmds       = cmds;
             this.tabTitle   = tabTitle;
             this.column_titles = column_titles;
@@ -53,7 +55,13 @@ namespace r2pipe_test
             GuiControl gui_control = null;
             try
             {
-                gui_control = new GuiControl(control, name, cmds, tabTitle);
+                string sName = name;
+                if( sName.Contains("_") )
+                {
+                    int pos = sName.IndexOf("_");
+                    sName = sName.Substring(0, pos);
+                }
+                gui_control = new GuiControl(control, name, sName, cmds, tabTitle);
                 controls.Add(gui_control);
             }
             catch (Exception e)

@@ -140,9 +140,16 @@ namespace r2pipe_test
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
             }
-            if ((cmds.StartsWith("d") || cmds.StartsWith("p")) && 
-                    refresh_tab && autorefresh_activetab)
-                guicontrol.refresh_tab();
+            if (refresh_tab && autorefresh_activetab)
+            {
+                string tabTitle = guicontrol.selected_tab("title");
+                GuiControl gui_control = gui_controls.findControlBy_tabTitle(tabTitle);
+                if (gui_control != null) // selected control cmds like commandline -> refresh tab
+                {
+                    if (cmds.Substring(0, 2) == gui_control.cmds.Substring(0, 2))
+                        guicontrol.refresh_tab();
+                }
+            }
             Cursor.Current = Cursors.Default;
             return res;
         }
@@ -392,11 +399,10 @@ namespace r2pipe_test
         {
             if (address!=null && address.Length>0 && address != lastAddress)
             {
-                string res;
-                res=run("pdf @ " + address, "dissasembly");
-                if(res.Length == 0)
-                    res = run("pd 200 @ " + address, "dissasembly");
-                run("px 2000 @ " + address, "hexview");
+                run("s " + address);
+                //guicontrol.refresh_tab();
+                guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
+                guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
                 lastAddress = address;
             }
             tabcontrol.SelectedIndex = 0;
@@ -545,7 +551,11 @@ namespace r2pipe_test
             if (e.KeyCode == Keys.G) //71 g keyvalue
             {
                 string address = guicontrol.Prompt("Address:", "goto address");
-                gotoAddress(address);
+                if (address != null)
+                {
+                    address = address.Replace("\r", "");
+                    gotoAddress(address);
+                }
             }
         }
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu, string decorator = null)
@@ -700,9 +710,10 @@ namespace r2pipe_test
             run("Ps default"); // defaul project
             run("e scr.utf8 = true");
             run("e scr.interactive = false");
-            run("aa"); //aaa gives invalid aflj in pipe???
+            run("e asm.emustr = true");
+            run("aaa");
             run_task("pxa 2000", "hexview");
-            run("pdf", "dissasembly");
+            run("pd" , "dissasembly"); // pd or pdf?
             run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij", "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
