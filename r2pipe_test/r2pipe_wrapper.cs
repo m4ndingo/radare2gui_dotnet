@@ -140,14 +140,21 @@ namespace r2pipe_test
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
             }
+            // refresh required tabs after cmds
             if (refresh_tab && autorefresh_activetab)
             {
                 string tabTitle = guicontrol.selected_tab("title");
                 GuiControl gui_control = gui_controls.findControlBy_tabTitle(tabTitle);
-                if (gui_control != null) // selected control cmds like commandline -> refresh tab
+                if ( gui_control != null )
                 {
-                    if (cmds.Substring(0, 2) == gui_control.cmds.Substring(0, 2))
-                        guicontrol.refresh_tab();
+                    bool need_refresh = false;
+                    // selected control cmds like commandline -> refresh tab
+                    if( cmds.Length>2 )
+                        need_refresh = cmds.Substring(0, 2) == gui_control.cmds.Substring(0, 2);
+                    if ( cmds.StartsWith("s") ) need_refresh = true;
+                    if ( need_refresh )
+                        guicontrol.refresh_main_controls();
+                       // guicontrol.refresh_tab();
                 }
             }
             Cursor.Current = Cursors.Default;
@@ -266,7 +273,8 @@ namespace r2pipe_test
                 if (tag == null) return null;
                 controlName = tag;
             }
-            control = controls[controlName];
+            if(controls.ContainsKey(controlName))
+                control = controls[controlName];
             return control;
         }
         public string invokeJavascript(string cmds, string filter = null)
@@ -346,8 +354,10 @@ namespace r2pipe_test
             // webpage(s) will be saved to temp path 
             // other support files will be referenced
             tmpName = string.Format("{0}_{1}.html", controlName, cmds);
-            tmpName = (new Regex(@"([\\\/>\~])")).Replace(tmpName, "");
-            tmpName = tmpName.Replace("?", "[question]");
+            tmpName = (new Regex(@"([\\\/>\~\n])")).Replace(tmpName, "");
+            tmpName = tmpName.Replace("?",  "[question]");
+            tmpName = tmpName.Replace(":",  "[tp]");
+            tmpName = tmpName.Replace("\"", "[q]");
             tmpName = rconfig.tempPath + Path.GetFileName(tmpName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {

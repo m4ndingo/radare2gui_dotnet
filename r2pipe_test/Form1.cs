@@ -7,6 +7,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace r2pipe_test
 {
@@ -306,17 +307,29 @@ namespace r2pipe_test
             }
             return msg;
         }
+        public void refresh_main_controls(string address=null)
+        {
+            int current_tab_index = tabcontrol.SelectedIndex;
+            if (address == null)
+                address = r2pw.run("? $$~[0]");
+            if (address != null)
+            {
+                address = Regex.Replace(address, "[\r\n]+", "");
+                r2pw.run("pxa 2000 @ " + address, "hexview");
+                r2pw.run("axtj @ " + address, "xrefs ( axtj )");
+                r2pw.run("pd @ " + address, "dissasembly");
+            }
+            refresh_popups();
+            tabcontrol.SelectedIndex = current_tab_index;
+        }
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             string address = get_selectedAddress(sender);
             if (address != null)
             {
-                r2pw.run("pxa 2000 @ " + address, "hexview");
-                r2pw.run("axtj @ " + address, "xrefs ( axtj )");
-                r2pw.run("pd @ " + address, "dissasembly");
+                r2pw.run("s " + address);
+                refresh_main_controls();
             }
-            if (!locked_tabs.Contains(tabControl1.SelectedTab.Text))
-                tabControl1.SelectedIndex = 0;
         }
         private void menuXrefs_Click(object sender, EventArgs e)
         {
@@ -696,8 +709,8 @@ namespace r2pipe_test
             if (controlName.Equals("output"))
                 splitContainer2.SplitterDistance = 0;
             else
-                splitContainer2.SplitterDistance = Height;
-            txtOutput.Refresh();
+                splitContainer2.SplitterDistance = Height - 146;
+            txtOutput.Refresh();            
             cmbCmdline.Focus();
         }
         private void wipe_config()
@@ -727,9 +740,9 @@ namespace r2pipe_test
                 // left "functions" splitter
                 if (tabControl1.SelectedTab.Text.Equals("Dissasembly"))
                 {
-                    if (splitContainer1.SplitterDistance == 118)
-                        todo("elf", "invalid distance");
-                    else if (splitContainer1.SplitterDistance < 118)
+                    //if (splitContainer1.SplitterDistance == 118)
+                    //    todo("elf", "invalid distance");
+                    if (splitContainer1.SplitterDistance < 118)
                     {
                         splitContainer1.SplitterDistance = 150;
                         if (listView1.Items.Count > 0)
@@ -749,7 +762,8 @@ namespace r2pipe_test
         }
         private void tabControl1_Click(object sender, EventArgs e)
         {
-            autoresize_output();
+            //autoresize_output();
+            cmbCmdline.Focus();
         }
         private void maximizeOutputToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -816,21 +830,11 @@ namespace r2pipe_test
                         column_titles = control.column_titles;
                     }
                 }
-                //output( "refresh_control: " + control.name + "@" + control.tabTitle + 
-                //        " cmds:" + control.cmds);                
-                //SuspendLayout();
                 if( timeout == false )
                     r2pw.run(control.cmds, control.name, false, column_titles); // no timeout
                 else
                     r2pw.run_task(control.cmds, control.name, false, column_titles); // with timeout
-                //ResumeLayout();
             }
-            /*
-            else
-            {
-                if( control!=null )
-                    output("refresh_control: '" + control.name + "' no cmds found ( complete add_cmd() args )");
-            }*/
         }
         public void refresh_tab()
         {
@@ -922,12 +926,21 @@ namespace r2pipe_test
             refresh_popups();
         }
         private void refresh_popups()
-        { 
-            foreach (GuiControl c in r2pw.gui_controls.controls)
+        {
+            try
             {
-                if(c.tabTitle!= null && c.tabTitle.StartsWith("popup_") )
-                    refresh_control(c);
+                foreach (GuiControl c in r2pw.gui_controls.controls)
+                {
+                    if (c.tabTitle != null && c.tabTitle.StartsWith("popup_"))
+                        refresh_control(c);
+                }
             }
+            catch (Exception) { }; // may fail, better catch
+        }
+
+        private void tabControl1_DoubleClick(object sender, EventArgs e)
+        {
+            maximize();
         }
     }
 }

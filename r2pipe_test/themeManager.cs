@@ -30,7 +30,7 @@ namespace r2pipe_test
                     config.save("gui.output.fg", "DarkSlateGray");
                     break;
                 case "pink":
-                    config.save("gui.output.bg", "indigo");
+                    config.save("gui.output.bg", "Purple");
                     config.save("gui.output.fg", "white");
                     break;
                 case "control":
