@@ -688,10 +688,11 @@
             this.cmbCmdline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbCmdline.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbCmdline.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbCmdline.FormattingEnabled = true;
             this.cmbCmdline.Location = new System.Drawing.Point(59, 73);
             this.cmbCmdline.Name = "cmbCmdline";
-            this.cmbCmdline.Size = new System.Drawing.Size(412, 21);
+            this.cmbCmdline.Size = new System.Drawing.Size(412, 24);
             this.cmbCmdline.TabIndex = 4;
             this.cmbCmdline.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbCmdline_KeyPress);
             this.cmbCmdline.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cmbCmdline_KeyUp);
@@ -1190,7 +1191,7 @@
             this.shellRadare2exeToolStripMenuItem,
             this.toolStripSeparator9});
             this.r2ToolStripMenuItem.Name = "r2ToolStripMenuItem";
-            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.r2ToolStripMenuItem.Text = "r2";
             // 
             // shellRadare2exeToolStripMenuItem
@@ -1198,6 +1199,7 @@
             this.shellRadare2exeToolStripMenuItem.Name = "shellRadare2exeToolStripMenuItem";
             this.shellRadare2exeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.shellRadare2exeToolStripMenuItem.Text = "Shell ( radare2.exe )";
+            this.shellRadare2exeToolStripMenuItem.Click += new System.EventHandler(this.shellRadare2exeToolStripMenuItem_Click);
             // 
             // toolStripSeparator9
             // 

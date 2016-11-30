@@ -142,9 +142,14 @@ namespace r2pipe_test
         }
         private void DoLoadFile()
         {
+            bool run_initial_analysis = false;
             r2pw.open(fileName);
-            // r2pw.setText("version ( ?V )", "?V", r2pw.r2.RunCommand("?V"));
-            r2pw.run_script("openfile_post.txt");
+            if( fileName.StartsWith("-") ) run_initial_analysis = true;
+            if( run_initial_analysis == true || 
+                MessageBox.Show("File loaded. Analyze now?", "File loaded",
+                MessageBoxButtons.OKCancel,MessageBoxIcon.Question) ==
+                    System.Windows.Forms.DialogResult.OK )
+                r2pw.run_script("openfile_post.txt");
             if (!fileName.Equals("-"))
             {
                 fileType = r2pw.run("e file.type");
@@ -289,6 +294,7 @@ namespace r2pipe_test
                 r2pw.run(cmds, "output", true, null, null, true); // append
                 cmbCmdline.Items.Add("");
                 cmbCmdline.Text = "";
+                cmbCmdline.Focus();
             }
         }
         private string get_selectedAddress(object sender)
@@ -597,14 +603,14 @@ namespace r2pipe_test
         }
         public void popup_tab()
         {
-            WebBrowser webbrowser = new WebBrowser();
+            WebBrowser webbrowser   = new WebBrowser();
             string new_controlName  = null;
-            string tabTitle     = selected_tab("title");
-            String timeStamp = DateTime.Now.Millisecond.ToString();
-            new_controlName = genControlName(tabTitle); // generate a short name for the control            
-            new_controlName += "_" + timeStamp; // add some "mark" (timestamp)
+            string tabTitle         = selected_tab("title");
+            String timeStamp        = r2pw.get_timestamp();
+            new_controlName         = genControlName(tabTitle); // generate a short name for the control            
+            new_controlName        += "_" + timeStamp; // add some "mark" (timestamp)
             GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
-            GuiControl gui_control = r2pw.add_control(
+            GuiControl gui_control  = r2pw.add_control(
                 new_controlName, webbrowser, "popup" + "_" + timeStamp, gui_control_tab.cmds);
             webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, gui_control);
 
@@ -941,6 +947,18 @@ namespace r2pipe_test
         private void tabControl1_DoubleClick(object sender, EventArgs e)
         {
             maximize();
+        }
+
+        private void shellRadare2exeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exec_process(rconfig.load<string>("r2path"), fileName);
+        }
+        private void exec_process(string binaryPath, string args="")
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = binaryPath;
+            startInfo.Arguments = args;
+            Process.Start(startInfo);
         }
     }
 }

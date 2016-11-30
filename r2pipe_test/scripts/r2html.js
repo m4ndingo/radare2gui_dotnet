@@ -88,7 +88,7 @@ function add_select_event(id,cname,cname_selected)
             $(id).removeClass(cname_selected).addClass(cname);
     });
 }
-function clear_selected_addresses() {        
+function clear_selected_addresses_old() {        
     for (i = 0; i < addresses.length, address = addresses[i]; i++)
     {
         var id = "#address_" + address;
@@ -97,12 +97,40 @@ function clear_selected_addresses() {
     }
 }
 
+function clear_selected_addresses() {
+	for (var i=0;i<l;i++) {
+		var id = spans[i].getAttribute("id");
+		if ( id != null )
+		{
+			var cname = spans[i].className;
+			if( cname == "address_selected" )
+				spans[i].className = "address";
+		}
+	}
+}
+
+var spans = document.getElementsByTagName('span');
+var l = spans.length;
+for (var i=0;i<l;i++) {
+	var id = spans[i].getAttribute("id");
+    if ( id != null )
+	{
+		id = i; // overwrite
+	    var spanClass = spans[i].getAttribute("class"); 
+		spans[i].id = id;		
+		add_select_event("#"+id, "address", "address_selected");     
+		//console.log(spans[i].className);
+	}
+}
+/*
 if (typeof addresses !== 'undefined') {
     for (i = 0; i < addresses.length, address=addresses[i]; i++) {
-        add_select_event("#address_" + address, "address", "address_selected"); // html render
-        add_select_event("#from_" + address, "from", "from_selected"); // json decodes
+        add_select_event("#address_" + address, "address", "address_selected"); 
+        add_select_event("#fcn_"     + address, "address", "address_selected"); 
+        add_select_event("#from_"    + address, "from",    "from_selected");    
     }
 }
+*/
 //document.write(keys);
 //document.write(JSON.stringify(r2output));
 

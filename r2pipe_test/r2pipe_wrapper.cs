@@ -398,7 +398,7 @@ namespace r2pipe_test
                         if (mouseMoved == false && tagname.Equals("SPAN"))
                         {
                             bool selected = element.OuterHtml.Contains("_selected");
-                            if( selected && text.StartsWith("0x") == true )
+                            if (selected && text.StartsWith("0x") == true)
                                 gotoAddress(text);
                         }
                     }
@@ -415,7 +415,7 @@ namespace r2pipe_test
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
                 lastAddress = address;
             }
-            tabcontrol.SelectedIndex = 0;
+            //tabcontrol.SelectedIndex = 0;
         }
         public delegate void BeginListviewUpdate(ListView lstview, bool update, string controlName, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);
@@ -709,6 +709,10 @@ namespace r2pipe_test
                 (?!\\)     # lookahead: Check that the following character isn't a \",
                 @"\\", RegexOptions.IgnorePatternWhitespace);
         }
+        public string get_timestamp()
+        {
+            return DateTime.Now.Millisecond.ToString();
+        }
         public void output(string text)
         {
             setText("output", "", text + "\n", true);
@@ -738,7 +742,10 @@ namespace r2pipe_test
             try
             {
                 rconfig.save("gui.current_shell", "radare2");
-                this.r2.RunCommand("q");
+                Cursor.Current = Cursors.WaitCursor;                
+                this.r2.RunCommand("q"); // may fail if "radare2.exe" process "not found"
+                Cursor.Current = Cursors.Default;
+                
             }
             catch (Exception) { };
             this.r2 = null;

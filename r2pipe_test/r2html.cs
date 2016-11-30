@@ -39,6 +39,8 @@ namespace r2pipe_test
                 "<span class=comment>$1</span>");
             console_text_cut = (new Regex(@"(- offset -.+)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");
+            console_text_cut = (new Regex(@"\b(fcn\.(\w+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=" + r2pw.get_timestamp() + "_fcn_0x$2 title='function @ 0x$2'>0x$2</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
