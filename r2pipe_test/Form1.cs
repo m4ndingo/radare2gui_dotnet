@@ -50,7 +50,7 @@ namespace r2pipe_test
             //add menu options and function callbacks
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
             r2pw.add_menucmd("&View", "Disassembly", "pd", mainMenu);
-            r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu, "num2hex");
+            r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu);
             r2pw.add_menucmd("&View", "Functions", "aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
@@ -102,8 +102,6 @@ namespace r2pipe_test
             themeName = rconfig.load<string>("gui.theme_name", "classic");            
             foreColor = Color.FromName(rconfig.load<string>("gui.output.fg", "black"));
             backColor = r2pw.theme_background();
-            //if (backColor.Name.Equals("Purple"))
-            //    backColor = Color.FromArgb(255, 0x23, 0x00, 0x1b); //0xb9, 0x5a, 0x7d);
             Left = int.Parse(rconfig.load<int>("gui.left", Left));
             Top = int.Parse(rconfig.load<int>("gui.top", Top));
             Width = int.Parse(rconfig.load<int>("gui.width", Width));
@@ -920,7 +918,6 @@ namespace r2pipe_test
         {
             update_archs(); // todo: remove option
         }
-
         private void yesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.long_command_output = false;
@@ -929,17 +926,14 @@ namespace r2pipe_test
         {
             r2pw.long_command_output = true;
         }
-
         private void yesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             r2pw.autorefresh_activetab = true;
         }
-
         private void noToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             r2pw.autorefresh_activetab = false;
         }
-
         private void reloadToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             update_cpus(); // todo: remove option
@@ -960,12 +954,10 @@ namespace r2pipe_test
             }
             catch (Exception) { }; // may fail, better catch
         }
-
         private void tabControl1_DoubleClick(object sender, EventArgs e)
         {
             maximize();
         }
-
         private void shellRadare2exeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             exec_process(rconfig.load<string>("r2path"), fileName);
