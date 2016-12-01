@@ -55,7 +55,7 @@ namespace r2pipe_test
                 "<span class=group>[</span><span class=shorted_address title='$1'>$2</span><span class=group>]</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
                 "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>"));
-            console_text_cut = (new Regex(@"(push|pop\b|cli)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(push|pop\b|cli|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
             console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");

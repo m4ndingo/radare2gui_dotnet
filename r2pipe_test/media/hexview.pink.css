@@ -1,8 +1,8 @@
 body{
-	background:purple;
+	background:#b95a7d url('roses_and_diamonds_low_bright.jpg');
 	color:#a6fafc;
 	font-weight:bold;
-	background-repeat: repeat;
+	background-repeat: no-repeat;
 	background-attachment: fixed;
 }
 .r2code, .tbl, .tbl_dict{
