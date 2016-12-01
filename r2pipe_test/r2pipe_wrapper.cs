@@ -22,7 +22,6 @@ namespace r2pipe_test
         public           r2html  r2html              =   null  ;
         public           string  decorator_param     =   null  ;
         public           string  lastAddress         =   null  ;
-        private            bool  mouseMoved          =  false  ;
         public      GuiControls  gui_controls        =   null  ;
         public             bool  long_command_output =  false  ;
         public           UInt64  seek_address        =      0  ;
@@ -370,18 +369,8 @@ namespace r2pipe_test
             try // because may be already hooked
             {
                 ((WebBrowser)sender).Document.Body.MouseUp += new HtmlElementEventHandler(webBrowser_MouseUp);
-                ((WebBrowser)sender).Document.Body.MouseDown += new HtmlElementEventHandler(webBrowser_MouseDown);
-                ((WebBrowser)sender).Document.Body.MouseMove += new HtmlElementEventHandler(webBrowser_MouseMove);
             }
             catch (Exception) { }
-        }
-        void webBrowser_MouseDown(Object sender, HtmlElementEventArgs e)
-        {
-            mouseMoved = false;
-        }
-        void webBrowser_MouseMove(Object sender, HtmlElementEventArgs e)
-        {
-            mouseMoved = true;
         }
         void webBrowser_MouseUp(Object sender, HtmlElementEventArgs e)
         {
@@ -395,10 +384,10 @@ namespace r2pipe_test
                         string text = element.OuterText.Replace(" ", "");
                         string innertext = element.InnerText.Replace(" ", ""); ;
                         string tagname = element.TagName;
-                        if (mouseMoved == false && tagname.Equals("SPAN"))
+                        if (tagname.Equals("SPAN"))
                         {
                             bool selected = element.OuterHtml.Contains("_selected");
-                            if (selected && text.StartsWith("0x") == true)
+                            if ( selected == true )
                                 gotoAddress(text);
                         }
                     }

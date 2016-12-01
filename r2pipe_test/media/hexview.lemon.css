@@ -13,6 +13,25 @@ body{
 	cursor:arrow;
 	font-weight:bold;
 }
+.tbl{
+    border-collapse:collapse;
+}
+.tbl td{
+    display:table-cell;
+    padding:5px;
+    border:1px solid #bbaaaa;
+}
+.tbl th{
+	color:black;
+    background:white;
+	text-align:left;
+    padding:5px;
+    font-weight:normal;
+    border:1px solid #bbaaaa;
+}
+.tbl tr { 
+	line-height: 6px; 
+}
 .tbl_dict{
    border: 0px solid #a4c8e7;
    padding:0:

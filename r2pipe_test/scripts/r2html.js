@@ -76,7 +76,7 @@ if ( r2output != null )
 }
 
 var r2code = document.getElementById('r2code');
-if (r2code) r2code.contentEditable = true;
+//if (r2code) r2code.contentEditable = true;
 
 function add_select_event(id,cname,cname_selected)
 {
@@ -122,15 +122,6 @@ for (var i=0;i<l;i++) {
 		//console.log(spans[i].className);
 	}
 }
-/*
-if (typeof addresses !== 'undefined') {
-    for (i = 0; i < addresses.length, address=addresses[i]; i++) {
-        add_select_event("#address_" + address, "address", "address_selected"); 
-        add_select_event("#fcn_"     + address, "address", "address_selected"); 
-        add_select_event("#from_"    + address, "from",    "from_selected");    
-    }
-}
-*/
+
 //document.write(keys);
 //document.write(JSON.stringify(r2output));
-

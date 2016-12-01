@@ -39,6 +39,9 @@ body{
     padding:5px;
     font-weight:normal;
 }
+.tbl tr { 
+	line-height: 6px; 
+}
 .comment{
     color:green;
 }

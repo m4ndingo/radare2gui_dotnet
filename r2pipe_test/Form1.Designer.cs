@@ -282,7 +282,7 @@
             this.tabControl1.Location = new System.Drawing.Point(-1, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(480, 155);
+            this.tabControl1.Size = new System.Drawing.Size(479, 155);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 2;
             this.tabControl1.Tag = "";
@@ -385,7 +385,7 @@
             this.Dissasembly.Location = new System.Drawing.Point(4, 23);
             this.Dissasembly.Name = "Dissasembly";
             this.Dissasembly.Padding = new System.Windows.Forms.Padding(3);
-            this.Dissasembly.Size = new System.Drawing.Size(472, 128);
+            this.Dissasembly.Size = new System.Drawing.Size(471, 128);
             this.Dissasembly.TabIndex = 0;
             this.Dissasembly.Text = "Dissasembly";
             // 
@@ -399,7 +399,7 @@
             this.tsDebug.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.playBtn,
             this.stepBtn});
-            this.tsDebug.Location = new System.Drawing.Point(443, 3);
+            this.tsDebug.Location = new System.Drawing.Point(442, 3);
             this.tsDebug.Name = "tsDebug";
             this.tsDebug.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.tsDebug.Size = new System.Drawing.Size(26, 122);
@@ -441,7 +441,7 @@
             this.webBrowser1.Location = new System.Drawing.Point(0, 2);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(443, 124);
+            this.webBrowser1.Size = new System.Drawing.Size(442, 124);
             this.webBrowser1.TabIndex = 4;
             this.webBrowser1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.webBrowser1_PreviewKeyDown);
             // 
@@ -453,17 +453,19 @@
             this.HexView.Location = new System.Drawing.Point(4, 23);
             this.HexView.Name = "HexView";
             this.HexView.Padding = new System.Windows.Forms.Padding(3);
-            this.HexView.Size = new System.Drawing.Size(472, 128);
+            this.HexView.Size = new System.Drawing.Size(471, 128);
             this.HexView.TabIndex = 3;
             this.HexView.Text = "Hex view";
             // 
             // webBrowser2
             // 
-            this.webBrowser2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser2.Location = new System.Drawing.Point(3, 3);
+            this.webBrowser2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.webBrowser2.Location = new System.Drawing.Point(0, 3);
             this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser2.Name = "webBrowser2";
-            this.webBrowser2.Size = new System.Drawing.Size(466, 122);
+            this.webBrowser2.Size = new System.Drawing.Size(466, 123);
             this.webBrowser2.TabIndex = 0;
             // 
             // Strings
@@ -535,7 +537,7 @@
             this.Sections.ImageIndex = 1;
             this.Sections.Location = new System.Drawing.Point(4, 23);
             this.Sections.Name = "Sections";
-            this.Sections.Size = new System.Drawing.Size(472, 128);
+            this.Sections.Size = new System.Drawing.Size(471, 128);
             this.Sections.TabIndex = 5;
             this.Sections.Text = "Sections";
             this.Sections.UseVisualStyleBackColor = true;
@@ -555,7 +557,7 @@
             this.lstSections.Location = new System.Drawing.Point(1, 0);
             this.lstSections.Margin = new System.Windows.Forms.Padding(0);
             this.lstSections.Name = "lstSections";
-            this.lstSections.Size = new System.Drawing.Size(471, 131);
+            this.lstSections.Size = new System.Drawing.Size(470, 131);
             this.lstSections.SmallImageList = this.imageList1;
             this.lstSections.StateImageList = this.imageList1;
             this.lstSections.TabIndex = 1;
@@ -578,7 +580,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 23);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(472, 128);
+            this.tabPage1.Size = new System.Drawing.Size(471, 128);
             this.tabPage1.TabIndex = 6;
             this.tabPage1.Text = "Processes";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -589,7 +591,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(1, 106);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(454, 20);
+            this.txtSearch.Size = new System.Drawing.Size(453, 20);
             this.txtSearch.TabIndex = 3;
             this.txtSearch.Visible = false;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
@@ -605,11 +607,12 @@
             this.lstProcesses.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstProcesses.FullRowSelect = true;
             this.lstProcesses.HideSelection = false;
+            this.lstProcesses.LabelWrap = false;
             this.lstProcesses.LargeImageList = this.imageList1;
             this.lstProcesses.Location = new System.Drawing.Point(1, -1);
             this.lstProcesses.Margin = new System.Windows.Forms.Padding(0);
             this.lstProcesses.Name = "lstProcesses";
-            this.lstProcesses.Size = new System.Drawing.Size(471, 127);
+            this.lstProcesses.Size = new System.Drawing.Size(470, 127);
             this.lstProcesses.SmallImageList = this.imageList1;
             this.lstProcesses.StateImageList = this.imageList1;
             this.lstProcesses.TabIndex = 2;
@@ -1191,7 +1194,7 @@
             this.shellRadare2exeToolStripMenuItem,
             this.toolStripSeparator9});
             this.r2ToolStripMenuItem.Name = "r2ToolStripMenuItem";
-            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.r2ToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.r2ToolStripMenuItem.Text = "r2";
             // 
             // shellRadare2exeToolStripMenuItem

@@ -41,12 +41,14 @@ namespace r2pipe_test
                 "<span class=comment>$1</span>");
             console_text_cut = (new Regex(@"\b(fcn\.(\w+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=" + r2pw.get_timestamp() + "_fcn_0x$2 title='function @ 0x$2'>0x$2</span><span class=group>]</span>");
+            console_text_cut = (new Regex(@"\b(sub\.([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=group>[</span><span class=address id='_' title='$2'>$1</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=hexb>$2</span>");
             console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{3,})([\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "$1<span class=address id=address_$2>$2</span>$3");
+                "$1<span class=address id=_>$2</span>$3");
             console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=number>$2</span>");
             console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -69,7 +71,7 @@ namespace r2pipe_test
                 "<span class=op_err>$1</span>");
             console_text_cut = (new Regex(@"([\,\-\+\[\]\(\)])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>$1</span>");
-            html = "<div class=r2code id=r2code contenteditable=true>" + console_text_cut + "</div>";
+            html = "<div class=r2code id=r2code>" + console_text_cut + "</div>";
             return html;
         }
         public string encodeutf8(string text)
@@ -111,7 +113,7 @@ namespace r2pipe_test
             html_header += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
             html_header += "<body>\r\n";
             html_header += "<script src=\"https://code.jquery.com/jquery-1.11.3.js\"></script>\r\n";
-            html_header += "<script>var r2output = null, addresses = []</script>\r\n";
+            html_header += "<script>var r2output = null;</script>\r\n";
             // dump html or json js
             if (json_obj == null)
             {

@@ -64,6 +64,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>r2logo3_boxed_rounded.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -165,6 +168,7 @@
     <None Include="media\playbutton_small.png" />
     <None Include="media\step_over_icon.png" />
     <None Include="media\playbutton_gray_small.png" />
+    <Content Include="r2logo3_boxed_rounded.ico" />
     <Content Include="scripts\r2html.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
