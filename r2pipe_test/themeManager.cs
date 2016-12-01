@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace r2pipe_test
 {
@@ -47,6 +48,13 @@ namespace r2pipe_test
                     break;
             }
             Console.WriteLine("set_theme: {0}", themeName);
+        }
+        public Color get_current_background()
+        {
+            Color backColor = Color.FromName(config.load<string>("gui.output.bg", "white"));
+            if (backColor.Name.Equals("Purple"))
+                backColor = Color.FromArgb(255, 0x23, 0x00, 0x1b); //0xb9, 0x5a, 0x7d);
+            return backColor;
         }
     }
 }

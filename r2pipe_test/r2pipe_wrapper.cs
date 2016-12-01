@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using r2pipe;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace r2pipe_test
 {
@@ -689,6 +692,11 @@ namespace r2pipe_test
                 }
             }
             return null;
+        }
+        public Color theme_background()
+        {
+            Color backColor = theme_manager.get_current_background();
+            return backColor;
         }
         public string escape_json(string r2_json)
         {

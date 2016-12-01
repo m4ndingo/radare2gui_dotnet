@@ -1,5 +1,5 @@
 body{
-	background:#b95a7d url('roses_and_diamonds_low_bright.jpg');
+	background:#3b022d url('pinkspace.jpg');
 	color:#a6fafc;
 	font-weight:bold;
 	background-repeat: no-repeat;
@@ -29,6 +29,10 @@ body{
 }
 .address:hover, .from:hover{
 	text-decoration:underline;
+}
+.address_selected {
+    background:#ee4;
+	color:#646;
 }
 .shorted_address:hover{
 	text-decoration:underline;

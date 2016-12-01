@@ -30,9 +30,9 @@ namespace r2pipe_test
         {
             rconfig = new RConfig();
             locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps" };
-            UpdateGUI();
             CheckR2path();
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
+            UpdateGUI();
             //add controls
             r2pw.add_control("output", txtOutput);
             r2pw.add_control("dissasembly", webBrowser1,         "Dissasembly", "pd"   );
@@ -95,14 +95,15 @@ namespace r2pipe_test
         {
             Color backColor;
             Color foreColor;
+            if (r2pw == null) return;
             updating_gui = true;
             tabcontrol = tabControl1;
             currentShell = rconfig.load<string>("gui.current_shell", "radare2");
-            themeName = rconfig.load<string>("gui.theme_name", "classic");
-            backColor = Color.FromName(rconfig.load<string>("gui.output.bg", "white"));
+            themeName = rconfig.load<string>("gui.theme_name", "classic");            
             foreColor = Color.FromName(rconfig.load<string>("gui.output.fg", "black"));
-            if (backColor.Name.Equals("Purple"))
-                backColor = Color.FromArgb(255, 0xb9, 0x5a, 0x7d);
+            backColor = r2pw.theme_background();
+            //if (backColor.Name.Equals("Purple"))
+            //    backColor = Color.FromArgb(255, 0x23, 0x00, 0x1b); //0xb9, 0x5a, 0x7d);
             Left = int.Parse(rconfig.load<int>("gui.left", Left));
             Top = int.Parse(rconfig.load<int>("gui.top", Top));
             Width = int.Parse(rconfig.load<int>("gui.width", Width));
@@ -149,6 +150,7 @@ namespace r2pipe_test
         private void DoLoadFile()
         {
             bool run_initial_analysis = false;
+            if (r2pw == null) return;
             r2pw.open(fileName);
             if( fileName.StartsWith("-") ) run_initial_analysis = true;
             if( run_initial_analysis == true || 
@@ -193,7 +195,7 @@ namespace r2pipe_test
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
             }
-            if (r2pw.r2 != null && !fileName.Equals("-")) // set arch if filename != '-'
+            if (r2pw!=null && r2pw.r2 != null && !fileName.Equals("-")) // set arch if filename != '-'
             {
                 string new_arch = null;
                 new_arch = r2pw.run("e asm.arch");
@@ -250,6 +252,7 @@ namespace r2pipe_test
         }
         private void update_archs()
         {
+            if (r2pw == null) return;
             string architectures = r2pw.run("iL~[1]");
             foreach (string arch in architectures.Split('\n'))
             {
@@ -259,6 +262,7 @@ namespace r2pipe_test
         }
         private void update_cpus()
         {
+            if (r2pw == null) return;
             string cpus = r2pw.run("iL~[1]");
             foreach (string cpu in cpus.Split('\n'))
             {
@@ -268,6 +272,7 @@ namespace r2pipe_test
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (r2pw == null) return;
             string FileName = Prompt("Locate some file", "Open dialog", r2pw.fileName);
             LoadFile(FileName);
         }
@@ -503,7 +508,8 @@ namespace r2pipe_test
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            r2pw.next_shell();
+            if( r2pw!=null )
+                r2pw.next_shell();
         }
         private void cmbCmdline_KeyUp(object sender, KeyEventArgs e)
         {
@@ -550,7 +556,8 @@ namespace r2pipe_test
         }
         private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.run("o-*;o -");
+            if( r2pw!=null ) 
+                r2pw.run("o-*;o -");
             clearControls();
             LoadFile("-");
         }
@@ -560,7 +567,7 @@ namespace r2pipe_test
             lstStrings.Clear();
             lstImports.Clear();
             lstSections.Clear();
-            if (r2pw.r2 != null)
+            if( r2pw!=null && r2pw.r2 != null )
             {
                 r2pw.run("pd", "dissasembly");  // no wait
                 r2pw.run("px 2000", "hexview"); // no wait
@@ -873,6 +880,7 @@ namespace r2pipe_test
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string ooss_command = null;
+            if (r2pw == null) return;
             maximize("output");
             ooss_command = Prompt("ooss command:", "run ( ! )", "!!notepad");
             if (ooss_command != null)
@@ -884,10 +892,12 @@ namespace r2pipe_test
         }
         private void openfileposttxtToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (r2pw == null) return;
             r2pw.run_script("openfile_post.txt");
         }
         private void pathsToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
+            if (r2pw == null) return;
             r2pw.find_dataPath(rconfig.load<string>("gui.datapath", "."));
             changeTheme(themeName);
         }
@@ -898,6 +908,7 @@ namespace r2pipe_test
         }
         private void showPnToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (r2pw == null) return;
             r2pw.run("Pn","Notes");
         }
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
