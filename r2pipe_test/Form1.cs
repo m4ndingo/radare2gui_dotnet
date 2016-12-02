@@ -32,19 +32,20 @@ namespace r2pipe_test
             rconfig = new RConfig();
             locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps" };
             CheckR2path();
+            CheckDotpath();
             tabcontrol = tabControl1;
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
             UpdateGUI();
             //add controls
             r2pw.add_control("output", txtOutput);
-            r2pw.add_control("dissasembly", webBrowser1, "Dissasembly", "pd");
+            r2pw.add_control("dissasembly", webBrowser1, "Dissasembly", "pd 128");
             r2pw.add_control("strings_listview", lstStrings, "Strings", "izzj");
             r2pw.add_control("functions_listview", listView1, "Functions", "aflj");
             r2pw.add_control("imports_listview", lstImports, "Imports", "iij");
             r2pw.add_control("sections_listview", lstSections, "Sections", "iSj");
             r2pw.add_control("processes_listView", lstProcesses, "Processes", "dpj");
             r2pw.add_control("maps_listView", lstMaps, "Maps", "dmj");
-            r2pw.add_control("hexview", webBrowser2, "Hex view", "px 2000");
+            r2pw.add_control("hexview", webBrowser2, "Hex view", "px 4000");
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){
                 "offset", "vaddr", "paddr", "plt", "addr", "addr_end", "eip"});
@@ -59,6 +60,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Sections", "S=", mainMenu);
             r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
+            r2pw.add_menucmd("&View", "Imports", "iij", mainMenu);
             r2pw.add_menucmd("&View", "Exports", "iEj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
@@ -79,13 +81,14 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
             //add menu function callbacks
+            r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
+            r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
+            r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
+            r2pw.add_menufcn("Settings", "switch", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Dump controls", "*", r2pw.gui_controls.dump, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
             r2pw.add_menufcn("Recent", "", rconfig.lastFileName, LoadFile, mainMenu);
-            r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
-            r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
-            r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
@@ -168,14 +171,22 @@ namespace r2pipe_test
                 }
             }
         }
+        private void CheckBinaryPath(string fileName, string varName)
+        {
+            string binPath = rconfig.load<string>(varName);
+            if (binPath == null || !File.Exists(binPath))
+            {
+                if (((object)r2pw) != null) r2pw.Show("Form1: CheckDotpath(): Path for '"+fileName+"' not found...", fileName+" not found");
+                rconfig.save(varName, FindFile(fileName, "Please, locate your "+fileName+" binary"));
+            }
+        }
+        private void CheckDotpath()
+        {
+            CheckBinaryPath("dot.exe","dotPath");
+        }
         private void CheckR2path()
         {
-            string r2path = rconfig.r2path;
-            if (r2path == null || !File.Exists(rconfig.r2path))
-            {
-                if (((object)r2pw) != null) r2pw.Show("Form1: CheckR2path(): Path for 'radare2.exe' not found...", "radare2.exe not found");
-                rconfig.save("r2path", FindFile("radare2.exe", "Please, locate your radare2.exe binary"));
-            }
+            CheckBinaryPath("radare2.exe", "r2path");
         }
         private void LoadFile(String fileName)
         {
@@ -398,6 +409,10 @@ namespace r2pipe_test
             //MessageBox.Show(currentShell);
             return null;
         }
+        private void runCmds(string cmds)
+        {
+            r2pw.run(cmds, "output", true);
+        }
         private void ESILcmds(string cmds)
         {
             r2pw.run(cmds, "output", true);
@@ -565,11 +580,6 @@ namespace r2pipe_test
             lstStrings.Clear();
             lstImports.Clear();
             lstSections.Clear();
-            if (r2pw != null && r2pw.r2 != null)
-            {
-                r2pw.run("pd", "dissasembly");  // no wait
-                r2pw.run("px 2000", "hexview"); // no wait
-            }
         }
         private string todo(string caption = "#todo", string tip = "no code yet", object sender = null)
         {
@@ -983,7 +993,19 @@ namespace r2pipe_test
             }
             catch (Exception) { }
         }
-
+        public void selectFunction(string address){
+            ListViewItem item   = null;
+            string fcnName      = "fcn." + address;
+            fcnName             = fcnName.Replace("0x", "");
+            item                = listView1.FindItemWithText(fcnName);
+            if (item!=null)
+            {
+                listView1.SelectedIndices.Clear();
+                item.Selected = true;
+                item.EnsureVisible();
+                //Console.WriteLine(item);
+            }
+        }
         private string get_currentlistview_selected_address()
         {
             string address = null;

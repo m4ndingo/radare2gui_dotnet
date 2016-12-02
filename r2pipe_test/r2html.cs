@@ -12,9 +12,11 @@ namespace r2pipe_test
     public class r2html
     {
         R2PIPE_WRAPPER r2pw = null;
+        List<string> addresses;
         public r2html(R2PIPE_WRAPPER r2pw)
         {
             this.r2pw = r2pw;
+            this.addresses = new List<string>();
         }
         private string htmlize(string console_text, ref MatchCollection mc)
         {
@@ -33,7 +35,7 @@ namespace r2pipe_test
             Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
 
-            console_text_cut = encodeutf8(console_text_cut);
+            //console_text_cut = encodeutf8(console_text_cut); //movethius
             console_text_cut_copy = console_text_cut;
             console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");
@@ -121,6 +123,7 @@ namespace r2pipe_test
             {
                 mc = null;
                 html_body = htmlize(console_text, ref mc);
+                html_body = "<div id=#r2code>" + html_body + "</div>\r\n";
             }else
             {
                 html_body = htmljsonize(cmds, json_obj);
@@ -128,7 +131,7 @@ namespace r2pipe_test
             // add list with matched addresses and pd previews
             if (mc != null)
             {
-                List<string> addresses      = new List<string>();
+                addresses.Clear();
                 List<string> pd_previews    = new List<string>();
                 Cursor.Current = Cursors.WaitCursor;
                 foreach (Match m in mc)
@@ -145,11 +148,12 @@ namespace r2pipe_test
                     if(!addresses.Contains(address))
                         addresses.Add("0x"+m.Groups[2].Value);
                 }
+                addresses = new HashSet<string>(addresses).ToList();
                 foreach (string address in addresses)
                 { 
-                    if (cmds!=null && cmds.StartsWith("pd"))
+                    if( cmds!=null && cmds.StartsWith("pd") && r2pw.fileName.StartsWith("-")==false )
                     {
-                        string preview = r2pw.run("pd 12 @ " + address); // get some previevs
+                        string preview = r2pw.run("pd 24 @ " + address); // get some previevs
                         //preview = encodeutf8(preview);
                         preview = htmlize(preview, ref mc);
                         preview = preview.Replace("'", "\\'");

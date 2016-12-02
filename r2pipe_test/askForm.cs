@@ -23,6 +23,7 @@ namespace r2pipe_test
             if (defval != null) txtAnswer.Text = defval;
             resize_controls();
             o.ShowDialog();
+            answer = answer.Replace("\n", "").Replace("\r", "");
             return answer;
         }
         private void recenter_form()

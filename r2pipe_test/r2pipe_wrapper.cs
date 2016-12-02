@@ -111,6 +111,7 @@ namespace r2pipe_test
                     cmds_new = string.Format("{0}~{1}", cmds, filter);
                 switch (current_shell)
                 {
+                    case "radare":
                     case "radare2":
                         res = r2.RunCommand(cmds_new);
                         break;
@@ -123,7 +124,10 @@ namespace r2pipe_test
                         break;
                 }
                 if (res != null)
+                {
+                    res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
+                }
             }
             if(res != null && (res.StartsWith("[") || res.StartsWith("{")))
             try
@@ -154,7 +158,7 @@ namespace r2pipe_test
                     // selected control cmds like commandline -> refresh tab
                     if( cmds.Length>2 )
                         need_refresh = cmds.Substring(0, 2) == gui_control.cmds.Substring(0, 2);
-                    if ( cmds.StartsWith("s") ) need_refresh = true;
+                    if (cmds.StartsWith("s") && cmds.Length>1) need_refresh = true;
                     if ( need_refresh )
                         guicontrol.refresh_main_controls();
                        // guicontrol.refresh_tab();
@@ -193,7 +197,7 @@ namespace r2pipe_test
                 {
                     if (!append) rtbox.Text = "";
 
-                    rtbox.Text += r2html.encodeutf8(someText);
+                    rtbox.Text += r2html.encodeutf8(someText); //movethis
                 }
             }
             else if (c.GetType() == typeof(ListView))
@@ -403,10 +407,11 @@ namespace r2pipe_test
             if (address!=null && address.Length>0 && address != lastAddress)
             {
                 run("s " + address);
-                //guicontrol.refresh_tab();
+                //update controls
                 guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
                 guicontrol.refresh_popups();
+                guicontrol.selectFunction(address);
                 lastAddress = address;
             }
             //tabcontrol.SelectedIndex = 0;
@@ -444,8 +449,9 @@ namespace r2pipe_test
                     foreach (string cname in cols) // add values (rows) to listview
                     {
                         lstview.Columns.Add(cname);
-                        lstview.Columns[i].Width = col_width;
-                        lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
+                        lstview.Columns[i].Tag = cname;
+                        lstview.Columns[i].Width = -2;// col_width;
+                        lstview.Columns[i].TextAlign = HorizontalAlignment.Right;                        
                         i++;
                     }
                 }
@@ -457,9 +463,9 @@ namespace r2pipe_test
                 for (i = 0; i < lstview.Columns.Count; i++)
                 {
                     lstview.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
-                    if (lstview.Columns[i].Width < 100) lstview.Columns[i].Width = 100;
-                    if (lstview.Columns[i].Width > (guicontrol.Width * 20) / 32)
-                        lstview.Columns[i].Width = (guicontrol.Width * 20) / 32;
+                    //if (lstview.Columns[i].Width < 100) lstview.Columns[i].Width = 100;
+                    //if (lstview.Columns[i].Width > (guicontrol.Width * 20) / 32)
+                    //    lstview.Columns[i].Width = (guicontrol.Width * 20) / 32;
                 }
                 lstview.EndUpdate();
             }
@@ -507,7 +513,7 @@ namespace r2pipe_test
                 object[] callback_args = new object[] { callback, args };
                 string menuText = "";
                 if (text.Length > 0)
-                    menuText = string.Format("{0}: {1}", text, args);
+                    menuText = string.Format("{1} # {0}", text, args);
                 else
                     menuText = args;
                 newitem = item.DropDownItems.Add(menuText);
@@ -728,14 +734,14 @@ namespace r2pipe_test
             run("e asm.emustr = true");
             run("e anal.autoname = false");
             run("aaa");
-            run_task("px 2000", "hexview");
-            run("pd" , "dissasembly"); // pd or pdf?
+            run_task("px 4000", "hexview");
+            run("pd 128" , "dissasembly"); // pd or pdf?
             run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij",  "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj",  "processes_listView", false, new List<string> { "path", "status", "pid" });
             run("dmj",  "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
-            run_task("aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            run_task("aflj", "functions_listview", false, new List<string> { "name", "offset", "size", "cc", "nargs", "nlocals" });
             guicontrol.refresh_popups();
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();

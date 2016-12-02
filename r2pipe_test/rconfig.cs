@@ -15,6 +15,7 @@ namespace r2pipe_test
         public string tempPath = null;
         public string guiPath  = null;
         public string dataPath = null;
+        public string dotPath  = null;
         public string regPath  = null;
         public string lastFileName = null;
         public RConfig()
@@ -27,6 +28,7 @@ namespace r2pipe_test
             tempPath = System.IO.Path.GetTempPath();
             guiPath  = Directory.GetCurrentDirectory();
             dataPath = reg_read(regPath, "gui.datapath");
+            dotPath  = reg_read(regPath, "dotPath");
             lastFileName = load<string>("gui.lastfile", "-");
         }
         public void save(string name, object value)
