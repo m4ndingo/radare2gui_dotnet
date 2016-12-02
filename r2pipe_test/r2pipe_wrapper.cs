@@ -625,6 +625,10 @@ namespace r2pipe_test
             }
             catch (Exception){} // better manage
         }
+        public void refresh_control(string controlName)
+        {
+            run(gui_controls.findControlBy_name(controlName).cmds, controlName);
+        }
         public string readFile(string fileName, bool use_guiPath = true)
         {
             if (use_guiPath)
@@ -735,7 +739,7 @@ namespace r2pipe_test
             run("e anal.autoname = false");
             run("aaa");
             run_task("px 4000", "hexview");
-            run("pd 128" , "dissasembly"); // pd or pdf?
+            run("pd 256" , "dissasembly"); // pd or pdf?
             run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij",  "imports_listview", false, new List<string> { "name", "plt" });
             run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });

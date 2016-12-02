@@ -134,11 +134,13 @@ namespace r2pipe_test
                 addresses.Clear();
                 List<string> pd_previews    = new List<string>();
                 Cursor.Current = Cursors.WaitCursor;
+                /*
                 foreach (Match m in mc)
                 {
                     string address = m.Groups[2].Value;
                     addresses.Add(m.Groups[2].Value);
                 }
+                */
                 // add funcions (fcn) to previews
                 Regex address_regex = new Regex((@"\b(fcn\.(\w+))\b"), RegexOptions.IgnoreCase);
                 mc = address_regex.Matches(console_text);

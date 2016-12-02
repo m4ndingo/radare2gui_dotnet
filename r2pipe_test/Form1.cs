@@ -38,7 +38,7 @@ namespace r2pipe_test
             UpdateGUI();
             //add controls
             r2pw.add_control("output", txtOutput);
-            r2pw.add_control("dissasembly", webBrowser1, "Dissasembly", "pd 128");
+            r2pw.add_control("dissasembly", webBrowser1, "Dissasembly", "pd 256");
             r2pw.add_control("strings_listview", lstStrings, "Strings", "izzj");
             r2pw.add_control("functions_listview", listView1, "Functions", "aflj");
             r2pw.add_control("imports_listview", lstImports, "Imports", "iij");
@@ -84,7 +84,7 @@ namespace r2pipe_test
             r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
-            r2pw.add_menufcn("Settings", "switch", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
+            r2pw.add_menufcn("Settings", "switch utf8 encoding", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Dump controls", "*", r2pw.gui_controls.dump, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
@@ -337,8 +337,10 @@ namespace r2pipe_test
         public void refresh_main_controls(string address = null)
         {
             int current_tab_index = tabcontrol.SelectedIndex;
-            r2pw.run("pxa 2000", "hexview");
-            r2pw.run("pd", "dissasembly");
+            r2pw.refresh_control("hexview");
+            r2pw.refresh_control("dissasembly");
+            //r2pw.run("pxa 2000", "hexview");
+            //r2pw.run("pd", "dissasembly");
             refresh_popups();
             tabcontrol.SelectedIndex = current_tab_index;
         }
