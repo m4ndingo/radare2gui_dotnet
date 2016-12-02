@@ -90,3 +90,10 @@ body{
 .op_nop{
 	color: #6060f0;
 }
+.msg{
+    background:#000;
+    border:solid 1px #aaa;
+    padding:2px;
+    display:none;
+    white-space:pre;
+}

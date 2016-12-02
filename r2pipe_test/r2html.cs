@@ -40,8 +40,8 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"(- offset -.+)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");
             console_text_cut = (new Regex(@"\b(fcn\.(\w+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=" + r2pw.get_timestamp() + "_fcn_0x$2 title='function @ 0x$2'>0x$2</span><span class=group>]</span>");
-            console_text_cut = (new Regex(@"\b(sub\.([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=_ title='function @ 0x$2'>0x$2</span><span class=group>]</span>");
+            console_text_cut = (new Regex(@"\[((sub|sym)\.([\w\.]+))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>[</span><span class=address id='_' title='$2'>$1</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
@@ -51,17 +51,15 @@ namespace r2pipe_test
                 "$1<span class=address id=_>$2</span>$3");
             console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=number>$2</span>");
-            console_text_cut = (new Regex(@"\[(sym.imp.KERNEL32.dll_(GetStartupInfoA))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=group>[</span><span class=shorted_address title='$1'>$2</span><span class=group>]</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
                 "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>"));
-            console_text_cut = (new Regex(@"(push|pop\b|cli|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(push|pop\b|cli\b|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
             console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
             console_text_cut = (new Regex(@"\b[rl]?call\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_call>call</span>");
-            console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std|ldd)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std|ldd)")).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
             console_text_cut = (new Regex(@"(add|subi?|inc|dec|i?div|[if]?mul|sbb|sbci?|adc)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_add>$1</span>$2");
@@ -107,13 +105,17 @@ namespace r2pipe_test
                     r2pw.rconfig.load<string>("gui.hexview.css", "r2pipe.css")
                     );
             html_header = "<!DOCTYPE html>\n";
-            html_header += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
+            //html_header += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
             html_header += "<meta charset=\"UTF-8\">\n";
             html_header += "<html>\r\n";
+            html_header += "<head>\r\n";
             html_header += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
-            html_header += "<body>\r\n";
+            html_header += "<link rel = \"stylesheet\" href = \"https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css\" >\r\n";
             html_header += "<script src=\"https://code.jquery.com/jquery-1.11.3.js\"></script>\r\n";
-            html_header += "<script>var r2output = null;</script>\r\n";
+            html_header += "<script>var r2output = null;var addresses = null;</script>\r\n";
+            html_header += "</head>\r\n";
+            html_header += "<body>\r\n";
+            html_header += "<div id=my_dialog class=msg></div>\r\n";            
             // dump html or json js
             if (json_obj == null)
             {
@@ -123,21 +125,50 @@ namespace r2pipe_test
             {
                 html_body = htmljsonize(cmds, json_obj);
             }
-            // add list with matched addresses
+            // add list with matched addresses and pd previews
             if (mc != null)
             {
-                List<string> addresses = new List<string>();
+                List<string> addresses      = new List<string>();
+                List<string> pd_previews    = new List<string>();
+                Cursor.Current = Cursors.WaitCursor;
                 foreach (Match m in mc)
                 {
+                    string address = m.Groups[2].Value;
                     addresses.Add(m.Groups[2].Value);
                 }
+                // add funcions (fcn) to previews
+                Regex address_regex = new Regex((@"\b(fcn\.(\w+))\b"), RegexOptions.IgnoreCase);
+                mc = address_regex.Matches(console_text);
+                foreach (Match m in mc)
+                {
+                    string address = m.Groups[2].Value;
+                    if(!addresses.Contains(address))
+                        addresses.Add("0x"+m.Groups[2].Value);
+                }
+                foreach (string address in addresses)
+                { 
+                    if (cmds!=null && cmds.StartsWith("pd"))
+                    {
+                        string preview = r2pw.run("pd 12 @ " + address); // get some previevs
+                        //preview = encodeutf8(preview);
+                        preview = htmlize(preview, ref mc);
+                        preview = preview.Replace("'", "\\'");
+                        preview = preview.Replace("\r", "\\r");
+                        preview = preview.Replace("\n", "\\n");
+                        pd_previews.Add("'"+ address+"':'"+preview+"'");
+                    }
+                    Cursor.Current = Cursors.Default;
+                }
                 html_body += "<script>\r\n";
-                html_body += "addresses = ['" + string.Join("', '", addresses) + "'];\r\n";
+                html_body += "addresses   = ['" + string.Join("', '", addresses) + "'];\r\n";
+                html_body += "pd_previews = {" + string.Join(", ", pd_previews) + "};\r\n";
                 html_body += "</script>\r\n";
             }
             html_body += "<script src='" + js_filename + "'></script>\r\n";
             if (!File.Exists(js_filename))
-                html_body += string.Format("<div class=comment>Note: script {0} was not found</div>", js_filename);
+                html_body += string.Format("<div class=msg></div>", js_filename);
+            html_body += "</body>\r\n";
+            html_body += "</html>\r\n";
             return html_header + html_body;
         }
         private string htmljsonize(string cmds, dynamic json_obj)

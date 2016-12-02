@@ -18,7 +18,7 @@ namespace r2pipe_test
         public          IR2Pipe  r2                  =   null  ;
         public           String  current_shell       =     ""  ;
         public           String  fileName            =     ""  ;
-        private           Form1  guicontrol          =   null  ;
+        public            Form1  guicontrol          =   null  ;
         public          RConfig  rconfig             =   null  ;
         private      TabControl  tabcontrol          =   null  ;
         private    themeManager  theme_manager       =   null  ;
@@ -84,7 +84,8 @@ namespace r2pipe_test
                 else
                     output_msg = string.Format("[0x{0:x8}]> {1,-25} # {2}\n", 
                         seek_address, cmds, controlName);
-                setText("output", "", output_msg, true); // send command to output
+                if(controlName!=null)
+                    setText("output", "", output_msg, true); // send command to output
             }
             if (r2 == null)
             {
@@ -101,7 +102,7 @@ namespace r2pipe_test
                 Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
                 return null;
             }
-            Cursor.Current = Cursors.WaitCursor;
+            if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
             update_statusbar(cmds);
             if (cmds != null)
             {
@@ -128,12 +129,12 @@ namespace r2pipe_test
             try
             {
 
-                string resultString = escape_json(res);
+                    string resultString = escape_json(res);
                 json_obj = JsonConvert.DeserializeObject(resultString);
             }
             catch (Exception e)
             {
-                if (cmds.EndsWith("j")) Show(e.ToString(), "json deserialize error");
+                if (cmds.EndsWith("j")) setText("output",cmds,e.Message,true);
             }
             if (controlName != null)
             {
@@ -159,7 +160,7 @@ namespace r2pipe_test
                        // guicontrol.refresh_tab();
                 }
             }
-            Cursor.Current = Cursors.Default;
+            if (controlName != null) Cursor.Current = Cursors.Default;
             return res;
         }
         public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
@@ -355,7 +356,7 @@ namespace r2pipe_test
             MatchCollection mc_addresses = null;
             // webpage(s) will be saved to temp path 
             // other support files will be referenced
-            tmpName = string.Format("{0}_{1}.html", controlName, cmds);
+            tmpName = string.Format("{0}_{1}_{2}.html", controlName, cmds, get_timestamp());
             tmpName = (new Regex(@"([\\\/>\~\n])")).Replace(tmpName, "");
             tmpName = tmpName.Replace("?",  "[question]");
             tmpName = tmpName.Replace(":",  "[tp]");
@@ -405,6 +406,7 @@ namespace r2pipe_test
                 //guicontrol.refresh_tab();
                 guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
+                guicontrol.refresh_popups();
                 lastAddress = address;
             }
             //tabcontrol.SelectedIndex = 0;
@@ -515,7 +517,9 @@ namespace r2pipe_test
         }
         public void add_control_tab(string tabname, string cmds)
         {
-            if (controls.ContainsKey(tabname)) return;
+            if ( tabcontrol == null)
+                return;
+            if ( controls.ContainsKey(tabname) ) return;
             var page = new TabPage(tabname);
             WebBrowser browser = null;
             try
@@ -722,15 +726,17 @@ namespace r2pipe_test
             run("e scr.utf8 = true");
             run("e scr.interactive = false");
             run("e asm.emustr = true");
+            run("e anal.autoname = false");
             run("aaa");
-            run_task("pxa 2000", "hexview");
+            run_task("px 2000", "hexview");
             run("pd" , "dissasembly"); // pd or pdf?
-            run("izj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
-            run("iij", "imports_listview", false, new List<string> { "name", "plt" });
-            run("iSj", "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
-            run("dmj", "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
+            run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
+            run("iij",  "imports_listview", false, new List<string> { "name", "plt" });
+            run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
+            run("dpj",  "processes_listView", false, new List<string> { "path", "status", "pid" });
+            run("dmj",  "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
             run_task("aflj", "functions_listview", false, new List<string> { "name", "offset" });
+            guicontrol.refresh_popups();
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
         }

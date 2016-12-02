@@ -2,12 +2,19 @@ var html = "";
 var keys = [];
 
 // #TODO: generate decorators from gui ...
-var decorators = {"num2hex":["offset","vaddr","paddr","plt","from","addr","addr_end","eip","esp"]}
+
+var decorators = {
+    "num2hex":
+        [   "offset", "vaddr", "paddr", "plt", "from", "addr", "addr_end", "eip", "esp",
+            "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13",
+            "r14", "r15", "rsp", "rbp", "rflags", "rip"]
+}
 
 // thx stackoverflow, WebBrowser for .net is O_o=*x!< compatibility 
 // with modern webbrowsers s*x... need a better .net control
 function inList(psString, laList) 
 {
+    if (!laList) return;
     var i = laList.length;
     while (i--) {
         if (laList[i] === psString) return true;
@@ -18,7 +25,7 @@ function text2html(varname, value)
 {
     var sAddress = "0x" + value.toString(16);
     var id = varname + "_" + sAddress;
-    if (!inList(sAddress, addresses))
+    if (addresses && !inList(sAddress, addresses))
     {
         addresses = addresses.concat(sAddress);
         add_select_event(varname, "address", "address_selected");
@@ -76,29 +83,71 @@ if ( r2output != null )
 }
 
 var r2code = document.getElementById('r2code');
-//if (r2code) r2code.contentEditable = true;
+if (r2code) r2code.contentEditable = true;
 
-function add_select_event(id,cname,cname_selected)
+var show_msg = true;
+var timeoutId = null;
+
+function close_dialog(e)
 {
-    $(id).click(function () {
-        clear_selected_addresses();
-        if ($(this).hasClass(cname))
-            $(id).removeClass(cname).addClass(cname_selected);
-        else
-            $(id).removeClass(cname_selected).addClass(cname);
-    });
+    $('#my_dialog').hide();
+    if (timeoutId) window.clearTimeout(timeoutId);
+    timeoutId = null;
 }
-function clear_selected_addresses_old() {        
-    for (i = 0; i < addresses.length, address = addresses[i]; i++)
-    {
-        var id = "#address_" + address;
-        if ($(id).hasClass("address_selected"))
+
+$("#r2code").click(function (e)
+{
+    var cname_orig = e.target.className;
+    if (cname_orig == 'address' || cname_orig == 'address_selected') return;
+    close_dialog(e);
+});
+$("#my_dialog").click(function (e)
+{
+    var cname_orig = e.target.className;
+    if (cname_orig == 'address' || cname_orig == 'address_selected') return;
+    close_dialog(e);
+});
+var seladdr = 0;
+function add_select_event(id,cname_orig,cname_selected)
+{
+    $(id).hover(function (e) {        
+        if ($(this).hasClass("address")) {
+            $(id).removeClass("address").addClass("address_selected");            
+        }
+        else {
             $(id).removeClass("address_selected").addClass("address");
-    }
+        }
+
+        if ($(this).hasClass("address_selected")) {
+            if (timeoutId) return;
+            timeoutId = window.setTimeout(function () {                    
+                var myDialog = $('#my_dialog');
+                var address = $(id).text();
+                
+                clear_selected_addresses();
+                text = address;
+                if (text) {
+                    try {
+                        text = pd_previews[address];
+                        if (text) {
+                            text = text.replace(/\n/g, "<br>")
+                            text = text.replace(/\s\s/g, "&nbsp;&nbsp;")
+                        }
+                    } catch (err) { } // may not exists
+                    myDialog.css({ top: e.pageY + 10, left: e.pageX > 100 ? 100 : e.PageX, position: 'absolute' });
+                    clear_selected_addresses();
+                    myDialog.html(text);                    
+                    make_selectable();
+                    myDialog.show();
+                }
+            }, 2000);
+        }
+    });
 }
 
 function clear_selected_addresses() {
-	for (var i=0;i<l;i++) {
+    spans = document.getElementsByTagName('span');
+    for (var i = 0; i < spans.length; i++) {
 		var id = spans[i].getAttribute("id");
 		if ( id != null )
 		{
@@ -108,20 +157,21 @@ function clear_selected_addresses() {
 		}
 	}
 }
-
-var spans = document.getElementsByTagName('span');
-var l = spans.length;
-for (var i=0;i<l;i++) {
-	var id = spans[i].getAttribute("id");
-    if ( id != null )
-	{
-		id = i; // overwrite
-	    var spanClass = spans[i].getAttribute("class"); 
-		spans[i].id = id;		
-		add_select_event("#"+id, "address", "address_selected");     
-		//console.log(spans[i].className);
-	}
+var idx = 0;
+function make_selectable() {
+    //clear_selected_addresses();
+    spans = document.getElementsByTagName('span');
+    if (!spans) return;
+    for (var i = 0; i < spans.length; i++) {
+        var id = spans[i].getAttribute("id");
+        if (id != null && id == "_") {
+            var spanClass = spans[i].getAttribute("class");
+            spans[i].id = idx;
+            add_select_event("#" + idx, "address", "address_selected");
+            idx++;
+        }
+    }
 }
-
+make_selectable();
 //document.write(keys);
 //document.write(JSON.stringify(r2output));

@@ -13,6 +13,7 @@ namespace r2pipe_test
         public string sName     = null;
         public string cmds      = null;
         public string tabTitle  = null;
+        public bool synchronize = true;
         public List<string> column_titles = null;
         public GuiControl(object control, string name, string sName, string cmds, string tabTitle, List<string> column_titles = null)
         {
@@ -26,8 +27,7 @@ namespace r2pipe_test
         public void set_columnTitles(List<string> column_titles)
         {
             this.column_titles = column_titles;
-        }
-        
+        }        
         public override string ToString()
         {
             return string.Format(
@@ -80,7 +80,6 @@ namespace r2pipe_test
         }
         public GuiControl findControlBy_name(string name)
         {
-            //r2pw.output(string.Format("findControlByName: name='{0}'", name));
             foreach (GuiControl c in controls)
             {
                 if (name.Equals(c.name))
@@ -97,6 +96,12 @@ namespace r2pipe_test
                     return c;
             }
             return null;
+        }
+        public GuiControl get_active_control()
+        {
+            string tabTitle = r2pw.guicontrol.selected_tab("title");
+            GuiControl gui_control = findControlBy_tabTitle(tabTitle);
+            return gui_control;
         }
     }
 }

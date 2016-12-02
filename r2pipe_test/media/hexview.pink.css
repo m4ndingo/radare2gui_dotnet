@@ -58,3 +58,10 @@ body{
 }
 .op_nop{
 }
+.msg{
+    background:#220618;
+    border:solid 1px #cca;
+    padding:2px;
+    display:none;
+    white-space:pre;
+}

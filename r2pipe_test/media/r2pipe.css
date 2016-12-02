@@ -7,7 +7,7 @@ body{
 	margin:0;
 	padding:0;
 }
-.r2code, .tbl, .tbl_dict{
+.r2code, .tbl, .tbl_dict, .msg{
 	line-height: 1.1em;
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
@@ -47,7 +47,6 @@ body{
 }
 .address, .shorted_address{
     color:black;
-    text-decoration:underline;
 }
 .address:hover, .from:hover{
     text-decoration:underline;
@@ -81,4 +80,11 @@ body{
 	color: red;
 }
 .op_nop{
+}
+.msg{
+    background:#fff9aa;
+    border:solid 1px black;
+    padding:2px;
+    display:none;
+    white-space:pre;
 }
