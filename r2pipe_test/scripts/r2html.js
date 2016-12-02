@@ -87,7 +87,7 @@ if (r2code) r2code.contentEditable = true;
 
 var show_msg = true;
 var timeoutId = null;
-
+/*
 function close_dialog(e)
 {
     $('#my_dialog').hide();
@@ -95,54 +95,73 @@ function close_dialog(e)
     timeoutId = null;
 }
 
-$("#r2code").click(function (e)
-{
-    var cname_orig = e.target.className;
-    if (cname_orig == 'address' || cname_orig == 'address_selected') return;
-    close_dialog(e);
-});
 $("#my_dialog").click(function (e)
 {
     var cname_orig = e.target.className;
     if (cname_orig == 'address' || cname_orig == 'address_selected') return;
     close_dialog(e);
 });
+*/
+$("#my_dialog").click(function (e)
+{
+	var myDialog = $('#my_dialog');
+	myDialog.hide()
+});
+var saved_address = "";
 var seladdr = 0;
 function add_select_event(id,cname_orig,cname_selected)
 {
     $(id).hover(function (e) {        
+        var address = $(id).text();				
         if ($(this).hasClass("address")) {
-            $(id).removeClass("address").addClass("address_selected");            
+			if(address!=saved_address)
+			{
+				var myDialog = $('#my_dialog');
+				var dialog_visible = myDialog.is(":visible");
+				if(dialog_visible){
+					$(id).removeClass("address").addClass("address_selected");
+					saved_address=""
+					return;
+				}
+				myDialog.hide()
+				saved_address=address;
+				if (timeoutId) window.clearTimeout(timeoutId);
+				timeoutId = window.setTimeout(function () {                    
+					var address = $(id).text();				
+    				if ( address!=saved_address ){
+						$(id).removeClass("address_selected").addClass("address");
+						return;
+					}
+					var address = $(id).text();                
+					clear_selected_addresses();
+					$(id).removeClass("address").addClass("address_selected"); 
+					text = address;
+					if (text) {
+						try {
+							text = pd_previews[address];
+							if (text) {
+								text = text.replace(/\n/g, "<br>")
+								text = text.replace(/\s\s/g, "&nbsp;&nbsp;")
+							}
+						} catch (err) { } // may not exists
+						myDialog.css({ top: e.pageY + 10, left: e.pageX > 100 ? 100 : e.PageX, position: 'absolute' });
+						//clear_selected_addresses();
+						myDialog.html(text);                    
+						make_selectable();						
+					}
+				},1000);
+				window.setTimeout(function () { 
+					myDialog.show();
+					//saved_address="";
+					}, 2000);
+				return;
+			}
         }
         else {
-            $(id).removeClass("address_selected").addClass("address");
+            if(address!=saved_address)
+				$(id).removeClass("address_selected").addClass("address");
         }
-
-        if ($(this).hasClass("address_selected")) {
-            if (timeoutId) return;
-            timeoutId = window.setTimeout(function () {                    
-                var myDialog = $('#my_dialog');
-                var address = $(id).text();
-                
-                clear_selected_addresses();
-                text = address;
-                if (text) {
-                    try {
-                        text = pd_previews[address];
-                        if (text) {
-                            text = text.replace(/\n/g, "<br>")
-                            text = text.replace(/\s\s/g, "&nbsp;&nbsp;")
-                        }
-                    } catch (err) { } // may not exists
-                    myDialog.css({ top: e.pageY + 10, left: e.pageX > 100 ? 100 : e.PageX, position: 'absolute' });
-                    clear_selected_addresses();
-                    myDialog.html(text);                    
-                    make_selectable();
-                    myDialog.show();
-                }
-            }, 2000);
-        }
-    });
+	}); // hover
 }
 
 function clear_selected_addresses() {
