@@ -34,7 +34,9 @@ namespace r2pipe_test
                     Height = int.Parse(fields[3]);
                     TopMost = bool.Parse(fields[4]);
                 }
-                catch (Exception) { } // may fail if some field not found
+                catch (Exception) {
+                    TopMost = true;
+                } // may fail if some field not found
             }
             this.ShowIcon = true;
             refresh_menu();

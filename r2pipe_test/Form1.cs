@@ -70,7 +70,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "Ascii Art Bar", "p-", mainMenu);
-            r2pw.add_menucmd("&View", "ESIL registers", "aerj", mainMenu);
+            r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
@@ -359,20 +359,31 @@ namespace r2pipe_test
         }
         private void menuXrefs_Click(object sender, EventArgs e)
         {
+            popup_cmds("xrefs", "axtj");
+        }
+        private void popup_cmds(string title, string cmds)
+        {
             int i;
+            tabcontrol.SuspendLayout();
             string address = get_selectedAddress(listView1);
-            if (address != null)
+            this.SuspendLayout();
+            TabPage page = null;
+            r2pw.run("s " + address);
+            r2pw.add_control_tab(title, cmds);
+            r2pw.run(cmds, title);
+            for (i = 0; i < tabcontrol.TabPages.Count; i++)
             {
-                TabPage page = null;
-                r2pw.add_control_tab("xrefs ( axtj )", "#todo");
-                r2pw.run("axtj @ " + address, "xrefs ( axtj )");
-                for (i = 0; i < tabcontrol.TabPages.Count; i++)
+                page = tabcontrol.TabPages[i];
+                if (page.Text == title)
                 {
-                    page = tabcontrol.TabPages[i];
-                    if (page.Text == "xrefs ( axtj )")
-                        tabcontrol.SelectedTab = page;
+                    tabcontrol.SelectedTab = page;
+                    webbrowser_container_form webFrm = popup_tab();
+                    close_selected_tab();
+                    webFrm.Focus();
                 }
             }
+            this.ResumeLayout();
+            tabcontrol.ResumeLayout();
         }
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
@@ -424,6 +435,21 @@ namespace r2pipe_test
             r2pw.run(cmds, "output", true);
             if (cmds.StartsWith("ae"))
                 refresh_tab();
+        }
+        private void popup_cb(string cmds)
+        {
+            string popupName = "";
+            GuiControl gc = find_control_by_cmds(cmds);
+            if (gc == null)
+            {
+                //this.show_message("popup_cb(): cmds=" + cmds + " : control not found");
+                popupName = cmds;
+            }
+            else
+            {
+                popupName = gc.name;
+            }
+            popup_cmds(popupName, cmds);
         }
         private void changeArch(String arch)
         {
@@ -610,10 +636,18 @@ namespace r2pipe_test
         }
         private void ctxTabsItemClose_Click(object sender, EventArgs e)
         {
+            close_selected_tab();
+        }
+        private void close_selected_tab()
+        {
             string controlName = tabControl1.SelectedTab.Text;
             if (locked_tabs.Contains(controlName)) return;
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
             r2pw.controls.Remove(controlName);
+        }
+        private void hide_selected_tab()
+        {
+            tabControl1.SelectedTab.Hide();
         }
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -703,7 +737,7 @@ namespace r2pipe_test
         {
             popup_tab();
         }
-        public void popup_tab()
+        public webbrowser_container_form popup_tab()
         {
             WebBrowser webbrowser = new WebBrowser();
             string new_controlName = null;
@@ -722,10 +756,11 @@ namespace r2pipe_test
             webFrm.Height = Height;
             refresh_control(gui_control);
             string frmTitle = tabTitle;
-            if (!tabTitle.Contains("("))
+            if (!tabTitle.Contains("(") && !tabTitle.Equals(gui_control.cmds))
                 frmTitle = string.Format("{0} ( {1} )", tabTitle, gui_control_tab.cmds);
             webFrm.Text = frmTitle;
             webFrm.Show();
+            return webFrm;
         }
         private string genControlName(string longName)
         {
@@ -929,6 +964,10 @@ namespace r2pipe_test
         private GuiControl find_control_by_name(string name)
         {
             return r2pw.gui_controls.findControlBy_name(name);
+        }
+        private GuiControl find_control_by_cmds(string cmds)
+        {
+            return r2pw.gui_controls.findControlBy_cmds(cmds);
         }
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {

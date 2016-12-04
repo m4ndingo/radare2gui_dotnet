@@ -87,6 +87,15 @@ namespace r2pipe_test
             }
             return null;
         }
+        public GuiControl findControlBy_cmds(string cmds)
+        {
+            foreach (GuiControl c in controls)
+            {
+                if (cmds.Equals(c.cmds))
+                    return c;
+            }
+            return null;
+        }
         public GuiControl findControlBy_tabTitle(string tabTitle)
         {
             if (tabTitle == null) return null;
@@ -96,6 +105,11 @@ namespace r2pipe_test
                     return c;
             }
             return null;
+        }
+        public void remove_control_byName(string controlName)
+        {
+            GuiControl gc = findControlBy_name(controlName);
+            controls.Remove(gc);
         }
         public GuiControl get_active_control()
         {

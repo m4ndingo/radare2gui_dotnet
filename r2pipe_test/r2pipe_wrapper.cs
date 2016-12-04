@@ -492,7 +492,8 @@ namespace r2pipe_test
         }
         public void unregister_control(string controlName)
         {
-            controls.Remove(controlName);
+            //controls.Remove(controlName);
+            gui_controls.remove_control_byName(controlName);
         }
         public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
         {
@@ -548,6 +549,7 @@ namespace r2pipe_test
             catch (Exception e)
             {
                 Show(e.ToString(), "add_control_tab: browser");
+                return;
             }
             page.Tag = cmds; // tabname.ToLower();
             page.ImageIndex = 1;
@@ -566,6 +568,7 @@ namespace r2pipe_test
             catch (Exception e)
             {
                 Show(e.ToString(), "add_control_tab: page");
+                return;
             }
             if (browser != null)
                 add_control(tabname, browser, tabname, cmds);
