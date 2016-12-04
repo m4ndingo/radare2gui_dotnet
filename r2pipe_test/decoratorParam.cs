@@ -1,29 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Drawing;
 
 namespace r2pipe_test
 {
-    /*
-    public class decoratorParams
-    {
-        public List<decoratorParam> decoratorParamsList;
-        public themeManager tm;
-        public decoratorParams(themeManager tm)
-        {
-            this.decoratorParamsList = new List<decoratorParam>();
-            this.tm = tm;
-        }
-        public void add_decoratorParam(string controlName, string columName, string value, string decoratorName, object json_row, List<string> cols, ListViewItem listviewItem, R2PIPE_WRAPPER rconfig)
-        {
-            decoratorParam dp = new decoratorParam(controlName, columName, value, decoratorName, json_row, cols, listviewItem);
-            decoratorParamsList.Add(dp);
-        }
-    }*/
     public class decoratorParam
     {
         public string controlName;
