@@ -23,6 +23,7 @@ namespace r2pipe_test
         public string currentShell = null;
         List<string> locked_tabs = null;        // tab names used in Form1 design
         private bool skip_next_keydown = false;
+        private bool esil_initilized = false;
         public Form1()
         {
             InitializeComponent();
@@ -226,7 +227,8 @@ namespace r2pipe_test
             Refresh();
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
-            cmbCmdline.Focus();            
+            cmbCmdline.Focus();
+            esil_initilized = false;
         }
         private void save_gui_config()
         {
@@ -421,10 +423,7 @@ namespace r2pipe_test
         {
             r2pw.run(cmds, "output", true);
             if (cmds.StartsWith("ae"))
-            {
                 refresh_tab();
-                //r2pw.run("pd", "dissasembly");
-            }
         }
         private void changeArch(String arch)
         {
@@ -630,7 +629,8 @@ namespace r2pipe_test
             switch (e.KeyValue)
             {
                 case 69: // e key
-                    r2pw.gotoAddress("entry0");
+                    if( controlPressed ) 
+                        r2pw.gotoAddress("entry0");
                     break;
                 case 27: // esc key
                     if (skip_next_keydown == true)
@@ -753,21 +753,29 @@ namespace r2pipe_test
         }
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
+            initialize_esil();
+        }
+        private void initialize_esil()
+        {
             string pc = ""; // new eip/pc for ESIL emulation
+            esil_initilized = true;
             ESILcmds("aei");
-            pc = r2pw.run("aer~eip[1]");
-            pc = "entry0";
-            pc = Prompt("Start address", "New eip", pc).Replace("\n", "");
+            pc = r2pw.run("? $$~[1]");
+            pc = Prompt("Init ESIL", "Starting address ( pc )", pc).Replace("\n", "");
             if (pc != null)
-            {                
-                ESILcmds("aer eip = " + pc);
-                ESILcmds("aer rip = " + pc);
+            {
                 r2pw.run("s " + pc);
+                ESILcmds("aeip");
+                //ESILcmds("aer eip = " + pc);
+                //ESILcmds("aer rip = " + pc);
+                //ESILcmds("aep = " + pc); // don't work?
             }
             refresh_popups();
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
+            if (esil_initilized == false)
+                initialize_esil();
             ESILcmds("aes");
         }
         private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
@@ -940,7 +948,7 @@ namespace r2pipe_test
                     }
                 }
                 if (timeout == false)
-                    r2pw.run(control.cmds, control.name, false, column_titles); // no timeout
+                    r2pw.run(control.cmds, control.name, false, column_titles,null,false,true); // no timeout
                 else
                     r2pw.run_task(control.cmds, control.name, false, column_titles); // with timeout
             }
@@ -1165,6 +1173,18 @@ namespace r2pipe_test
             string new_name = Prompt("New name:", "Rename", current_address);
             r2pw.run(string.Format("afn {0} {1}", new_name, current_address));
             refresh_functions_listview();
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            string pc = r2pw.run("? $$~[1]");
+            if (esil_initilized == false)
+                initialize_esil();
+            pc = Prompt("Seek until ( aesu )", "Continue until address", pc).Replace("\n", "");
+            if (pc != null)
+            {
+                ESILcmds("aesu " + pc);
+            }
         }
     }
 }

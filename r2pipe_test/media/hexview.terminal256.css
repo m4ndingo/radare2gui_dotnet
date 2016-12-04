@@ -91,6 +91,10 @@ body{
 .op_nop{
 	color: #6060f0;
 }
+.esil_rip{
+	background:#aaa;
+	color:#008;
+}
 .msg{
     background:#000;
     border:solid 1px #aaa;

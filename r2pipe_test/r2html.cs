@@ -32,19 +32,20 @@ namespace r2pipe_test
                 console_text_cut += line_cut + "\n";
             }
 
-            Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
+            //Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
+            Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
 
             //console_text_cut = encodeutf8(console_text_cut); //movethius
             console_text_cut_copy = console_text_cut;
             console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");
-            console_text_cut = (new Regex(@"(- offset -.+)")).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(- offset -.+|int3\b)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");
             console_text_cut = (new Regex(@"\b(fcn\.(\w+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=_ title='function @ 0x$2'>0x$2</span><span class=group>]</span>");
-            console_text_cut = (new Regex(@"\[((sub|sym)\.([\w\.]+))\]", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=group>[</span><span class=address id='_' title='$2'>$1</span><span class=group>]</span>");
+                "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=_>0x$2</span><span class=group>]</span>");
+            console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=address id='_' title='$1'>$5</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -54,12 +55,12 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=number>$2</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
-                "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>"));
+                "<span class=address></span><span class=address title='$1' id=_>$1</span><span class=group></span>"));
             console_text_cut = (new Regex(@"(push|pop\b|cli\b|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
             console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
-            console_text_cut = (new Regex(@"\b[rl]?call\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"\b[rl]?call\b")).Replace(console_text_cut,
                 "<span class=op_call>call</span>");
             console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std\b|ldd)")).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
@@ -71,6 +72,8 @@ namespace r2pipe_test
                 "<span class=op_err>$1</span>");
             console_text_cut = (new Regex(@"([\,\-\+\[\]\(\)])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>$1</span>");
+            console_text_cut = (new Regex(@"(rip:)")).Replace(console_text_cut,
+                "<span class=esil_rip>$1</span>");
             html = "<div class=r2code id=r2code>" + console_text_cut + "</div>";
             return html;
         }
@@ -134,13 +137,6 @@ namespace r2pipe_test
                 addresses.Clear();
                 List<string> pd_previews    = new List<string>();
                 Cursor.Current = Cursors.WaitCursor;
-                /*
-                foreach (Match m in mc)
-                {
-                    string address = m.Groups[2].Value;
-                    addresses.Add(m.Groups[2].Value);
-                }
-                */
                 // add funcions (fcn) to previews
                 Regex address_regex = new Regex((@"\b(fcn\.(\w+))\b"), RegexOptions.IgnoreCase);
                 mc = address_regex.Matches(console_text);
@@ -163,8 +159,14 @@ namespace r2pipe_test
                         preview = preview.Replace("\n", "\\n");
                         pd_previews.Add("'"+ address+"':'"+preview+"'");
                     }
-                    Cursor.Current = Cursors.Default;
                 }
+                // add the rest of address
+                foreach (Match m in mc)
+                {
+                    string address = m.Groups[2].Value;
+                    addresses.Add(m.Groups[2].Value);
+                }
+                Cursor.Current = Cursors.Default;
                 html_body += "<script>\r\n";
                 html_body += "addresses   = ['" + string.Join("', '", addresses) + "'];\r\n";
                 html_body += "pd_previews = {" + string.Join(", ", pd_previews) + "};\r\n";

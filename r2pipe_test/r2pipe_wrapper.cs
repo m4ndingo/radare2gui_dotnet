@@ -63,7 +63,7 @@ namespace r2pipe_test
                 Show(string.Format("run: {0} Timed out\n",cmds),"run");
             return null;
         }
-        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false)
+        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false, bool silent=false)
         {
             string res = "";
             dynamic json_obj = null;
@@ -84,7 +84,7 @@ namespace r2pipe_test
                 else
                     output_msg = string.Format("[0x{0:x8}]> {1,-25} # {2}\n", 
                         seek_address, cmds, controlName);
-                if(controlName!=null)
+                if (controlName != null && silent == false)
                     setText("output", "", output_msg, true); // send command to output
             }
             if (r2 == null)
@@ -155,13 +155,19 @@ namespace r2pipe_test
                 if ( gui_control != null )
                 {
                     bool need_refresh = false;
+                    bool need_tabs_refresh = false;
                     // selected control cmds like commandline -> refresh tab
                     if( cmds.Length>2 )
                         need_refresh = cmds.Substring(0, 2) == gui_control.cmds.Substring(0, 2);
                     if (cmds.StartsWith("s") && cmds.Length>1) need_refresh = true;
+                    if (cmds.Contains("ae") && cmds.Length>2) need_tabs_refresh = true; //todo: fix req, can be numbers at start
                     if ( need_refresh )
                         guicontrol.refresh_main_controls();
-                       // guicontrol.refresh_tab();
+                    if (need_tabs_refresh)
+                    {
+                        guicontrol.refresh_tab();
+                        guicontrol.refresh_popups();
+                    }
                 }
             }
             if (controlName != null) Cursor.Current = Cursors.Default;
@@ -567,6 +573,7 @@ namespace r2pipe_test
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
+            /*
             if (e.KeyCode == Keys.G) //71 g keyvalue
             {
                 string address = guicontrol.Prompt("Address:", "goto address");
@@ -575,7 +582,7 @@ namespace r2pipe_test
                     address = address.Replace("\r", "");
                     gotoAddress(address);
                 }
-            }
+            }*/
         }
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu, string decorator = null)
         {
@@ -750,18 +757,19 @@ namespace r2pipe_test
             run("Ps default"); // defaul project
             run("aa");
             run_task("px 4000", "hexview");
-            run("aaa");
-            run("e scr.interactive = false");
-            run("e scr.utf8        = true");
-            run("e asm.emustr      = true");
-            run("e asm.tabs        = 6");
-            run("e asm.cmtcol      = 50");
-            run("e asm.flgoff      = true");
-            run("e asm.linesright  = true");
-            run("e asm.lineswidth  = 4");
-            run("e asm.marks       = false");
-            run("e asm.bytes       = false");
-            run("e anal.autoname   = false");
+            run("aaa", "output", true);
+            run("e scr.interactive = false", "output", true);
+            run("e scr.utf8        = true", "output", true);
+            run("e asm.emu         = false", "output", true);
+            run("e asm.tabs        = 6", "output", true);
+            run("e asm.cmtcol      = 50", "output", true);
+            run("e asm.flgoff      = true", "output", true);
+            run("e asm.linesright  = true", "output", true);
+            run("e asm.lineswidth  = 4", "output", true);
+            run("e asm.marks       = false", "output", true);
+            run("e asm.bytes       = false", "output", true);
+            run("e anal.autoname   = false", "output", true);
+            run("e io.cache        = true", "output", true); // needed for esil writes
             run_task("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals" });
             run("pd 256", "dissasembly"); // pd or pdf?
             run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });

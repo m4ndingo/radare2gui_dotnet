@@ -151,6 +151,7 @@
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -451,11 +452,12 @@
             this.tsDebug.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.tsDebug.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.playBtn,
-            this.stepBtn});
-            this.tsDebug.Location = new System.Drawing.Point(442, 3);
+            this.stepBtn,
+            this.toolStripButton1});
+            this.tsDebug.Location = new System.Drawing.Point(436, 3);
             this.tsDebug.Name = "tsDebug";
             this.tsDebug.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.tsDebug.Size = new System.Drawing.Size(26, 122);
+            this.tsDebug.Size = new System.Drawing.Size(32, 122);
             this.tsDebug.Stretch = true;
             this.tsDebug.TabIndex = 5;
             this.tsDebug.Text = "toolStrip1";
@@ -469,7 +471,7 @@
             this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
             this.playBtn.Name = "playBtn";
-            this.playBtn.Size = new System.Drawing.Size(21, 20);
+            this.playBtn.Size = new System.Drawing.Size(27, 20);
             this.playBtn.Text = "Init ESIL";
             this.playBtn.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -482,8 +484,8 @@
             this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.stepBtn.MergeIndex = 0;
             this.stepBtn.Name = "stepBtn";
-            this.stepBtn.Size = new System.Drawing.Size(21, 20);
-            this.stepBtn.Text = "Step ESIL";
+            this.stepBtn.Size = new System.Drawing.Size(27, 20);
+            this.stepBtn.Text = "Step ESIL ( aes )";
             this.stepBtn.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // webBrowser1
@@ -627,6 +629,7 @@
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "r2icon.jpg");
             this.imageList1.Images.SetKeyName(1, "green_page.png");
+            this.imageList1.Images.SetKeyName(2, "continue_until_icon.png");
             // 
             // tabPage1
             // 
@@ -764,7 +767,7 @@
             this.txtOutput.BackColor = System.Drawing.SystemColors.Window;
             this.txtOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtOutput.ContextMenuStrip = this.ctxMenuOutput;
-            this.txtOutput.Font = new System.Drawing.Font("Consolas", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOutput.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutput.ForeColor = System.Drawing.Color.PaleGreen;
             this.txtOutput.Location = new System.Drawing.Point(1, 0);
             this.txtOutput.Name = "txtOutput";
@@ -1328,6 +1331,17 @@
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(29, 20);
+            this.toolStripButton1.Text = "Continue Until ESIL ( aesu )";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1499,6 +1513,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyAllfieldsMenu;
         private System.Windows.Forms.ToolStripMenuItem renameAfnToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
 
