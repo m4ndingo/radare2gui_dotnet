@@ -47,11 +47,11 @@ namespace r2pipe_test
                 "<span class=group>[</span><span class=address id='_' title='$2'>$1</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
-            console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=hexb>$2</span>");
-            console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{3,})([\]\s])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{3,})([\]\s])\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=address id=_>$2</span>$3");
-            console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=number>$2</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
                 "$1<span class=address>[</span><span class=address title='$2'>$2</span><span class=group>]</span>"));
@@ -61,7 +61,7 @@ namespace r2pipe_test
                 "<span class=op_ip>$1</span>");
             console_text_cut = (new Regex(@"\b[rl]?call\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_call>call</span>");
-            console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std|ldd)")).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std\b|ldd)")).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
             console_text_cut = (new Regex(@"(add|subi?|inc|dec|i?div|[if]?mul|sbb|sbci?|adc)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_add>$1</span>$2");

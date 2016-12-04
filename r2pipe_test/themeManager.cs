@@ -41,6 +41,18 @@ namespace r2pipe_test
                 case "terminal256":
                     config.save("gui.output.bg", "black");
                     config.save("gui.output.fg", "Aquamarine");
+                    config.save("gui.output.fg.fcn", "white");
+                    config.save("gui.output.bg.fcn", "black");
+                    config.save("gui.output.fg.loc", "lime");
+                    config.save("gui.output.bg.loc", "black");
+                    config.save("gui.output.fg.sym", "pink");
+                    config.save("gui.output.bg.sym", "black");
+                    config.save("gui.output.fg.imp", "highlight");
+                    config.save("gui.output.bg.imp", "black");
+                    config.save("gui.output.fg.sub", "DarkTurquoise");
+                    config.save("gui.output.bg.sub", "black");
+                    config.save("gui.output.fg.entry0", "yellow");
+                    config.save("gui.output.bg.entry0", "black");
                     break;
                 case "lemon":
                     config.save("gui.output.bg", "Khaki");
@@ -48,6 +60,15 @@ namespace r2pipe_test
                     break;
             }
             Console.WriteLine("set_theme: {0}", themeName);
+        }
+        public Color get_color_address(string colorLocation, string addr_type, Color def)
+        {
+            Color found = Color.FromName(
+                config.load<Color>(
+                    string.Format("gui.output.{0}.{1}", colorLocation, addr_type), "pink")
+            );
+            if (found == Color.FromName("pink")) return def;
+            return found;
         }
         public Color get_current_background()
         {

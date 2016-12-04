@@ -92,6 +92,7 @@
     <Compile Include="askForm.Designer.cs">
       <DependentUpon>askForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="decoratorParam.cs" />
     <Compile Include="webbrowser_container_form.cs">
       <SubType>Form</SubType>
     </Compile>

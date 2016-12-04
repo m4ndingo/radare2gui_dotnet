@@ -6,12 +6,12 @@ body{
 	background-attachment: fixed;
 	margin:0;
 	padding:0;
+	font-size:12px;
 }
 .r2code, .tbl, .tbl_dict, .msg{
 	line-height: 1.1em;
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
-	font-size:12px;
 	cursor: default;
 	font-weight:bold;    
 }
@@ -87,4 +87,5 @@ body{
     padding:2px;
     display:none;
     white-space:pre;
+	font-size:11px;
 }

@@ -35,6 +35,7 @@ namespace r2pipe_test
             CheckDotpath();
             tabcontrol = tabControl1;
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
+            tabControl1.SelectedTab = tabControl1.TabPages[1]; // def tab when start gui
             UpdateGUI();
             //add controls
             r2pw.add_control("output", txtOutput);
@@ -50,6 +51,7 @@ namespace r2pipe_test
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){
                 "offset", "vaddr", "paddr", "plt", "addr", "addr_end", "eip"});
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>() { "string" });
+            r2pw.add_decorator("short_addr_name", short_addr_name, new List<string>() { "name" });
             //add menu options and function callbacks
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
             r2pw.add_menucmd("&View", "Disassembly", "pd", mainMenu);
@@ -85,6 +87,7 @@ namespace r2pipe_test
             r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
             r2pw.add_menufcn("Settings", "switch utf8 encoding", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
+            r2pw.add_menufcn("Settings", "switch asm bytes", "e!asm.bytes", runCmds, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Dump controls", "*", r2pw.gui_controls.dump, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
@@ -223,8 +226,7 @@ namespace r2pipe_test
             Refresh();
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
-            cmbCmdline.Focus();
-            tabControl1.SelectedTab = tabControl1.TabPages[1]; // def tan when start gui
+            cmbCmdline.Focus();            
         }
         private void save_gui_config()
         {
@@ -325,7 +327,7 @@ namespace r2pipe_test
             {
                 ListView listview = ((ListView)sender);
                 if (listview.Items.Count > 0 && listview.SelectedItems.Count > 0)
-                    msg = listview.SelectedItems[0].Text;
+                    msg = listview.SelectedItems[0].SubItems[1].Text; // todo: replace 0 with column index address
             }
             else
             {
@@ -449,12 +451,89 @@ namespace r2pipe_test
         {
             int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
             string format = "0x{0:x" + (hexdigits / 2).ToString() + "}";
-            return string.Format(format, Int64.Parse(r2pw.decorator_param));
+            string value = get_decoratorvalue_string();
+            return string.Format(format, Int64.Parse(value));
+        }
+        private string short_addr_name()
+        {
+            string lstname_short_address = null;
+            decoratorParam dp = (decoratorParam)r2pw.decorator_param;
+            Newtonsoft.Json.Linq.JObject row = (Newtonsoft.Json.Linq.JObject)dp.json_row;
+            ListViewItem listview_item = dp.listviewItem;
+            lstname_short_address = dp.value;
+            string type = "";
+            if(row["type"]!=null) type=row["type"].ToString();
+            if (type.Equals("fcn"))
+            {
+                if (lstname_short_address.StartsWith("fcn."))
+                {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", type, listview_item.ForeColor);
+                    listview_item.BackColor = r2pw.get_color_address("bg", type, listview_item.BackColor);
+                    lstname_short_address = ""; // that info is in address
+                }
+                else if (lstname_short_address.StartsWith("sym.imp."))
+                {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", "imp", listview_item.ForeColor);
+                    listview_item.BackColor = r2pw.get_color_address("bg", "imp", listview_item.BackColor);
+                    lstname_short_address = lstname_short_address.Substring(8); // remove sys.imp.
+                    listview_item.SubItems[0].Text = "imp"; // todo: find column type (not use 0)
+                }
+                else if (lstname_short_address.StartsWith("sub."))
+                {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", "sub", listview_item.ForeColor);
+                    listview_item.BackColor = r2pw.get_color_address("bg", "sub", listview_item.BackColor);
+                    lstname_short_address = lstname_short_address.Substring(4); // remove sys.imp.
+                    listview_item.SubItems[0].Text = "sub"; // todo: find column type (not use 0)
+                }
+                else
+                {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", lstname_short_address, Color.FromName("yellow"));
+                    listview_item.BackColor = r2pw.get_color_address("bg", lstname_short_address, Color.FromName("pink"));
+                }
+            }
+            if (type.Equals("loc") && lstname_short_address.StartsWith("loc."))
+            {
+                listview_item.ForeColor = r2pw.get_color_address("fg", type, listview_item.ForeColor);
+                listview_item.BackColor = r2pw.get_color_address("bg", type, listview_item.BackColor);
+                lstname_short_address = ""; // that info is in address
+            }
+            if (type.Equals("sym"))
+            {
+                if (lstname_short_address.StartsWith("sym.imp."))
+                {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", "imp", listview_item.ForeColor);
+                    listview_item.BackColor = r2pw.get_color_address("bg", "imp", listview_item.BackColor);
+                    lstname_short_address = lstname_short_address.Substring(8); // remove sys.imp.
+                    listview_item.SubItems[0].Text = "imp";
+                }
+                else if (lstname_short_address.StartsWith("sym."))
+                {
+                    lstname_short_address = lstname_short_address.Substring(4); // remove sym.
+                }
+            }
+
+            return lstname_short_address;
         }
         private string dec_b64() // decorator
         {
-            byte[] data = Convert.FromBase64String(r2pw.decorator_param);
+            string value = null;
+            byte[] data = null;
+
+            value = get_decoratorvalue_string();    
+            data=Convert.FromBase64String(value);
             return Encoding.UTF8.GetString(data);
+        }
+        private string get_decoratorvalue_string()
+        {
+            string value = null;
+            if (r2pw.decorator_param.GetType() == typeof(decoratorParam))
+            {
+                decoratorParam dp = (decoratorParam)r2pw.decorator_param;
+                value = dp.value;
+            }
+            if (r2pw.decorator_param.GetType() == typeof(string))
+                value = (string)r2pw.decorator_param;
+            return value;
         }
         private void changeTheme(string themeName)
         {
@@ -997,8 +1076,7 @@ namespace r2pipe_test
         }
         public void selectFunction(string address){
             ListViewItem item   = null;
-            string fcnName      = "fcn." + address;
-            fcnName             = fcnName.Replace("0x", "");
+            string fcnName      = address; // 1st column of listview
             item                = listView1.FindItemWithText(fcnName);
             if (item!=null)
             {
@@ -1082,6 +1160,7 @@ namespace r2pipe_test
         private void renameAfnToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if ( listView1.Items.Count == 0 ) return;
+            if ( listView1.SelectedItems.Count == 0) return;
             string current_address = listView1.SelectedItems[0].Text;
             string new_name = Prompt("New name:", "Rename", current_address);
             r2pw.run(string.Format("afn {0} {1}", new_name, current_address));

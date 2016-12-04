@@ -23,7 +23,7 @@ namespace r2pipe_test
         private      TabControl  tabcontrol          =   null  ;
         private    themeManager  theme_manager       =   null  ;
         public           r2html  r2html              =   null  ;
-        public           string  decorator_param     =   null  ;
+        public           object  decorator_param     =   null  ;
         public           string  lastAddress         =   null  ;
         public      GuiControls  gui_controls        =   null  ;
         public             bool  long_command_output =  false  ;
@@ -216,15 +216,16 @@ namespace r2pipe_test
                             for (int i = 0; i < json_obj.Count; i++)
                             {
                                 string col0 = json_obj[i][cols[0]];
-                                col0 = decorate(controlName, cols[0], col0);
+                                col0 = decorate(controlName, cols[0], col0, json_obj[i], cols);
                                 ListViewItem row_item = new ListViewItem(col0);
+                                //row_item.ForeColor = Color.FromName("lime");
                                 for (int j = 1; j < cols.Count; j++)
                                 {
                                     string cname = cols[j];
                                     if (json_obj[i][cname] != null)
                                     {
                                         string value = json_obj[i][cname].ToString();
-                                        value = decorate(controlName, cname, value);
+                                        value = decorate(controlName, cname, value, json_obj[i], cols, row_item);
                                         ListViewItem.ListViewSubItem subitem = row_item.SubItems.Add(value);
                                     }
                                 }
@@ -312,7 +313,7 @@ namespace r2pipe_test
             }
             return null;
         }
-        public string decorate(string controlName, string columName, string value)
+        public string decorate(string controlName, string columName, string value, object json_row=null, List<string> cols=null, ListViewItem listviewItem=null)
         {
             string decorator = null;
             foreach (string key in decorators_names.Keys)
@@ -322,6 +323,10 @@ namespace r2pipe_test
             if ( decorator == null ) return value;
             Func<string> decorator_cb = findDecorator_callback(decorator);
             decorator_param = value;
+            if (json_row != null)
+            {
+                decorator_param = new decoratorParam(controlName, columName, value, decorator, json_row, cols, listviewItem, this);
+            }
             return decorator_cb();
         }
         public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj)
@@ -446,12 +451,14 @@ namespace r2pipe_test
                     int col_width = (lstview.Width - 20) / cols.Count;
                     lstview.Clear();
                     lstview.Columns.Clear();
-                    foreach (string cname in cols) // add values (rows) to listview
+                    foreach (string cname in cols) // add colums to listview
                     {
                         lstview.Columns.Add(cname);
                         lstview.Columns[i].Tag = cname;
                         lstview.Columns[i].Width = -2;// col_width;
-                        lstview.Columns[i].TextAlign = HorizontalAlignment.Right;                        
+                        // todo: get textalign from decorators
+                        if( !cname.Equals("name") ) 
+                            lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
                         i++;
                     }
                 }
@@ -707,10 +714,18 @@ namespace r2pipe_test
             }
             return null;
         }
+        public Color get_color_address(string colorLocation, string addr_type, Color def)
+        {            
+            return theme_manager.get_color_address(colorLocation, addr_type, def);
+        }
         public Color theme_background()
         {
             Color backColor = theme_manager.get_current_background();
             return backColor;
+        }
+        public string get_themeName()
+        {
+            return theme_manager.themeName;
         }
         public string escape_json(string r2_json)
         {
@@ -733,19 +748,27 @@ namespace r2pipe_test
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
             run("Ps default"); // defaul project
-            run("e scr.utf8 = true");
-            run("e scr.interactive = false");
-            run("e asm.emustr = true");
-            run("e anal.autoname = false");
-            run("aaa");
+            run("aa");
             run_task("px 4000", "hexview");
-            run("pd 256" , "dissasembly"); // pd or pdf?
+            run("aaa");
+            run("e scr.interactive = false");
+            run("e scr.utf8        = true");
+            run("e asm.emustr      = true");
+            run("e asm.tabs        = 6");
+            run("e asm.cmtcol      = 50");
+            run("e asm.flgoff      = true");
+            run("e asm.linesright  = true");
+            run("e asm.lineswidth  = 4");
+            run("e asm.marks       = false");
+            run("e asm.bytes       = false");
+            run("e anal.autoname   = false");
+            run_task("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals" });
+            run("pd 256", "dissasembly"); // pd or pdf?
             run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
-            run("iij",  "imports_listview", false, new List<string> { "name", "plt" });
+            run("iij",  "imports_listview", false, new List<string> { "name", "plt" });                        
             run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj",  "processes_listView", false, new List<string> { "path", "status", "pid" });
             run("dmj",  "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
-            run_task("aflj", "functions_listview", false, new List<string> { "name", "offset", "size", "cc", "nargs", "nlocals" });
             guicontrol.refresh_popups();
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();
