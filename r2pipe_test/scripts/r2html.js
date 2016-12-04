@@ -5,7 +5,8 @@ var keys = [];
 
 var decorators = {
     "num2hex":
-        [   "offset", "vaddr", "paddr", "plt", "from", "addr", "addr_end", "eip", "esp",
+        [   "offset", "vaddr", "paddr", "plt", "from", "addr", "addr_end", 
+			"eip", "esp", "eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "eflags",
             "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13",
             "r14", "r15", "rsp", "rbp", "rflags", "rip"]
 }
@@ -140,6 +141,7 @@ function add_select_event(id,cname_orig,cname_selected)
     $(id).hover(function (e) { 
 		var text = null;       
         if ($(this).hasClass("address")) {
+			var address = $(id).text();				
 			if(address!=saved_address)
 			{
 				if (timeoutId) {
@@ -147,8 +149,7 @@ function add_select_event(id,cname_orig,cname_selected)
 					window.clearTimeout(popup_timeout_id);
 					timeoutId=null;
 					popup_timeout_id=null;
-				}
-		        var address = $(id).text();				
+				}		        
 				var myDialog = $('#my_dialog');
 				var dialog_visible = myDialog.is(":visible");
 				if(last_control!="div")
@@ -186,9 +187,9 @@ function add_select_event(id,cname_orig,cname_selected)
 						var address = $(id).text();
 						if(address==saved_address && text!=null)
 							myDialog.show();
-						}, 1000);
+						}, 1500);
 					}
-				},2000);
+				},500);
 				/*
 				window.setTimeout(function () {
 					if(last_control!="address" && last_control!="comment") return;

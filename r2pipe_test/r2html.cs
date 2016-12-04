@@ -72,7 +72,7 @@ namespace r2pipe_test
                 "<span class=op_err>$1</span>");
             console_text_cut = (new Regex(@"([\,\-\+\[\]\(\)])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>$1</span>");
-            console_text_cut = (new Regex(@"(rip:)")).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"([re]ip:)")).Replace(console_text_cut,
                 "<span class=esil_rip>$1</span>");
             html = "<div class=r2code id=r2code>" + console_text_cut + "</div>";
             return html;

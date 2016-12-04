@@ -359,7 +359,12 @@ namespace r2pipe_test
         }
         private void menuXrefs_Click(object sender, EventArgs e)
         {
-            popup_cmds("xrefs", "axtj");
+            string address = get_selectedAddress(listView1);
+            string title = "xrefs @ " + address;
+            string cmds = "axtj @ "+address;
+            //popup_cmds("xrefs", "axtj");
+            r2pw.add_control_tab(title, cmds);
+            r2pw.run(cmds, title);
         }
         private void popup_cmds(string title, string cmds)
         {
@@ -801,6 +806,7 @@ namespace r2pipe_test
             {
                 r2pw.run("s " + pc);
                 ESILcmds("aeip");
+                ESILcmds("aeim");
                 //ESILcmds("aer eip = " + pc);
                 //ESILcmds("aer rip = " + pc);
                 //ESILcmds("aep = " + pc); // don't work?
