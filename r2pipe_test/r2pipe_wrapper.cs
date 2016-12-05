@@ -576,8 +576,8 @@ namespace r2pipe_test
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            /*
-            if (e.KeyCode == Keys.G) //71 g keyvalue
+            
+            if (e.KeyCode == Keys.G && e.Control) //71 g keyvalue
             {
                 string address = guicontrol.Prompt("Address:", "goto address");
                 if (address != null)
@@ -585,7 +585,7 @@ namespace r2pipe_test
                     address = address.Replace("\r", "");
                     gotoAddress(address);
                 }
-            }*/
+            }
         }
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu, string decorator = null)
         {
@@ -764,6 +764,9 @@ namespace r2pipe_test
             run("e scr.interactive = false", "output", true);
             run("e scr.utf8        = true", "output", true);
             run("e asm.emu         = false", "output", true);
+            run("e asm.emustr      = true", "output", true);
+            run("e asm.section     = true", "output", true);
+            run("e asm.section.col = 14", "output", true);            
             run("e asm.tabs        = 6", "output", true);
             run("e asm.cmtcol      = 50", "output", true);
             run("e asm.flgoff      = true", "output", true);

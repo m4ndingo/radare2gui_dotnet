@@ -513,7 +513,7 @@ namespace r2pipe_test
                     listview_item.ForeColor = r2pw.get_color_address("fg", "sub", listview_item.ForeColor);
                     listview_item.BackColor = r2pw.get_color_address("bg", "sub", listview_item.BackColor);
                     lstname_short_address = lstname_short_address.Substring(4); // remove sys.imp.
-                    listview_item.SubItems[0].Text = "sub"; // todo: find column type (not use 0)
+                    listview_item.SubItems[0].Text = "fcn"; // todo: find column type (not use 0)
                 }
                 else
                 {
