@@ -635,16 +635,17 @@ namespace r2pipe_test
             try // may fail on timeouts
             {
                 seek_address = UInt64.Parse(r2.RunCommand("?v")); // get seek address in decimal ?v
-                this.guicontrol.show_message(
-                    string.Format("{0} {1} [0x{2}] > {3}",
-                        guicontrol.fileType, Path.GetFileName(fileName), seek_address, cmds));
+                string message = string.Format("{0} {1} {2} [0x{3}] > {4}",
+                        guicontrol.fileType, guicontrol.arch, Path.GetFileName(fileName), seek_address, cmds);
+                message = message.TrimStart(' ');
+                this.guicontrol.show_message(message);
 
             }
             catch (Exception){} // better manage
         }
         public void refresh_control(string controlName)
         {
-            run(gui_controls.findControlBy_name(controlName).cmds, controlName);
+            run(gui_controls.findControlBy_name(controlName).cmds, controlName, false, null, null, false, true);
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {

@@ -59,6 +59,7 @@
             this.tsDebug = new System.Windows.Forms.ToolStrip();
             this.playBtn = new System.Windows.Forms.ToolStripButton();
             this.stepBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.HexView = new System.Windows.Forms.TabPage();
             this.webBrowser2 = new System.Windows.Forms.WebBrowser();
@@ -119,6 +120,7 @@
             this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cpuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.eSILToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guiMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -150,8 +152,6 @@
             this.notesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -222,6 +222,7 @@
             this.listView1.TabIndex = 5;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             // 
             // columnHeader1
@@ -454,10 +455,10 @@
             this.playBtn,
             this.stepBtn,
             this.toolStripButton1});
-            this.tsDebug.Location = new System.Drawing.Point(436, 3);
+            this.tsDebug.Location = new System.Drawing.Point(442, 3);
             this.tsDebug.Name = "tsDebug";
             this.tsDebug.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.tsDebug.Size = new System.Drawing.Size(32, 122);
+            this.tsDebug.Size = new System.Drawing.Size(26, 122);
             this.tsDebug.Stretch = true;
             this.tsDebug.TabIndex = 5;
             this.tsDebug.Text = "toolStrip1";
@@ -471,7 +472,7 @@
             this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
             this.playBtn.Name = "playBtn";
-            this.playBtn.Size = new System.Drawing.Size(27, 20);
+            this.playBtn.Size = new System.Drawing.Size(21, 20);
             this.playBtn.Text = "Init ESIL";
             this.playBtn.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -484,9 +485,20 @@
             this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.stepBtn.MergeIndex = 0;
             this.stepBtn.Name = "stepBtn";
-            this.stepBtn.Size = new System.Drawing.Size(27, 20);
+            this.stepBtn.Size = new System.Drawing.Size(21, 20);
             this.stepBtn.Text = "Step ESIL ( aes )";
             this.stepBtn.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 20);
+            this.toolStripButton1.Text = "Continue Until ESIL ( aesu )";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // webBrowser1
             // 
@@ -1071,7 +1083,7 @@
             this.architectureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reloadToolStripMenuItem});
             this.architectureToolStripMenuItem.Name = "architectureToolStripMenuItem";
-            this.architectureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.architectureToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.architectureToolStripMenuItem.Text = "Architecture";
             // 
             // reloadToolStripMenuItem
@@ -1086,7 +1098,7 @@
             this.cpuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reloadToolStripMenuItem1});
             this.cpuToolStripMenuItem.Name = "cpuToolStripMenuItem";
-            this.cpuToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cpuToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.cpuToolStripMenuItem.Text = "Cpu";
             // 
             // reloadToolStripMenuItem1
@@ -1096,15 +1108,21 @@
             this.reloadToolStripMenuItem1.Text = "Reload";
             this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem1_Click);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(136, 6);
             // 
             // eSILToolStripMenuItem
             // 
             this.eSILToolStripMenuItem.Name = "eSILToolStripMenuItem";
-            this.eSILToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.eSILToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.eSILToolStripMenuItem.Text = "ESIL";
             // 
             // guiMenu
@@ -1324,23 +1342,6 @@
             this.editPnToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.editPnToolStripMenuItem.Text = "Edit ( Pn - )";
             this.editPnToolStripMenuItem.Click += new System.EventHandler(this.editPnToolStripMenuItem_Click);
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(29, 20);
-            this.toolStripButton1.Text = "Continue Until ESIL ( aesu )";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // Form1
             // 

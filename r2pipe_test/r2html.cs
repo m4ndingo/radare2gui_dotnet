@@ -42,8 +42,8 @@ namespace r2pipe_test
                 "<span class=comment>$1</span>");
             console_text_cut = (new Regex(@"(- offset -.+|int3\b)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");
-            console_text_cut = (new Regex(@"\b(fcn\.(\w+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=group>[</span>fcn<span class=group>.</span><span class=address id=_>0x$2</span><span class=group>]</span>");
+            console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+                "<span class=group>[</span><span class=address id=_ title='$0'>$3</span><span class=group>]</span>");
             console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=address id='_' title='$1'>$5</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -68,7 +68,7 @@ namespace r2pipe_test
                 "<span class=op_add>$1</span>$2");
             console_text_cut = (new Regex(@"(nop)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_nop>$1</span>");
-            console_text_cut = (new Regex(@"(invalid)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(invalid)\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_err>$1</span>");
             console_text_cut = (new Regex(@"([\,\-\+\[\]\(\)])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>$1</span>");
@@ -138,26 +138,39 @@ namespace r2pipe_test
                 List<string> pd_previews    = new List<string>();
                 Cursor.Current = Cursors.WaitCursor;
                 // add funcions (fcn) to previews
-                Regex address_regex = new Regex((@"\b(fcn\.(\w+))\b"), RegexOptions.IgnoreCase);
+                Regex address_regex = new Regex((@"\b((fcn|str)\.([\:\w]+))"), RegexOptions.IgnoreCase); // same regex that used up
                 mc = address_regex.Matches(console_text);
                 foreach (Match m in mc)
                 {
-                    string address = m.Groups[2].Value;
-                    if(!addresses.Contains(address))
-                        addresses.Add("0x"+m.Groups[2].Value);
+                    string address = m.Groups[0].Value; // get the address
+                    if (!address.StartsWith("str."))    // fix the fnc.0000000 address
+                        address = "0x" + address;
+                    if (!addresses.Contains(address))
+                    {
+                        addresses.Add(address); 
+                    }
                 }
                 addresses = new HashSet<string>(addresses).ToList();
                 foreach (string address in addresses)
                 { 
                     if( cmds!=null && cmds.StartsWith("pd") && r2pw.fileName.StartsWith("-")==false )
                     {
-                        string preview = r2pw.run("pd 24 @ " + address); // get some previevs
-                        //preview = encodeutf8(preview);
-                        preview = htmlize(preview, ref mc);
-                        preview = preview.Replace("'", "\\'");
-                        preview = preview.Replace("\r", "\\r");
-                        preview = preview.Replace("\n", "\\n");
-                        pd_previews.Add("'"+ address+"':'"+preview+"'");
+                        string preview = ""; // get some previevs
+                        string print_cmd = "psz";
+                        if(!address.StartsWith("str."))
+                            print_cmd = "pd 32";
+
+                        preview = r2pw.run(print_cmd + " @ " + address);
+                        if (preview != null)
+                        {
+                            preview = preview.TrimEnd('\n');
+                            //preview = encodeutf8(preview);
+                            preview = htmlize(preview, ref mc);
+                            preview = preview.Replace("'", "\\'");
+                            preview = preview.Replace("\r", "\\r");
+                            preview = preview.Replace("\n", "\\n");
+                            pd_previews.Add("'" + address + "':'" + preview + "'");
+                        }
                     }
                 }
                 // add the rest of address

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace r2pipe_test
 {
@@ -17,6 +18,7 @@ namespace r2pipe_test
         private RConfig rconfig = null;
         private string fileName = null;
         public string fileType = null;
+        public string arch = null;
         private bool updating_gui = false;
         public TabControl tabcontrol = null;
         public string themeName = null;
@@ -163,16 +165,17 @@ namespace r2pipe_test
                 MessageBox.Show("File loaded. Analyze now?", "File loaded",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) ==
                     System.Windows.Forms.DialogResult.OK)
-                r2pw.run_script("openfile_post.txt");
-            if (!fileName.Equals("-"))
             {
-                fileType = r2pw.run("e file.type");
-                if (fileType != null)
+                if (!fileName.Equals("-"))
                 {
-                    fileType = fileType.Replace("\n", "");
-                    if (fileType.Length > 0) // used only in statusbar
-                        fileType = " " + fileType;
+                    fileType = r2pw.run("e file.type");
+                    if (fileType != null)
+                        fileType = fileType.Replace("\n", "");
+                    arch = r2pw.run("iI~arch[1]");
+                    if (arch != null)
+                        arch = arch.Replace("\n", "");
                 }
+                r2pw.run_script("openfile_post.txt");
             }
         }
         private void CheckBinaryPath(string fileName, string varName)
@@ -208,18 +211,6 @@ namespace r2pipe_test
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
-            }
-            if (r2pw != null && r2pw.r2 != null && !fileName.Equals("-")) // set arch if filename != '-'
-            {
-                string new_arch = null;
-                new_arch = r2pw.run("e asm.arch");
-                if (new_arch != null)
-                {
-                    new_arch = new_arch.Replace("\n", "");
-                    new_arch = Prompt("Arch:", "Select arch", new_arch);
-                    changeArch(new_arch);
-                    //r2pw.run("e asm.arch = " + new_arch, "output", true); // no wait
-                }
             }
             clearControls();
             this.fileName = fileName;
@@ -574,6 +565,7 @@ namespace r2pipe_test
                 r2pw.sendToWebBrowser("dissasembly", null, null, null);
                 r2pw.sendToWebBrowser("hexview", null, null, null);
                 UpdateGUI();
+                refresh_functions_listview();
             }
         } // themes
         private void classicToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1230,6 +1222,60 @@ namespace r2pipe_test
             {
                 ESILcmds("aesu " + pc);
             }
+        }
+        private int sortColumn = -1;
+        private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine whether the column is the same as the last column clicked.
+            if (e.Column != sortColumn)
+            {
+                // Set the sort column to the new column.
+                sortColumn = e.Column;
+                // Set the sort order to ascending by default.
+                listView1.Sorting = SortOrder.Ascending;
+            }
+            else
+            {
+                // Determine what the last sort order was and change it.
+                if (listView1.Sorting == SortOrder.Ascending)
+                    listView1.Sorting = SortOrder.Descending;
+                else
+                    listView1.Sorting = SortOrder.Ascending;
+            }
+
+            // Call the sort method to manually sort.
+            listView1.Sort();
+            // Set the ListViewItemSorter property to a new ListViewItemComparer
+            // object.
+            this.listView1.ListViewItemSorter = new ListViewItemComparer(e.Column,
+                                                              listView1.Sorting);
+        }
+    }
+    public class ListViewItemComparer : IComparer
+    {
+
+        private int col;
+        private SortOrder order;
+        public ListViewItemComparer()
+        {
+            col = 0;
+            order = SortOrder.Ascending;
+        }
+        public ListViewItemComparer(int column, SortOrder order)
+        {
+            col = column;
+            this.order = order;
+        }
+        public int Compare(object x, object y)
+        {
+            int returnVal = -1;
+            returnVal = String.Compare(((ListViewItem)x).SubItems[col].Text,
+                            ((ListViewItem)y).SubItems[col].Text);
+            // Determine whether the sort order is descending.
+            if (order == SortOrder.Descending)
+                // Invert the value returned by String.Compare.
+                returnVal *= -1;
+            return returnVal;
         }
     }
 }

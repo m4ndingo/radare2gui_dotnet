@@ -126,18 +126,6 @@
   <metadata name="tsDebug.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>272, 60</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="toolStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABkAAAAYCAYAAAAPtVbGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAERSURBVEhLY3jz8sZ/WmMGWlsAMn/UEpLikf7BdWFHxv9d
-        MzXgGMQHRZxZUxwYk5tIUHyyY4LC/x8/XsAxiA+zZM35PrItw7Tkw4b/P6AY2ZJFp7v/wzCpPkOxZEMH
-        0CcgC17MANMgPswnk4+2/UfHujUR/x3nJRMMRgxLPjxY8f/H7eb/IBrZkojVhf9xYZBl+OKLKEtAhvgu
-        T8WJSbYEHFxAnyAHl2ppwP/EDQkYGCROcnCtaJCARzrIEhAfFAwgw3K3xsMxiA/CxCZplOACW4KUhJEt
-        qdgVBzaYFMNhjkCx5MCChP8LKiTgGMSH+YQcw7FaQqz3SVVH/7KLVBcSq37UJ0TnEfrV8WtWzPxPawwA
-        u24Xqh8Dk/oAAAAASUVORK5CYII=
-</value>
-  </data>
   <metadata name="imageList1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>526, 17</value>
   </metadata>
@@ -146,7 +134,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAy
-        CQAAAk1TRnQBSQFMAgEBAwEAASgBAAEoAQABEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        CQAAAk1TRnQBSQFMAgEBAwEAATABAAEwAQABEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAARADAAEBAQABCAYAAQQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -175,7 +163,7 @@
         AQABzAH/AWYBAAL/AZkBAAL/AcwBAAJmAf8BAAFmAf8BZgEAAWYC/wEAAf8CZgEAAf8BZgH/AQAC/wFm
         AQABIQEAAaUBAANfAQADdwEAA4YBAAOWAQADywEAA7IBAAPXAQAD3QEAA+MBAAPqAQAD8QEAA/gBAAHw
         AfsB/wEAAaQCoAEAA4ADAAH/AgAB/wMAAv8BAAH/AwAB/wEAAf8BAAL/AgAD/wcAAQcD/wEHBwANAgEA
-        EO4UAAn/BQABAgsAAQIBABAbEgABDgv/BAABAgEABgIEAAECAQAQGxIADf8DAAECCwABAgEAEBsSAA3/
+        ELwUAAn/BQABAgsAAQIBABAbEgABDgv/BAABAgEABgIEAAECAQAQGxIADf8DAAECCwABAgEAEBsSAA3/
         AwABAgEACAICAAECAQAQGxEAAv8BBwHvAQcB7wH/AfQB/wHwBf8CAAECCwABAgEAAhsBdAFLAVEBGgFs
         CRsRAAP/AQ8BEAL/Ae8BEQFtAv8CDwH/AgABAgEABgIEAAECAQACGwFSAcMBmQEaAnEBcgGYBhsRAAP/
         AQ8BEAEHARACDwFtARABDwEQAQ8B/wIAAQILAAECAQACGwFSAZoBmQEaAXEClwFyAXEFGxEAAW0BDwHx
@@ -186,6 +174,21 @@
         EAABQgFNAT4HAAE+AwABKAMAAUADAAEQAwABAQEAAQEFAAGAFwAD/wMAAcABAQYAAd8B/QYAAdABPQYA
         Ad8B/QYAAdABDQYAAd8B/QYAAdABPQYAAd8B/QYAAdABDQYAAd8B/QYAAdABPQYAAd8B/QYAAdABDQYA
         Ad8B/QYAAcABAQYAAcABAQQACw==
+</value>
+  </data>
+  <metadata name="tsDebug.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>272, 60</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABkAAAAYCAYAAAAPtVbGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAERSURBVEhLY3jz8sZ/WmMGWlsAMn/UEpLikf7BdWFHxv9d
+        MzXgGMQHRZxZUxwYk5tIUHyyY4LC/x8/XsAxiA+zZM35PrItw7Tkw4b/P6AY2ZJFp7v/wzCpPkOxZEMH
+        0CcgC17MANMgPswnk4+2/UfHujUR/x3nJRMMRgxLPjxY8f/H7eb/IBrZkojVhf9xYZBl+OKLKEtAhvgu
+        T8WJSbYEHFxAnyAHl2ppwP/EDQkYGCROcnCtaJCARzrIEhAfFAwgw3K3xsMxiA/CxCZplOACW4KUhJEt
+        qdgVBzaYFMNhjkCx5MCChP8LKiTgGMSH+YQcw7FaQqz3SVVH/7KLVBcSq37UJ0TnEfrV8WtWzPxPawwA
+        u24Xqh8Dk/oAAAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="ctxMenuOutput.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
