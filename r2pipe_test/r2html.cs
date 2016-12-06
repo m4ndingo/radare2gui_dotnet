@@ -29,8 +29,10 @@ namespace r2pipe_test
             {
                 string line_cut= line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line);
                 line_cut = line_cut.Replace("<", "&lt");
+                line_cut = line_cut.Replace("&ltimg", "<img"); // find other way
                 console_text_cut += line_cut + "\n";
             }
+            
 
             //Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
@@ -117,7 +119,7 @@ namespace r2pipe_test
             html_header += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
             html_header += "<link rel = \"stylesheet\" href = \"https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css\" >\r\n";
             html_header += "<script src=\"https://code.jquery.com/jquery-1.11.3.js\"></script>\r\n";
-            html_header += "<script>var r2output = null;var addresses = null;</script>\r\n";
+            html_header += "<script>var r2output = null; addresses = null; pd_previews = null;</script>\r\n";
             html_header += "</head>\r\n";
             html_header += "<body>\r\n";
             html_header += "<div id=my_dialog class=msg></div>\r\n";            

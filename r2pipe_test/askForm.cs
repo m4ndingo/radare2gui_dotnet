@@ -63,5 +63,9 @@ namespace r2pipe_test
         {
             recenter_form();
         }
+        private void btnCancel_Click(object sender, System.EventArgs e)
+        {
+            answer = null;
+        }
     }
 }

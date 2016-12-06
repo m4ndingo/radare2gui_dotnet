@@ -73,3 +73,11 @@ body{
 }
 .op_nop{
 }
+.msg{
+    background:#fff9aa;
+    border:solid 1px black;
+    padding:2px;
+    display:none;
+    white-space:pre;
+	font-size:11px;
+}

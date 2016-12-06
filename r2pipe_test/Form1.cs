@@ -21,6 +21,7 @@ namespace r2pipe_test
         public string arch = null;
         private bool updating_gui = false;
         public TabControl tabcontrol = null;
+        public Benchmarks benchmarks = null;
         public string themeName = null;
         public string currentShell = null;
         List<string> locked_tabs = null;        // tab names used in Form1 design
@@ -33,6 +34,7 @@ namespace r2pipe_test
         private void Form1_Load(object sender, EventArgs e)
         {
             rconfig = new RConfig();
+            benchmarks = new Benchmarks();
             locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps" };
             CheckR2path();
             CheckDotpath();
@@ -48,7 +50,7 @@ namespace r2pipe_test
             r2pw.add_control("imports_listview", lstImports, "Imports", "iij");
             r2pw.add_control("sections_listview", lstSections, "Sections", "iSj");
             r2pw.add_control("processes_listView", lstProcesses, "Processes", "dpj");
-            r2pw.add_control("maps_listView", lstMaps, "Maps", "dmj");
+           // r2pw.add_control("maps_listView", lstMaps, "Maps", "dmj");
             r2pw.add_control("hexview", webBrowser2, "Hex view", "px 4000");
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){
@@ -63,16 +65,18 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
             r2pw.add_menucmd("&View", "Sections", "S=", mainMenu);
-            r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
+            r2pw.add_menucmd("&View", "Strings", "izzj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Imports", "iij", mainMenu);
             r2pw.add_menucmd("&View", "Exports", "iEj", mainMenu);
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
+            r2pw.add_menucmd("&View", "Maps", "dmj", mainMenu);
             r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "Ascii Art Bar", "p-", mainMenu);
             r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
+            r2pw.add_menufcn("&View", "Graph", "ag $$", newtab_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
@@ -139,8 +143,8 @@ namespace r2pipe_test
                 lstSections.ForeColor = foreColor;
                 lstProcesses.BackColor = backColor;
                 lstProcesses.ForeColor = foreColor;
-                lstMaps.BackColor = backColor;
-                lstMaps.ForeColor = foreColor;
+                //lstMaps.BackColor = backColor;
+                //lstMaps.ForeColor = foreColor;
                 tsDebug.BackColor = backColor;
                 tsDebug.ForeColor = foreColor;
                 splitContainer1.Panel1.BackColor = backColor;
@@ -172,8 +176,15 @@ namespace r2pipe_test
                     if (fileType != null)
                         fileType = fileType.Replace("\n", "");
                     arch = r2pw.run("iI~arch[1]");
+                    if (arch == null) arch = "";
+                    arch = arch.Replace("\n", "");
+                    arch = Prompt("new arch", "select arch", arch);
                     if (arch != null)
+                    {
                         arch = arch.Replace("\n", "");
+                        r2pw.run("e asm.arch = " + arch);
+                    }
+
                 }
                 r2pw.run_script("openfile_post.txt");
             }
@@ -244,7 +255,9 @@ namespace r2pipe_test
             {
                 slabel1.Text = text;
             }
-            catch (Exception e) { r2pw.Show(e.ToString(), "show_message"); } // manage this, script_executed_cb fails on this when prompt
+            catch (Exception e) { 
+                //r2pw.Show(e.ToString(), "show_message"); 
+            } // manage this, script_executed_cb fails on this when prompt
             try
             {
                 cmbCmdline.Focus();
@@ -279,7 +292,8 @@ namespace r2pipe_test
         {
             if (r2pw == null) return;
             string FileName = Prompt("Locate some file", "Open dialog", r2pw.fileName);
-            LoadFile(FileName);
+            if( FileName!=null )
+                LoadFile(FileName);
         }
         private void txtOutput_TextChanged(object sender, EventArgs e)
         {
@@ -357,6 +371,10 @@ namespace r2pipe_test
             r2pw.add_control_tab(title, cmds);
             r2pw.run(cmds, title);
         }
+        private void popup_tab(GuiControl c)
+        {
+            r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
+        }
         private void popup_cmds(string title, string cmds)
         {
             int i;
@@ -432,19 +450,24 @@ namespace r2pipe_test
             if (cmds.StartsWith("ae"))
                 refresh_tab();
         }
+        private void newtab_cb(string cmds)
+        {
+            string tabName = "";
+            GuiControl gc = find_control_by_cmds(cmds);
+            if (gc == null)
+            {
+                gc = r2pw.gui_controls.add_control(cmds, null, cmds, cmds);
+            }
+            popup_tab(gc);
+        }
         private void popup_cb(string cmds)
         {
             string popupName = "";
             GuiControl gc = find_control_by_cmds(cmds);
             if (gc == null)
-            {
-                //this.show_message("popup_cb(): cmds=" + cmds + " : control not found");
                 popupName = cmds;
-            }
             else
-            {
                 popupName = gc.name;
-            }
             popup_cmds(popupName, cmds);
         }
         private void changeArch(String arch)
@@ -792,8 +815,8 @@ namespace r2pipe_test
             string pc = ""; // new eip/pc for ESIL emulation
             esil_initilized = true;
             ESILcmds("aei");
-            pc = r2pw.run("? $$~[1]");
-            pc = Prompt("Init ESIL", "Starting address ( pc )", pc).Replace("\n", "");
+            pc = r2pw.run("? $$~[1]").Replace("\n", "");
+            pc = Prompt("Init ESIL", "Starting address ( pc )", pc);
             if (pc != null)
             {
                 r2pw.run("s " + pc);
@@ -803,6 +826,7 @@ namespace r2pipe_test
                 //ESILcmds("aer rip = " + pc);
                 //ESILcmds("aep = " + pc); // don't work?
             }
+            popup_cb("aerj");
             refresh_popups();
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
@@ -978,7 +1002,7 @@ namespace r2pipe_test
                 List<string> column_titles = control.column_titles;
                 if (column_titles == null)
                 {
-                    if (control.control.GetType() == typeof(ListView))
+                    if ( control.control!=null && control.control.GetType() == typeof(ListView))
                     {
                         r2pw.save_active_cols(control.name, (ListView)control.control);
                         column_titles = control.column_titles;
@@ -1103,11 +1127,11 @@ namespace r2pipe_test
         {
             exec_process(rconfig.load<string>("r2path"), fileName);
         }
-        private void exec_process(string binaryPath, string args = "")
+        public void exec_process(string binaryPath, string args = "")
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = binaryPath;
-            startInfo.Arguments = args;
+            startInfo.Arguments = "\""+args+"\"";
             Process.Start(startInfo);
         }
 
@@ -1214,10 +1238,12 @@ namespace r2pipe_test
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
-            string pc = r2pw.run("? $$~[1]");
-            if (esil_initilized == false)
+            string pc = null;
+            if ( esil_initilized == false )
                 initialize_esil();
-            pc = Prompt("Seek until ( aesu )", "Continue until address", pc).Replace("\n", "");
+            pc = r2pw.run("? $$~[1]").Replace("\n", "");
+            if (pc.Equals("0x0")) pc = "";
+            pc = Prompt("Seek until ( aesu )", "Continue until address", pc);
             if (pc != null)
             {
                 ESILcmds("aesu " + pc);
@@ -1249,6 +1275,14 @@ namespace r2pipe_test
             // object.
             this.listView1.ListViewItemSorter = new ListViewItemComparer(e.Column,
                                                               listView1.Sorting);
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            int usage = (int)benchmarks.getCurrentCpuUsage();
+            if (usage > 70)
+                lblCpu.Text = "CPU "+usage.ToString()+"%";
+            else
+                lblCpu.Text = "";
         }
     }
     public class ListViewItemComparer : IComparer

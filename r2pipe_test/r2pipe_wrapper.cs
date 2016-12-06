@@ -63,7 +63,7 @@ namespace r2pipe_test
                 Show(string.Format("run: {0} Timed out\n",cmds),"run");
             return null;
         }
-        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false, bool silent=false)
+        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false, bool silent=false, GuiControl gc=null)
         {
             string res = "";
             dynamic json_obj = null;
@@ -71,8 +71,11 @@ namespace r2pipe_test
             {
                 string control_type = "unknown";
                 string output_msg = "";
-                if(controlName!=null && controls.ContainsKey(controlName))
-                    control_type = controls[controlName].GetType().ToString();
+                if(controlName!=null)
+                {
+                    if( controls.ContainsKey(controlName))
+                        control_type = controls[controlName].GetType().ToString();
+                }
                 if (long_command_output == true)
                     output_msg = string.Format(
                         "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
@@ -127,6 +130,18 @@ namespace r2pipe_test
                 {
                     res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
+                }
+                if (gc != null)
+                {
+                    if (gc.cmds.StartsWith("ag"))
+                    {
+                        string args = null;
+                        string tmpFileName = WriteTempFile(res, "temp_"+gc.sName+".dot");
+                        string dotPath = rconfig.load<string>("dotPath");
+                        args = string.Format("-T png \"{0}\" -o \"{1}\".png", tmpFileName, tmpFileName);
+                        guicontrol.exec_process(dotPath, args);
+                        res = string.Format("<img src='file:///{0}.png'>", tmpFileName);
+                    }
                 }
             }
             if(res != null && (res.StartsWith("[") || res.StartsWith("{")))
@@ -335,6 +350,15 @@ namespace r2pipe_test
             }
             return decorator_cb();
         }
+        public string WriteTempFile(string contents, string filename="tmpname")
+        {
+            string tmpName = rconfig.tempPath + filename;
+            using (StreamWriter sw = new StreamWriter(tmpName))
+            {
+                sw.WriteLine(contents);
+            }
+            return tmpName;
+        }
         public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj)
         {
             object c = controls[controlName];
@@ -400,11 +424,11 @@ namespace r2pipe_test
                     HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
                     if ( element!=null && element.OuterText != null )
                     {
-                        string text = element.OuterText.Replace(" ", "");
-                        string innertext = element.InnerText.Replace(" ", ""); ;
                         string tagname = element.TagName;
                         if (tagname.Equals("SPAN"))
                         {
+                            string text = element.OuterText.Replace(" ", "");
+                            string innertext = element.InnerText.Replace(" ", ""); ;
                             bool selected = element.OuterHtml.Contains("_selected");
                             if ( selected == true )
                                 gotoAddress(text);
@@ -604,7 +628,7 @@ namespace r2pipe_test
         {
             if (this.r2 != null) this.r2.RunCommand("q");
             this.r2 = null; // remove the object
-            this.r2 = new R2Pipe(fileName, rconfig.r2path);
+            this.r2 = new R2Pipe("\""+fileName+"\"", rconfig.r2path);
             this.fileName = fileName;
             this.r2html = new r2html(this);
             if (!fileName.Equals("-"))
@@ -783,7 +807,7 @@ namespace r2pipe_test
             run("iij",  "imports_listview", false, new List<string> { "name", "plt" });                        
             run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj",  "processes_listView", false, new List<string> { "path", "status", "pid" });
-            run("dmj",  "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
+            //run("dmj",  "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
             guicontrol.refresh_popups();
             // run("axtj @ entry0", "xrefs ( axtj )");
             guicontrol.script_executed_cb();

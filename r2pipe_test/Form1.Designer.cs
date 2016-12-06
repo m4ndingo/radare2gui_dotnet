@@ -74,8 +74,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lstProcesses = new System.Windows.Forms.ListView();
-            this.tabMaps = new System.Windows.Forms.TabPage();
-            this.lstMaps = new System.Windows.Forms.ListView();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabOutput = new System.Windows.Forms.TabPage();
             this.cmbCmdline = new System.Windows.Forms.ComboBox();
@@ -103,6 +101,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.slabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblCpu = new System.Windows.Forms.ToolStripStatusLabel();
             this.slabelTheme = new System.Windows.Forms.ToolStripStatusLabel();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,6 +151,7 @@
             this.notesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -170,7 +170,6 @@
             this.Imports.SuspendLayout();
             this.Sections.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabMaps.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabOutput.SuspendLayout();
             this.ctxMenuOutput.SuspendLayout();
@@ -307,7 +306,6 @@
             this.tabControl1.Controls.Add(this.Imports);
             this.tabControl1.Controls.Add(this.Sections);
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabMaps);
             this.tabControl1.HotTrack = true;
             this.tabControl1.ImageList = this.imageList1;
             this.tabControl1.Location = new System.Drawing.Point(-1, 3);
@@ -693,41 +691,6 @@
             this.lstProcesses.Click += new System.EventHandler(this.lstProcesses_Click);
             this.lstProcesses.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.lstProcesses_KeyPress);
             // 
-            // tabMaps
-            // 
-            this.tabMaps.Controls.Add(this.lstMaps);
-            this.tabMaps.ImageIndex = 1;
-            this.tabMaps.Location = new System.Drawing.Point(4, 23);
-            this.tabMaps.Name = "tabMaps";
-            this.tabMaps.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMaps.Size = new System.Drawing.Size(471, 128);
-            this.tabMaps.TabIndex = 7;
-            this.tabMaps.Text = "Maps";
-            this.tabMaps.UseVisualStyleBackColor = true;
-            // 
-            // lstMaps
-            // 
-            this.lstMaps.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.lstMaps.AllowColumnReorder = true;
-            this.lstMaps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstMaps.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstMaps.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstMaps.FullRowSelect = true;
-            this.lstMaps.HideSelection = false;
-            this.lstMaps.LargeImageList = this.imageList1;
-            this.lstMaps.Location = new System.Drawing.Point(1, -1);
-            this.lstMaps.Margin = new System.Windows.Forms.Padding(0);
-            this.lstMaps.Name = "lstMaps";
-            this.lstMaps.Size = new System.Drawing.Size(470, 131);
-            this.lstMaps.SmallImageList = this.imageList1;
-            this.lstMaps.StateImageList = this.imageList1;
-            this.lstMaps.TabIndex = 2;
-            this.lstMaps.TileSize = new System.Drawing.Size(64, 30);
-            this.lstMaps.UseCompatibleStateImageBehavior = false;
-            this.lstMaps.View = System.Windows.Forms.View.Details;
-            // 
             // tabControl2
             // 
             this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -951,6 +914,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.slabel1,
             this.toolStripStatusLabel1,
+            this.lblCpu,
             this.slabelTheme});
             this.statusStrip1.Location = new System.Drawing.Point(0, 313);
             this.statusStrip1.Name = "statusStrip1";
@@ -961,14 +925,20 @@
             // slabel1
             // 
             this.slabel1.Name = "slabel1";
-            this.slabel1.Size = new System.Drawing.Size(43, 17);
-            this.slabel1.Text = "slabel1";
+            this.slabel1.Size = new System.Drawing.Size(0, 17);
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(472, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(456, 17);
             this.toolStripStatusLabel1.Spring = true;
+            // 
+            // lblCpu
+            // 
+            this.lblCpu.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCpu.Name = "lblCpu";
+            this.lblCpu.Size = new System.Drawing.Size(28, 17);
+            this.lblCpu.Text = "CPU";
             // 
             // slabelTheme
             // 
@@ -1343,6 +1313,12 @@
             this.editPnToolStripMenuItem.Text = "Edit ( Pn - )";
             this.editPnToolStripMenuItem.Click += new System.EventHandler(this.editPnToolStripMenuItem_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1379,7 +1355,6 @@
             this.Sections.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tabMaps.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabOutput.ResumeLayout(false);
             this.ctxMenuOutput.ResumeLayout(false);
@@ -1441,18 +1416,6 @@
         private System.Windows.Forms.ToolStripMenuItem jsonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowsControlToolStripMenuItem;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage Dissasembly;
-        private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.TabPage HexView;
-        private System.Windows.Forms.WebBrowser webBrowser2;
-        private System.Windows.Forms.TabPage Strings;
-        private System.Windows.Forms.ListView lstStrings;
-        private System.Windows.Forms.TabPage Imports;
-        private System.Windows.Forms.ListView lstImports;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.TabPage Sections;
-        private System.Windows.Forms.ListView lstSections;
         private System.Windows.Forms.ToolStripMenuItem floatToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem wordWrapToolStripMenuItem;
@@ -1462,9 +1425,6 @@
         private System.Windows.Forms.ToolStripMenuItem yesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem noToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem eSILToolStripMenuItem;
-        private System.Windows.Forms.ToolStrip tsDebug;
-        private System.Windows.Forms.ToolStripButton playBtn;
-        private System.Windows.Forms.ToolStripButton stepBtn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem themeToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem classicToolStripMenuItem1;
@@ -1481,14 +1441,9 @@
         private System.Windows.Forms.ToolStripMenuItem giuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomTextControlMouseWheelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openInBrowserControlnToolStripMenuItem;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.ListView lstProcesses;
-        private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
-        private System.Windows.Forms.TabPage tabMaps;
-        private System.Windows.Forms.ListView lstMaps;
         private System.Windows.Forms.ToolStripMenuItem postScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openfileposttxtToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
@@ -1514,7 +1469,27 @@
         private System.Windows.Forms.ToolStripMenuItem copyAllfieldsMenu;
         private System.Windows.Forms.ToolStripMenuItem renameAfnToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage Dissasembly;
+        private System.Windows.Forms.ToolStrip tsDebug;
+        private System.Windows.Forms.ToolStripButton playBtn;
+        private System.Windows.Forms.ToolStripButton stepBtn;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.TabPage HexView;
+        private System.Windows.Forms.WebBrowser webBrowser2;
+        private System.Windows.Forms.TabPage Strings;
+        private System.Windows.Forms.ListView lstStrings;
+        private System.Windows.Forms.TabPage Imports;
+        private System.Windows.Forms.ListView lstImports;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.TabPage Sections;
+        private System.Windows.Forms.ListView lstSections;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.ListView lstProcesses;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripStatusLabel lblCpu;
     }
 }
 
