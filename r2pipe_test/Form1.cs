@@ -51,7 +51,7 @@ namespace r2pipe_test
             r2pw.add_control("sections_listview", lstSections, "Sections", "iSj");
             r2pw.add_control("processes_listView", lstProcesses, "Processes", "dpj");
            // r2pw.add_control("maps_listView", lstMaps, "Maps", "dmj");
-            r2pw.add_control("hexview", webBrowser2, "Hex view", "px 4000");
+            r2pw.add_control("hexview", webBrowser2, "Hex view", "pxa 4000");
             //add and assign "decorators"
             r2pw.add_decorator("num2hex", num2hex, new List<string>(){
                 "offset", "vaddr", "paddr", "plt", "addr", "addr_end", "eip"});
@@ -529,10 +529,17 @@ namespace r2pipe_test
                     lstname_short_address = lstname_short_address.Substring(4); // remove sys.imp.
                     listview_item.SubItems[0].Text = "fcn"; // todo: find column type (not use 0)
                 }
+                else if (lstname_short_address.StartsWith("sym."))
+                {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", "sym", listview_item.ForeColor);
+                    listview_item.BackColor = r2pw.get_color_address("bg", "sym", listview_item.BackColor);
+                    lstname_short_address = lstname_short_address.Substring(4); // remove sys.imp.
+                    listview_item.SubItems[0].Text = "sym"; // todo: find column type (not use 0)
+                }
                 else
                 {
                     listview_item.ForeColor = r2pw.get_color_address("fg", lstname_short_address, Color.FromName("yellow"));
-                    listview_item.BackColor = r2pw.get_color_address("bg", lstname_short_address, Color.FromName("pink"));
+                    listview_item.BackColor = r2pw.get_color_address("bg", lstname_short_address, Color.FromName("blue"));
                 }
             }
             if (type.Equals("loc") && lstname_short_address.StartsWith("loc."))
@@ -1243,7 +1250,7 @@ namespace r2pipe_test
                 initialize_esil();
             pc = r2pw.run("? $$~[1]").Replace("\n", "");
             if (pc.Equals("0x0")) pc = "";
-            pc = Prompt("Seek until ( aesu )", "Continue until address", pc);
+            pc = Prompt("Seek until ( aesu )", "Continue until address");
             if (pc != null)
             {
                 ESILcmds("aesu " + pc);

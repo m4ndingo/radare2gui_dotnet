@@ -57,8 +57,8 @@ namespace r2pipe_test
                     config.save("gui.output.bg.fcn", "black");
                     config.save("gui.output.fg.loc", "lime");
                     config.save("gui.output.bg.loc", "black");
-                    config.save("gui.output.fg.sym", "pink");
-                    config.save("gui.output.bg.sym", "black");
+                    config.save("gui.output.fg.sym", "white");
+                    config.save("gui.output.bg.sym", "InactiveCaptionText");
                     config.save("gui.output.fg.imp", "highlight");
                     config.save("gui.output.bg.imp", "black");
                     config.save("gui.output.fg.sub", "DarkTurquoise");

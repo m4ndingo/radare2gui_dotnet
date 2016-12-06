@@ -784,7 +784,7 @@ namespace r2pipe_test
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
             run("Ps default"); // defaul project
             run("aa");
-            run_task("px 4000", "hexview");
+            run_task("pxa 4000", "hexview");
             run("aaa", "output", true);
             run("e scr.interactive = false", "output", true);
             run("e scr.utf8        = true", "output", true);
