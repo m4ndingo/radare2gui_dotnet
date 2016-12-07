@@ -93,7 +93,7 @@ namespace r2pipe_test
             if (r2 == null)
             {
                 if( cmds!=null ) cmds="";
-                Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
+                //Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
             if (controlName!=null && !controls.ContainsKey(controlName))
@@ -135,6 +135,7 @@ namespace r2pipe_test
                 {
                     if (gc.cmds.StartsWith("ag"))
                     {
+                        guicontrol.CheckDotpath();
                         string args = null;
                         string tmpFileName = WriteTempFile(res, "temp_"+gc.sName+".dot");
                         string dotPath = rconfig.load<string>("dotPath");
@@ -626,9 +627,11 @@ namespace r2pipe_test
         }
         public void open(String fileName)
         {
+            string r2file = fileName;
+            string r2path = rconfig.r2path;
             if (this.r2 != null) this.r2.RunCommand("q");
             this.r2 = null; // remove the object
-            this.r2 = new R2Pipe("\""+fileName+"\"", rconfig.r2path);
+            this.r2 = new R2Pipe(r2file, r2path);
             this.fileName = fileName;
             this.r2html = new r2html(this);
             if (!fileName.Equals("-"))
@@ -783,8 +786,10 @@ namespace r2pipe_test
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
             run("Ps default"); // defaul project
+            if (fileName.StartsWith("dbg://"))
+                run("dc", "output", true);
             run("aa");
-            run_task("pxa 4000", "hexview");
+            run("pxa 4000", "hexview");
             run("aaa", "output", true);
             run("e scr.interactive = false", "output", true);
             run("e scr.utf8        = true", "output", true);
@@ -801,16 +806,27 @@ namespace r2pipe_test
             run("e asm.bytes       = false", "output", true);
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
-            run_task("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals" });
+            run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals" });
             run("pd 256", "dissasembly"); // pd or pdf?
             run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij",  "imports_listview", false, new List<string> { "name", "plt" });                        
             run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj",  "processes_listView", false, new List<string> { "path", "status", "pid" });
-            //run("dmj",  "maps_listView", false, new List<string> { "name", "addr", "addr_end", "type", "perm" });
+            if (fileName.StartsWith("dbg://"))
+            {
+                popup_cmds_async("maps", "dmj", false);
+                popup_cmds_async("regs", "drj", true);
+            }
             guicontrol.refresh_popups();
-            // run("axtj @ entry0", "xrefs ( axtj )");
-            guicontrol.script_executed_cb();
+        }
+        public void popup_cmds_async(string title, string cmds, bool popup = true)
+        {
+            guicontrol.Invoke(new popup_cmds_invoke(popup_cmds_send), new object[] { title, cmds, popup });
+        }
+        public delegate void popup_cmds_invoke(string title, string cmds, bool popup = true);
+        public void popup_cmds_send(string title, string cmds, bool popup = true)
+        {
+            guicontrol.popup_cmds(title, cmds, popup);
         }
         public void exit()
         {
