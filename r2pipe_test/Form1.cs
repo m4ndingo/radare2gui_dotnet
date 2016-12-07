@@ -36,8 +36,7 @@ namespace r2pipe_test
             rconfig = new RConfig();
             benchmarks = new Benchmarks();
             locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps" };
-            CheckR2path();
-            CheckDotpath();
+            CheckR2path();            
             tabcontrol = tabControl1;
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
             tabControl1.SelectedTab = tabControl1.TabPages[1]; // def tab when start gui
@@ -78,6 +77,7 @@ namespace r2pipe_test
             r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
             r2pw.add_menufcn("&View", "Graph", "ag $$", newtab_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
+            r2pw.add_menucmd("&View", "Configuration", "ej", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
@@ -198,7 +198,7 @@ namespace r2pipe_test
                 rconfig.save(varName, FindFile(fileName, "Please, locate your "+fileName+" binary"));
             }
         }
-        private void CheckDotpath()
+        public void CheckDotpath()
         {
             CheckBinaryPath("dot.exe","dotPath");
         }
@@ -375,7 +375,7 @@ namespace r2pipe_test
         {
             r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
         }
-        private void popup_cmds(string title, string cmds)
+        public void popup_cmds(string title, string cmds, bool popup=true)
         {
             int i;
             tabcontrol.SuspendLayout();
@@ -385,19 +385,21 @@ namespace r2pipe_test
             r2pw.run("s " + address);
             r2pw.add_control_tab(title, cmds);
             r2pw.run(cmds, title);
-            for (i = 0; i < tabcontrol.TabPages.Count; i++)
+            if (popup == true)
             {
-                page = tabcontrol.TabPages[i];
-                if (page.Text == title)
+                for (i = 0; i < tabcontrol.TabPages.Count; i++)
                 {
-                    tabcontrol.SelectedTab = page;
-                    webbrowser_container_form webFrm = popup_tab();
-                    close_selected_tab();
-                    webFrm.Focus();
+                    page = tabcontrol.TabPages[i];
+                    if (page.Text == title)
+                    {
+                        tabcontrol.SelectedTab = page;
+                        webbrowser_container_form webFrm = popup_tab();
+                        close_selected_tab();
+                        webFrm.Focus();
+                    }
                 }
             }
             this.ResumeLayout();
-            tabcontrol.ResumeLayout();
         }
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
@@ -452,7 +454,6 @@ namespace r2pipe_test
         }
         private void newtab_cb(string cmds)
         {
-            string tabName = "";
             GuiControl gc = find_control_by_cmds(cmds);
             if (gc == null)
             {
@@ -1045,12 +1046,12 @@ namespace r2pipe_test
         }
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string ooss_command = null;
+            string binary_path = null;
             if (r2pw == null) return;
             maximize("output");
-            ooss_command = Prompt("ooss command:", "run ( ! )", "!!notepad");
-            if (ooss_command != null)
-                r2pw.run(ooss_command, "output", true);
+            binary_path = Prompt("Program to attach:", "debug", @"dbg://c:\windows\syswow64\notepad.exe");
+            if (binary_path != null)
+                LoadFile(binary_path);
         }
         private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
