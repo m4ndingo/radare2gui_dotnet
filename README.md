@@ -46,4 +46,5 @@ Follow these instructions: https://radare.gitbooks.io/radare2book/content/introd
 
 ![r2pipe_dotnet_sf2](https://cloud.githubusercontent.com/assets/12532269/20446745/854239ba-addb-11e6-81c4-7dd25c48e37f.png)
 
-@m_ndingo
+
+[ @m_ndingo ][ https://twitter.com/R2g4w ] [ https://twitter.com/m_ndingo ]
