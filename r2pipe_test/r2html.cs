@@ -46,9 +46,9 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"(- offset -.+|int3\b)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");       
             console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=address id=_ title='$0'>$3</span> <span class=agfpad>$2</span>");
+                "<span class=address id=_ title='$0'>$3 <span class=agfpad>$2</span></span>");
             console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=address id='_' title='$1'>$5</span><span class=agfpad>$2.$3</span>");
+                "<span class=address id='_' title='$1'>$5<span class=agfpad>$2.$3</span></span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,

@@ -210,6 +210,7 @@ function add_select_event(id,cname_orig,cname_selected)
 			}
         }
         else {
+			var address = $(id).text();				
             if(address!=saved_address)
 				$(id).removeClass("address_selected").addClass("address");
         }

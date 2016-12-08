@@ -173,19 +173,24 @@ namespace r2pipe_test
             {
                 if (!fileName.Equals("-"))
                 {
-                    fileType = r2pw.run("e file.type");
-                    if (fileType != null)
-                        fileType = fileType.Replace("\n", "");
-                    arch = r2pw.run("iI~arch[1]");
-                    if (arch == null) arch = "";
-                    arch = arch.Replace("\n", "");
-                    arch = Prompt("new arch", "select arch", arch);
-                    if (arch != null)
+                    if (MessageBox.Show("Determine file type?", "Determine file type",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) ==
+                        System.Windows.Forms.DialogResult.OK)
                     {
+                        fileType = r2pw.run("e file.type");
+                        fileType = null;
+                        if (fileType != null)
+                            fileType = fileType.Replace("\n", "");
+                        arch = r2pw.run("iI~arch[1]");
+                        if (arch == null) arch = "";
                         arch = arch.Replace("\n", "");
-                        r2pw.run("e asm.arch = " + arch);
+                        arch = Prompt("new arch", "select arch", arch);
+                        if (arch != null)
+                        {
+                            arch = arch.Replace("\n", "");
+                            r2pw.run("e asm.arch = " + arch);
+                        }
                     }
-
                 }
                 r2pw.run_script("openfile_post.txt");
             }

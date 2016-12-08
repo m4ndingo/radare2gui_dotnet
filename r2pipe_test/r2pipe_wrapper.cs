@@ -29,6 +29,7 @@ namespace r2pipe_test
         public             bool  long_command_output =  false  ;
         public           UInt64  seek_address        =      0  ;
         public             bool  autorefresh_activetab = true  ;
+        private            bool ignore_mouse_events  =  false  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
@@ -107,7 +108,7 @@ namespace r2pipe_test
                 return null;
             }
             if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
-            update_statusbar(cmds);
+            update_statusbar(cmds); // may fail
             if (cmds != null)
             {
                 string cmds_new = cmds;
@@ -118,9 +119,9 @@ namespace r2pipe_test
                     case "radare":
                     case "radare2":
                         string pre_cmd = "", pos_cmd = "";
-                        if (gc != null && gc.pre_cmd != null) pre_cmd = gc.pre_cmd;
-                        if (gc != null && gc.pos_cmd != null) pos_cmd = gc.pos_cmd;
-                        res = r2.RunCommand(pre_cmd+";"+cmds_new+";"+pos_cmd);
+                        if (gc != null && gc.pre_cmd != null) pre_cmd = gc.pre_cmd + ";";
+                        if (gc != null && gc.pos_cmd != null) pos_cmd = ";" + gc.pos_cmd;
+                        res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
                         break;
                     case "javascript":
                         res = invokeJavascript(cmds, filter);
@@ -417,16 +418,17 @@ namespace r2pipe_test
         {
             try // because may be already hooked
             {
-                ((WebBrowser)sender).Document.Body.MouseUp += new HtmlElementEventHandler(webBrowser_MouseUp);
+                ((WebBrowser)sender).Document.Body.MouseDown += new HtmlElementEventHandler(webBrowser_MouseDown);
             }
             catch (Exception) { }
         }
-        void webBrowser_MouseUp(Object sender, HtmlElementEventArgs e)
+        void webBrowser_MouseDown(Object sender, HtmlElementEventArgs e)
         {
             HtmlElement browser = (HtmlElement)sender;
             switch (e.MouseButtonsPressed)
             {
                 case MouseButtons.Left:
+                    if (ignore_mouse_events) return;
                     HtmlElement element = browser.Document.GetElementFromPoint(e.ClientMousePosition);
                     if ( element!=null && element.OuterText != null )
                     {
@@ -436,8 +438,12 @@ namespace r2pipe_test
                             string text = element.OuterText.Replace(" ", "");
                             string innertext = element.InnerText.Replace(" ", ""); ;
                             bool selected = element.OuterHtml.Contains("_selected");
-                            if ( selected == true )
+                            if (selected == true)
+                            {
+                                ignore_mouse_events = true;
                                 gotoAddress(text);
+                                ignore_mouse_events = false;
+                            }
                         }
                     }
                     break;
@@ -445,7 +451,7 @@ namespace r2pipe_test
         }
         public void gotoAddress(string address)
         {
-            if (address!=null && address.Length>0 && address != lastAddress)
+            if (address!=null && address.Length>0/* && address != lastAddress*/)
             {
                 run("s " + address);
                 //update controls
