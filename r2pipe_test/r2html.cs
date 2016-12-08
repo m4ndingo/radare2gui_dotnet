@@ -40,14 +40,15 @@ namespace r2pipe_test
 
             //console_text_cut = encodeutf8(console_text_cut); //movethius
             console_text_cut_copy = console_text_cut;
-            console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut,
-                "<span class=comment>$1</span>");
+            
+            //console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut,
+            //    "<span class=comment>$1</span>");
             console_text_cut = (new Regex(@"(- offset -.+|int3\b)")).Replace(console_text_cut,
-                "<span class=comment>$1</span>");
+                "<span class=comment>$1</span>");       
             console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=group>[</span><span class=address id=_ title='$0'>$3</span><span class=group>]</span>");
+                "<span class=address id=_ title='$0'>$3</span> <span class=agfpad>$2</span>");
             console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=address id='_' title='$1'>$5</span>");
+                "<span class=address id='_' title='$1'>$5</span><span class=agfpad>$2.$3</span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -76,6 +77,7 @@ namespace r2pipe_test
                 "<span class=group>$1</span>");
             console_text_cut = (new Regex(@"([re]ip:|pc:)")).Replace(console_text_cut,
                 "<span class=esil_rip>$1</span>");
+            
             html = "<div class=r2code id=r2code>" + console_text_cut + "</div>";
             return html;
         }
@@ -155,7 +157,7 @@ namespace r2pipe_test
                 addresses = new HashSet<string>(addresses).ToList();
                 foreach (string address in addresses)
                 { 
-                    if( cmds!=null && cmds.StartsWith("pd") && r2pw.fileName.StartsWith("-")==false )
+                    if( cmds!=null && (cmds.StartsWith("pd") || cmds.StartsWith("agf")) && r2pw.fileName.StartsWith("-")==false )
                     {
                         string preview = ""; // get some previevs
                         string print_cmd = "psz";

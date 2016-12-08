@@ -57,6 +57,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "webbrowser_container_form";
             this.Text = "webbrowser_container_form";
+            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.webbrowser_container_form_FormClosed);
             this.Load += new System.EventHandler(this.webbrowser_container_form_Load);
             this.ResizeEnd += new System.EventHandler(this.webbrowser_container_form_ResizeEnd);

@@ -13,9 +13,12 @@ namespace r2pipe_test
         public string sName     = null;
         public string cmds      = null;
         public string tabTitle  = null;
+        public string pre_cmd   = null;
+        public string pos_cmd   = null;
         public bool synchronize = true;
         public List<string> column_titles = null;
-        public GuiControl(object control, string name, string sName, string cmds, string tabTitle, List<string> column_titles = null)
+        public GuiControl(object control, string name, string sName, string cmds, string tabTitle, 
+            List<string> column_titles = null, string pre_cmd = null, string pos_cmd=null)
         {
             this.control    = control;
             this.name       = name;
@@ -23,6 +26,8 @@ namespace r2pipe_test
             this.cmds       = cmds;
             this.tabTitle   = tabTitle;
             this.column_titles = column_titles;
+            this.pre_cmd    = pre_cmd;
+            this.pos_cmd    = pos_cmd;
         }
         public void set_columnTitles(List<string> column_titles)
         {
@@ -50,7 +55,8 @@ namespace r2pipe_test
             this.r2pw = r2pw;
             controls = new List<GuiControl>();
         }
-        public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
+        public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null,
+            string pre_cmd = null, string pos_cmd = null)
         {
             GuiControl gui_control = null;
             try
@@ -61,7 +67,7 @@ namespace r2pipe_test
                     int pos = sName.IndexOf("_");
                     sName = sName.Substring(0, pos);
                 }
-                gui_control = new GuiControl(control, name, sName, cmds, tabTitle);
+                gui_control = new GuiControl(control, name, sName, cmds, tabTitle, null, pre_cmd, pos_cmd);
                 controls.Add(gui_control);
             }
             catch (Exception e)
@@ -74,8 +80,10 @@ namespace r2pipe_test
         {
             foreach (GuiControl c in controls)
             {
+                string ctype = "";
+                if (c.control != null) ctype = c.control.ToString();
                 r2pw.output(string.Format("{0,12}|{1,12}|{2,20}|{3}",
-                    c.tabTitle, c.cmds, c.name, c.control.ToString()));
+                    c.tabTitle, c.cmds, c.name, ctype));
             }
         }
         public GuiControl findControlBy_name(string name)

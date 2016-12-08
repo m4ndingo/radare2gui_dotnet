@@ -23,6 +23,7 @@ namespace r2pipe_test
         private void webbrowser_container_form_Load(object sender, System.EventArgs e)
         {
             string layout = r2pw.rconfig.load<string>(string.Format("gui.layout.{0}", control.sName));
+            this.TopMost = true;
             if (layout != null)
             {
                 try
@@ -35,7 +36,6 @@ namespace r2pipe_test
                     TopMost = bool.Parse(fields[4]);
                 }
                 catch (Exception) {
-                    TopMost = true;
                 } // may fail if some field not found
             }
             this.ShowIcon = true;

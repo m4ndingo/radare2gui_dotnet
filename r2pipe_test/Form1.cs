@@ -75,9 +75,10 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
             r2pw.add_menucmd("&View", "Ascii Art Bar", "p-", mainMenu);
             r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
-            r2pw.add_menufcn("&View", "Graph", "ag $$", newtab_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("&View", "Configuration", "ej", mainMenu);
+            r2pw.add_menucmd("&View", "Debug registers", "drj", mainMenu);
+            r2pw.add_menufcn("&View", "Call graph", "agf", newtab_cb, mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
@@ -212,13 +213,15 @@ namespace r2pipe_test
                                            .GetName()
                                            .Version
                                            .ToString();
+            string realFilename = fileName;
             Text = String.Format("R2pipe-Gui .net ( alpha {0} ) - {1}", version, fileName);
             if (!File.Exists(rconfig.r2path))
             {
                 CheckR2path();
                 return;
             }
-            if (fileName != null && !File.Exists(fileName) && !fileName.StartsWith("-"))
+            realFilename = realFilename.Replace("dbg://", "");
+            if (realFilename != null && !File.Exists(realFilename) && !realFilename.StartsWith("-"))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
@@ -348,8 +351,7 @@ namespace r2pipe_test
             int current_tab_index = tabcontrol.SelectedIndex;
             r2pw.refresh_control("hexview");
             r2pw.refresh_control("dissasembly");
-            //r2pw.run("pxa 2000", "hexview");
-            //r2pw.run("pd", "dissasembly");
+            r2pw.refresh_control("Callgraph");
             refresh_popups();
             tabcontrol.SelectedIndex = current_tab_index;
         }
@@ -671,7 +673,8 @@ namespace r2pipe_test
             string controlName = tabControl1.SelectedTab.Text;
             if (locked_tabs.Contains(controlName)) return;
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
-            r2pw.controls.Remove(controlName);
+            r2pw.controls.Remove(controlName); //check this
+            r2pw.gui_controls.remove_control_byName(controlName);
         }
         private void hide_selected_tab()
         {

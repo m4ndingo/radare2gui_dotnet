@@ -73,8 +73,9 @@ namespace r2pipe_test
                 string output_msg = "";
                 if(controlName!=null)
                 {
-                    if( controls.ContainsKey(controlName))
-                        control_type = controls[controlName].GetType().ToString();
+                    gc = gui_controls.findControlBy_name(controlName);
+                    if( gc!=null && gc.control!=null)
+                        control_type = gc.control.GetType().ToString();
                 }
                 if (long_command_output == true)
                     output_msg = string.Format(
@@ -116,7 +117,10 @@ namespace r2pipe_test
                 {
                     case "radare":
                     case "radare2":
-                        res = r2.RunCommand(cmds_new);
+                        string pre_cmd = "", pos_cmd = "";
+                        if (gc != null && gc.pre_cmd != null) pre_cmd = gc.pre_cmd;
+                        if (gc != null && gc.pos_cmd != null) pos_cmd = gc.pos_cmd;
+                        res = r2.RunCommand(pre_cmd+";"+cmds_new+";"+pos_cmd);
                         break;
                     case "javascript":
                         res = invokeJavascript(cmds, filter);
@@ -131,6 +135,7 @@ namespace r2pipe_test
                     res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
                 }
+                /*
                 if (gc != null)
                 {
                     if (gc.cmds.StartsWith("ag"))
@@ -143,7 +148,7 @@ namespace r2pipe_test
                         guicontrol.exec_process(dotPath, args);
                         res = string.Format("<img src='file:///{0}.png'>", tmpFileName);
                     }
-                }
+                }*/
             }
             if(res != null && (res.StartsWith("[") || res.StartsWith("{")))
             try
@@ -446,6 +451,7 @@ namespace r2pipe_test
                 //update controls
                 guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
+                guicontrol.refresh_control(gui_controls.findControlBy_name("Callgraph"));
                 guicontrol.refresh_popups();
                 guicontrol.selectFunction(address);
                 lastAddress = address;
@@ -522,9 +528,15 @@ namespace r2pipe_test
         }
         public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
         {
+            string pre_cmd = "", pos_cmd = "";
             if (!controls.ContainsKey(name))
                 controls.Add(name, control);
-            GuiControl gui_control = gui_controls.add_control(name, control, tabTitle, cmds);
+            if (cmds != null && cmds.Equals("agf"))
+            {
+                pre_cmd = "e asm.section=false";
+                pos_cmd = "e asm.section=true";
+            }
+            GuiControl gui_control = gui_controls.add_control(name, control, tabTitle, cmds, pre_cmd, pos_cmd);
             if (control.GetType() == typeof(WebBrowser))
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
@@ -552,12 +564,14 @@ namespace r2pipe_test
                 object[] callback_args = new object[] { callback, args };
                 string menuText = "";
                 if (text.Length > 0)
-                    menuText = string.Format("{1} # {0}", text, args);
+                    menuText = string.Format("{0} ( {1} )", text, args);
                 else
                     menuText = args;
                 newitem = item.DropDownItems.Add(menuText);
                 newitem.Tag = callback_args;
                 newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
+                string cname = text.Replace(" ", "").ToLower();
+                gui_controls.add_control(cname, null, menuText, args);
             }
         }
         public void add_control_tab(string tabname, string cmds)
@@ -581,7 +595,7 @@ namespace r2pipe_test
             if (browser != null)
             {
                 browser.Dock = DockStyle.Fill;
-                browser.Navigate("about:" + cmds);
+                //browser.Navigate("about:" + cmds);
                 page.Controls.Add(browser);
             }
             try
@@ -672,7 +686,8 @@ namespace r2pipe_test
         }
         public void refresh_control(string controlName)
         {
-            run(gui_controls.findControlBy_name(controlName).cmds, controlName, false, null, null, false, true);
+            GuiControl gc = gui_controls.findControlBy_name(controlName);
+            run(gc.cmds, controlName, false, null, null, false, true, gc);
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {
@@ -791,6 +806,8 @@ namespace r2pipe_test
             run("aa");
             run("pxa 4000", "hexview");
             run("aaa", "output", true);
+            run("e scr.rows        = 100", "output", true);
+            run("e scr.columns     = 80", "output", true);
             run("e scr.interactive = false", "output", true);
             run("e scr.utf8        = true", "output", true);
             run("e asm.emu         = false", "output", true);
@@ -811,10 +828,11 @@ namespace r2pipe_test
             run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
             run("iij",  "imports_listview", false, new List<string> { "name", "plt" });                        
             run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("dpj",  "processes_listView", false, new List<string> { "path", "status", "pid" });
+            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
+            popup_cmds_async("Callgraph", "agf", false);
             if (fileName.StartsWith("dbg://"))
             {
-                popup_cmds_async("maps", "dmj", false);
+                popup_cmds_async("Maps", "dmj", false);
                 popup_cmds_async("regs", "drj", true);
             }
             guicontrol.refresh_popups();
@@ -835,8 +853,7 @@ namespace r2pipe_test
                 rconfig.save("gui.current_shell", "radare2");
                 Cursor.Current = Cursors.WaitCursor;                
                 this.r2.RunCommand("q"); // may fail if "radare2.exe" process "not found"
-                Cursor.Current = Cursors.Default;
-                
+                Cursor.Current = Cursors.Default;                
             }
             catch (Exception) { };
             this.r2 = null;
