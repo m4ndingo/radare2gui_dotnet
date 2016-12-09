@@ -425,7 +425,7 @@
             // 
             this.playBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.playBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.playBtn.Image = global::r2pipe_test.Properties.Resources.playbutton_gray_small;
+            this.playBtn.Image = global::r4w.Properties.Resources.playbutton_gray_small;
             this.playBtn.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
@@ -438,7 +438,7 @@
             // 
             this.stepBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.stepBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stepBtn.Image = global::r2pipe_test.Properties.Resources.step_over_icon;
+            this.stepBtn.Image = global::r4w.Properties.Resources.step_over_icon;
             this.stepBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.stepBtn.MergeIndex = 0;

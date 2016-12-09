@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace r2pipe_test.Properties {
+namespace r4w.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
