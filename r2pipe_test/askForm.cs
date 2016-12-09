@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace r2pipe_test
 {
@@ -54,9 +55,13 @@ namespace r2pipe_test
         {
             openFileDialog1.Title = txtHeader.Text;
             openFileDialog1.FileName = txtAnswer.Text;
-            openFileDialog1.ShowDialog();
-            if (openFileDialog1.FileName.Length > 0)
-                txtAnswer.Text = openFileDialog1.FileName;
+            try
+            {
+                openFileDialog1.ShowDialog();
+                if (openFileDialog1.FileName.Length > 0)
+                    txtAnswer.Text = openFileDialog1.FileName;
+            }
+            catch (Exception) { } // may fail
             resize_controls();
          }
         private void askForm_VisibleChanged(object sender, System.EventArgs e)
