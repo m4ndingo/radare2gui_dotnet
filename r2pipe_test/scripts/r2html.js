@@ -203,7 +203,7 @@ function add_select_event(id,cname_orig,cname_selected)
 						if(address==saved_address && text!=null)
 						{
 							myDialog.show();
-							clear_selected_addresses();
+							//clear_selected_addresses();
 						}
 					},0);
 				}

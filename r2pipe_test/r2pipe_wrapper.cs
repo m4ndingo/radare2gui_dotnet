@@ -7,8 +7,6 @@ using r2pipe;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Drawing;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace r2pipe_test
 {
@@ -68,6 +66,12 @@ namespace r2pipe_test
         {
             string res = "";
             dynamic json_obj = null;
+            int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
+            while (cpu_usage == 100) // wait for some free cpu resources
+            {
+                System.Threading.Thread.Sleep(50);
+                cpu_usage = (int)guicontrol.benchmarks.getCurrentCpuUsage();
+            }
             if (controls.ContainsKey("output"))
             {
                 string control_type = "unknown";
@@ -87,8 +91,14 @@ namespace r2pipe_test
                         current_shell, control_type,
                         cols != null ? string.Join(", ", cols) : "");
                 else
-                    output_msg = string.Format("[0x{0:x8}]> {1,-25} # {2}\n", 
-                        seek_address, cmds, controlName);
+                {
+                    if (r2 == null) return null;
+                    string seekaddr = r2.RunCommand("? $$~[1]");
+                    if(seekaddr!=null) 
+                        seekaddr=seekaddr.Replace("\r", "").Replace("\n", "");
+                    output_msg = string.Format("[{0}]> {1,-25} # {2}\n",
+                        seekaddr, cmds, controlName);
+                }
                 if (controlName != null && silent == false)
                     setText("output", "", output_msg, true); // send command to output
             }
@@ -121,6 +131,7 @@ namespace r2pipe_test
                         string pre_cmd = "", pos_cmd = "";
                         if (gc != null && gc.pre_cmd != null) pre_cmd = gc.pre_cmd + ";";
                         if (gc != null && gc.pos_cmd != null) pos_cmd = ";" + gc.pos_cmd;
+                        if (r2 == null) return null;
                         res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
                         break;
                     case "javascript":
@@ -194,6 +205,10 @@ namespace r2pipe_test
             }
             if (controlName != null) Cursor.Current = Cursors.Default;
             return res;
+        }
+        public string run_silent(string cmds)
+        {
+            return run(cmds, null, false, null, null, false, true).Replace("\n","").Replace("\r","");
         }
         public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
         {
@@ -451,17 +466,17 @@ namespace r2pipe_test
         }
         public void gotoAddress(string address)
         {
-            if (address!=null && address.Length>0/* && address != lastAddress*/)
+            if (address!=null && address.Length>0 && address != lastAddress)
             {
-                run("s " + address);
+                run("s " + address, "output", true);
                 //update controls
                 guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("Callgraph"));
                 guicontrol.refresh_popups();
                 guicontrol.selectFunction(address);
-                lastAddress = address;
             }
+            lastAddress = address;
             //tabcontrol.SelectedIndex = 0;
         }
         public delegate void BeginListviewUpdate(ListView lstview, bool update, string controlName, List<string> cols);
@@ -499,8 +514,8 @@ namespace r2pipe_test
                         lstview.Columns.Add(cname);
                         lstview.Columns[i].Tag = cname;
                         lstview.Columns[i].Width = -2;// col_width;
-                        // todo: get textalign from decorators
-                        if( !cname.Equals("name") ) 
+                        // todo: get textalign from decorators or guicontrols
+                        if (!cname.Equals("name") && !cname.Equals("string") && !cname.Equals("datarefs")) 
                             lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
                         i++;
                     }
@@ -632,6 +647,20 @@ namespace r2pipe_test
                 }
             }
         }
+        public void add_contextmenucmd(string menuName, string text, string cmds, ContextMenuStrip menu, string decorator = null)
+        {
+            ToolStripMenuItem item = find_contextmenucmd(menuName, menu);
+            ToolStripItem newitem = null;
+            if (item == null)
+            {
+                Show(string.Format("Menu '{0}' not found...", menuName), "add_meucmd");
+                return;
+            }
+            newitem  = item.DropDownItems.Add(string.Format("{0}", text));
+            newitem.Tag = cmds;
+            newitem.Click += new EventHandler(ListView1ItemClickHandler);
+        }
+        // do not touch
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu, string decorator = null)
         {
             ToolStripMenuItem item = find_menucmd(menuName, menu);
@@ -641,7 +670,7 @@ namespace r2pipe_test
                 Show(string.Format("Menu '{0}' not found...", menuName), "add_meucmd");
                 return;
             }
-            newitem  = item.DropDownItems.Add(string.Format("{0} ( {1} )", text, cmds));
+            newitem = item.DropDownItems.Add(string.Format("{0} ( {1} )", text, cmds));
             newitem.Tag = cmds;
             newitem.Click += new EventHandler(MenuItemClickHandler);
         }
@@ -665,11 +694,25 @@ namespace r2pipe_test
             object [] args = (object []) item.Tag;
             ((Action<string>)args[0])((String)args[1]);            
         }
+        private void ListView1ItemClickHandler(object sender, EventArgs e)
+        {
+            System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
+            string address = (string)item.Tag;
+            gotoAddress(address);
+            //string name = item.Text;
+            //GuiControl gc = gui_controls.findControlBy_cmds(cmds);
+            //if (gc != null) name = gc.name;
+            //run(cmds, name, false, null, null, false, false, gc);            
+        }
+        //no tocar
         private void MenuItemClickHandler(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
+            string name = item.Text;
             string cmds = item.Tag.ToString();
-            run(cmds, item.Text);
+            GuiControl gc = gui_controls.findControlBy_cmds(cmds);
+            if (gc != null) name = gc.name;
+            run(cmds, name, false, null, null, false, false, gc);
         }
         public DialogResult Show(string text, string caption)
         {
@@ -681,7 +724,7 @@ namespace r2pipe_test
         {
             try // may fail on timeouts
             {
-                seek_address = UInt64.Parse(r2.RunCommand("?v")); // get seek address in decimal ?v
+                seek_address = UInt64.Parse(r2.RunCommand("? $$~[1]")); // get seek address in decimal ?v
                 string message = string.Format("{0} {1} {2} [0x{3}] > {4}",
                         guicontrol.fileType, guicontrol.arch, Path.GetFileName(fileName), seek_address, cmds);
                 message = message.TrimStart(' ');
@@ -693,6 +736,7 @@ namespace r2pipe_test
         public void refresh_control(string controlName)
         {
             GuiControl gc = gui_controls.findControlBy_name(controlName);
+            if (gc == null) return;
             run(gc.cmds, controlName, false, null, null, false, true, gc);
         }
         public string readFile(string fileName, bool use_guiPath = true)
@@ -749,6 +793,49 @@ namespace r2pipe_test
         {
             return decorators_cb[decoratorName];
         }
+        public ToolStripMenuItem clean_contextmenucmd(string menuName, ContextMenuStrip menu)
+        {
+            foreach (object obj in menu.Items)
+            {
+                ToolStripMenuItem item = null;
+                if (obj.GetType() == typeof(ToolStripSeparator)) continue;
+                item = (ToolStripMenuItem)obj;
+                if (item.Text.Equals(menuName) && item.HasDropDownItems)
+                {
+                    item.DropDownItems.Clear();
+                    return null;
+                }
+            }
+            return null;
+        }
+        public ToolStripMenuItem find_contextmenucmd(string menuName, ContextMenuStrip menu)
+        {
+            foreach (object obj in menu.Items)
+            {
+                ToolStripMenuItem item = null;
+                if (obj.GetType() == typeof(ToolStripSeparator)) continue;
+                item = (ToolStripMenuItem)obj;
+                if (item.Text.Equals(menuName))
+                {
+                    return item;
+                }
+                if (item.HasDropDownItems)
+                {
+                    foreach (object subitem in item.DropDownItems)
+                    {
+                        if (subitem.GetType() == typeof(ToolStripMenuItem))
+                        {
+                            if (((ToolStripMenuItem)subitem).Text.Equals(menuName))
+                            {
+                                return (ToolStripMenuItem)subitem;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        // no tocar
         public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
         {
             foreach (ToolStripMenuItem item in menu.Items)
@@ -829,12 +916,12 @@ namespace r2pipe_test
             run("e asm.bytes       = false", "output", true);
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
-            run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals" });
-            run("pd 256", "dissasembly"); // pd or pdf?
-            run("izzj", "strings_listview", false, new List<string> { "string", "vaddr", "section", "type" });
-            run("iij",  "imports_listview", false, new List<string> { "name", "plt" });                        
-            run("iSj",  "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
+            run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
+            run("pd 256",   "dissasembly"); // pd or pdf?
+            run("izzj",     "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
+            run("iij",      "imports_listview", false, new List<string> { "name", "plt" });                        
+            run("iSj",      "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
+            run("dpj",      "processes_listView", false, new List<string> { "path", "status", "pid" });
             popup_cmds_async("Callgraph", "agf", false);
             if (fileName.StartsWith("dbg://"))
             {
@@ -845,7 +932,11 @@ namespace r2pipe_test
         }
         public void popup_cmds_async(string title, string cmds, bool popup = true)
         {
-            guicontrol.Invoke(new popup_cmds_invoke(popup_cmds_send), new object[] { title, cmds, popup });
+            try
+            {
+                guicontrol.Invoke(new popup_cmds_invoke(popup_cmds_send), new object[] { title, cmds, popup });
+            }
+            catch (Exception) { }// may fail on close gui
         }
         public delegate void popup_cmds_invoke(string title, string cmds, bool popup = true);
         public void popup_cmds_send(string title, string cmds, bool popup = true)

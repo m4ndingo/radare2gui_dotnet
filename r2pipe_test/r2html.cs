@@ -48,7 +48,7 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=address id=_ title='$0'>$3 <span class=agfpad>$2</span></span>");
             console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=address id='_' title='$1'>$5<span class=agfpad>$2.$3</span></span>");
+                "<span class=address id='_' title='$1'>$5<span class=agfpad>$2.$3$4</span></span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -58,13 +58,13 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=number>$2</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
-                "<span class=address></span><span class=address title='$1' id=_>$1</span><span class=group></span>"));
+                "<span class=address></span><span class=address title='$1' id=_>$1</span>"));
             console_text_cut = (new Regex(@"(push|pop\b|cli\b|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
             console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
-            console_text_cut = (new Regex(@"\b[rl]?call\b")).Replace(console_text_cut,
-                "<span class=op_call>call</span>");
+            console_text_cut = (new Regex(@"\b([rl]?call)\b")).Replace(console_text_cut,
+                "<span class=op_call>$1</span>");
             console_text_cut = (new Regex(@"(\bmov[wsxd]*\b|lea\b|clc|xchg|setne|qword|dword|byte|std\b|ldd)")).Replace(console_text_cut,
                 "<span class=op_mov>$1</span>");
             console_text_cut = (new Regex(@"(add|subi?|inc|dec|i?div|[if]?mul|sbb|sbci?|adc)(\s)", RegexOptions.IgnoreCase)).Replace(console_text_cut,

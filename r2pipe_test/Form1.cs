@@ -9,6 +9,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Collections;
+using Newtonsoft.Json;
 
 namespace r2pipe_test
 {
@@ -173,23 +174,18 @@ namespace r2pipe_test
             {
                 if (!fileName.Equals("-"))
                 {
-                    if (MessageBox.Show("Determine file type?", "Determine file type",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) ==
-                        System.Windows.Forms.DialogResult.OK)
+                    fileType = r2pw.run("e file.type");
+                    fileType = null;
+                    if (fileType != null)
+                        fileType = fileType.Replace("\n", "");
+                    arch = r2pw.run("iI~arch[1]");
+                    if (arch == null || (arch!=null && arch.Length==0)) arch = "binary";
+                    arch = arch.Replace("\n", "");
+                    arch = Prompt("new arch", "select arch", arch);
+                    if (arch != null)
                     {
-                        fileType = r2pw.run("e file.type");
-                        fileType = null;
-                        if (fileType != null)
-                            fileType = fileType.Replace("\n", "");
-                        arch = r2pw.run("iI~arch[1]");
-                        if (arch == null) arch = "";
                         arch = arch.Replace("\n", "");
-                        arch = Prompt("new arch", "select arch", arch);
-                        if (arch != null)
-                        {
-                            arch = arch.Replace("\n", "");
-                            r2pw.run("e asm.arch = " + arch);
-                        }
+                        r2pw.run("e asm.arch = " + arch);
                     }
                 }
                 r2pw.run_script("openfile_post.txt");
@@ -365,18 +361,20 @@ namespace r2pipe_test
             string address = get_selectedAddress(sender);
             if (address != null)
             {
-                r2pw.run("s " + address);
+                r2pw.gotoAddress(address);
                 refresh_main_controls(address);
             }
         }
         private void menuXrefs_Click(object sender, EventArgs e)
         {
+            /* temporary disabled
             string address = get_selectedAddress(listView1);
             string title = "xrefs @ " + address;
             string cmds = "axtj @ "+address;
             //popup_cmds("xrefs", "axtj");
             r2pw.add_control_tab(title, cmds);
             r2pw.run(cmds, title);
+             */
         }
         private void popup_tab(GuiControl c)
         {
@@ -451,7 +449,9 @@ namespace r2pipe_test
         }
         private void runCmds(string cmds)
         {
-            r2pw.run(cmds, "output", true);
+            //GuiControl gc = null;
+            //gc = r2pw.gui_controls.findControlBy_cmds(cmds);
+            r2pw.run(cmds, cmds, true);
         }
         private void ESILcmds(string cmds)
         {
@@ -1299,6 +1299,60 @@ namespace r2pipe_test
                 lblCpu.Text = "CPU "+usage.ToString()+"%";
             else
                 lblCpu.Text = "";
+        }
+        private void listView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (listView1.FocusedItem.Bounds.Contains(e.Location) == true)
+                {
+                    dynamic json_obj = null;
+                    ListViewItem.ListViewSubItem item = null;
+                    if( listView1.SelectedItems.Count==0 ) return;
+                    item = listView1.SelectedItems[0].SubItems[listView1.SelectedItems[0].SubItems.Count-1];
+                    json_obj = JsonConvert.DeserializeObject(item.Text);
+                    r2pw.clean_contextmenucmd("Xrefs ( axtj )", ctxFunctions);
+                    for (int i = 0; i < json_obj.Count; i++)
+                    {
+                        string address = "0x" + json_obj[i].ToString("x");
+                        string t_address = address + " " + r2pw.run_silent("axt @ " + address);
+                        
+                        r2pw.add_contextmenucmd("Xrefs ( axtj )", t_address, address, ctxFunctions);
+                    }
+                    // show context menu now
+                    ctxFunctions.Show(Cursor.Position);
+                }
+            }
+        }
+
+        private void xrefsToFunctionAxgToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListViewItem.ListViewSubItem item = null;
+            if (listView1.SelectedItems.Count == 0) return;
+            item = listView1.SelectedItems[0].SubItems[1]; // find address
+            runCmds("axg @ "+item.Text);
+        }
+
+        private void functionInformationAfiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string addr = null;
+            ListViewItem.ListViewSubItem item = null;
+            if (listView1.SelectedItems.Count == 0) return;
+            item = listView1.SelectedItems[0].SubItems[1]; // find address
+            addr = Prompt("Address:", "Information", item.Text);
+            if( addr!=null && addr.Length>0 )
+                runCmds("af @ " + addr + "; afij @ " + addr);
+        }
+
+        private void xrefsAxtjToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string addr = null;
+            ListViewItem.ListViewSubItem item = null;
+            if (listView1.SelectedItems.Count == 0) return;
+            item = listView1.SelectedItems[0].SubItems[1]; // find address
+            addr = Prompt("Address:", "Xrefs", item.Text);
+            if (addr != null && addr.Length > 0)
+                runCmds("axtj @ " + addr);
         }
     }
     public class ListViewItemComparer : IComparer
