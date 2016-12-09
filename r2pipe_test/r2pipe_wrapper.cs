@@ -651,7 +651,7 @@ namespace r2pipe_test
             string r2path = rconfig.r2path;
             if (this.r2 != null) this.r2.RunCommand("q");
             this.r2 = null; // remove the object
-            this.r2 = new R2Pipe(r2file, r2path);
+            this.r2 = new R2Pipe('"'+r2file+'"', r2path);
             this.fileName = fileName;
             this.r2html = new r2html(this);
             if (!fileName.Equals("-"))
