@@ -916,6 +916,7 @@ namespace r2pipe_test
             run("e asm.bytes       = false", "output", true);
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
+            run("e cfg.editor=c:\\windows\\notepad.exe", "output", true);
             run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
             run("pd 256",   "dissasembly"); // pd or pdf?
             run("izzj",     "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
