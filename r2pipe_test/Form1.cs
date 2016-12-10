@@ -1149,7 +1149,6 @@ namespace r2pipe_test
             startInfo.Arguments = "\""+args+"\"";
             Process.Start(startInfo);
         }
-
         private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try // may fail
@@ -1191,14 +1190,12 @@ namespace r2pipe_test
             }
             return address;
         }
-
         private void addressToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string selected_address = get_currentlistview_selected_address();
             if (selected_address != null)
                 Clipboard.SetText(selected_address);
         }
-
         private void copyAllFieldsMenuItem_Click(object sender, EventArgs e)
         {
             GuiControl gui_control = r2pw.gui_controls.get_active_control();
@@ -1226,21 +1223,18 @@ namespace r2pipe_test
             if (selected_address != null)
                 r2pw.gotoAddress(selected_address);
         }
-
         private void lstImports_DoubleClick(object sender, EventArgs e)
         {
             string selected_address = get_currentlistview_selected_address();
             if (selected_address != null)
                 r2pw.gotoAddress(selected_address);
         }
-
         private void lstSections_DoubleClick(object sender, EventArgs e)
         {
             string selected_address = get_currentlistview_selected_address();
             if (selected_address != null)
                 r2pw.gotoAddress(selected_address);
         }
-
         private void renameAfnToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if ( listView1.Items.Count == 0 ) return;
@@ -1250,7 +1244,6 @@ namespace r2pipe_test
             r2pw.run(string.Format("afn {0} {1}", new_name, current_address));
             refresh_functions_listview();
         }
-
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
             string pc = null;
@@ -1311,19 +1304,19 @@ namespace r2pipe_test
                     item = listView1.SelectedItems[0].SubItems[listView1.SelectedItems[0].SubItems.Count-1];
                     json_obj = JsonConvert.DeserializeObject(item.Text);
                     r2pw.clean_contextmenucmd("Data refs", ctxFunctions);
+                    Cursor.Current = Cursors.WaitCursor;
                     for (int i = 0; i < json_obj.Count; i++)
                     {
                         string address = "0x" + json_obj[i].ToString("x");
                         string t_address = "["+address + "] " + r2pw.run_silent("axt @ " + address);
-
                         r2pw.add_contextmenucmd("Data refs", t_address, address, ctxFunctions);
                     }
+                    Cursor.Current = Cursors.Default;
                     // show context menu now
                     ctxFunctions.Show(Cursor.Position);
                 }
             }
         }
-
         private void xrefsToFunctionAxgToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ListViewItem.ListViewSubItem item = null;
@@ -1331,7 +1324,6 @@ namespace r2pipe_test
             item = listView1.SelectedItems[0].SubItems[1]; // find address
             runCmds("axg @ "+item.Text);
         }
-
         private void functionInformationAfiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string addr = null;
@@ -1342,7 +1334,6 @@ namespace r2pipe_test
             if( addr!=null && addr.Length>0 )
                 runCmds("af @ " + addr + "; afij @ " + addr);
         }
-
         private void xrefsAxtjToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string address = get_selectedAddress(listView1);
@@ -1359,7 +1350,6 @@ namespace r2pipe_test
     }
     public class ListViewItemComparer : IComparer
     {
-
         private int col;
         private SortOrder order;
         public ListViewItemComparer()

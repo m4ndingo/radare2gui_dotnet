@@ -108,9 +108,13 @@ namespace r2pipe_test
                 //Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
-            if (controlName!=null && !controls.ContainsKey(controlName))
+            if (controlName!=null)
             {
-                add_control_tab(controlName, cmds);
+                //todo: find tab index with cmds and select it if exists
+                //if (controls.ContainsKey(controlName))
+                //    tabcontrol.SelectTab(controlName);
+                if(!controls.ContainsKey(controlName))
+                    add_control_tab(controlName, cmds);
             }
             if (controlName!=null && !controls.ContainsKey(controlName))
             {
@@ -599,7 +603,6 @@ namespace r2pipe_test
         {
             if ( tabcontrol == null)
                 return;
-            if ( controls.ContainsKey(tabname) ) return;
             var page = new TabPage(tabname);
             WebBrowser browser = null;
             try
@@ -660,7 +663,6 @@ namespace r2pipe_test
             newitem.Tag = cmds;
             newitem.Click += new EventHandler(ListView1ItemClickHandler);
         }
-        // do not touch
         public void add_menucmd(string menuName, string text, string cmds, MenuStrip menu, string decorator = null)
         {
             ToolStripMenuItem item = find_menucmd(menuName, menu);
@@ -705,7 +707,6 @@ namespace r2pipe_test
             //if (gc != null) name = gc.name;
             //run(cmds, name, false, null, null, false, false, gc);            
         }
-        //no tocar
         private void MenuItemClickHandler(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
@@ -898,8 +899,8 @@ namespace r2pipe_test
             if (fileName.StartsWith("dbg://"))
                 run("dc", "output", true);
             run("aa");
-            run("pxa 4000", "hexview");
-            run("aaa", "output", true);
+            run("pxa 4000",         "hexview");
+            run("aaa",              "output", true);
             run("e scr.rows        = 100", "output", true);
             run("e scr.columns     = 80", "output", true);
             run("e scr.interactive = false", "output", true);
@@ -917,14 +918,14 @@ namespace r2pipe_test
             run("e asm.bytes       = false", "output", true);
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
-            run("e cfg.editor=c:\\windows\\notepad.exe", "output", true);
-            run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
-            run("pd 256",   "dissasembly"); // pd or pdf?
-            run("izzj",     "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
-            run("iij",      "imports_listview", false, new List<string> { "name", "plt" });                        
-            run("iSj",      "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
-            run("dpj",      "processes_listView", false, new List<string> { "path", "status", "pid" });
-            popup_cmds_async("Callgraph", "agf", false);
+            run("e cfg.editor      = c:\\windows\\notepad.exe", "output", true);
+            run("aflj",            "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
+            run("pd 256",          "dissasembly"); // pd or pdf?
+            run("izzj",            "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
+            run("iij",             "imports_listview", false, new List<string> { "name", "plt" });                        
+            run("iSj",             "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
+            run("dpj",             "processes_listView", false, new List<string> { "path", "status", "pid" });
+            popup_cmds_async(       "Callgraph", "agf", false);
             if (fileName.StartsWith("dbg://"))
             {
                 popup_cmds_async("Maps", "dmj", true);
