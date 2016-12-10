@@ -27,7 +27,8 @@ namespace r2pipe_test
         public             bool  long_command_output =  false  ;
         public           UInt64  seek_address        =      0  ;
         public             bool  autorefresh_activetab = true  ;
-        private            bool ignore_mouse_events  =  false  ;
+        private            bool  ignore_mouse_events =  false  ;
+        private            bool  debugMode           =  false  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
@@ -123,8 +124,9 @@ namespace r2pipe_test
             }
             if (controlName!=null && gui_controls.findControlBy_name(controlName)==null) //!controls.ContainsKey(controlName))
             {
-                Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
-                return null;
+                add_control_tab(controlName, cmds);
+                //Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
+                //return null;
             }
             if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
             update_statusbar(cmds); // may fail
@@ -400,6 +402,12 @@ namespace r2pipe_test
         }
         public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj)
         {
+            if (!controls.ContainsKey(controlName))
+            {
+                MessageBox.Show("Controls don't contain key " + controlName, 
+                    "sendToWebBrowser", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             object c = controls[controlName];
             string url;
             if (someText == null && cached_results.ContainsKey(controlName)) 
@@ -567,6 +575,7 @@ namespace r2pipe_test
         public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
         {
             string pre_cmd = "", pos_cmd = "";
+            if (name == null) return null;
             if (!controls.ContainsKey(name))
                 controls.Add(name, control);
             if (cmds != null && cmds.Equals("agf"))
@@ -626,7 +635,7 @@ namespace r2pipe_test
             }
             catch (Exception e)
             {
-                Show(e.ToString(), "add_control_tab: browser");
+                //Show(e.ToString(), "add_control_tab: browser");
                 return;
             }
             page.Tag = cmds; // tabname.ToLower();
@@ -695,17 +704,29 @@ namespace r2pipe_test
         }
         public void open(String fileName)
         {
+            string commandline = fileName;
+            string args = "";
             string r2file = fileName;
             string r2path = rconfig.r2path;
             if (this.r2 != null) this.r2.RunCommand("q");
             this.r2 = null; // remove the object
-            this.r2 = new R2Pipe('"'+r2file+'"', r2path);
-            this.fileName = fileName;
-            this.r2html = new r2html(this);
-            if (!fileName.Equals("-"))
+            debugMode = false;
+            if(fileName.StartsWith("-d"))
+            {
+                fileName=fileName.Substring(3);
+                args = "-d ";
+                debugMode = true;
+            }
+            string quotedFileName = fileName;
+            if (!fileName.StartsWith("-"))
             {
                 rconfig.save("gui.lastfile", fileName);
+                quotedFileName = "\"" + fileName + "\"";
             }
+            commandline = args + quotedFileName;
+            this.r2 = new R2Pipe(commandline, r2path);
+            this.fileName = fileName;
+            this.r2html = new r2html(this);
         }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
         {
@@ -918,8 +939,10 @@ namespace r2pipe_test
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
             run("Ps default"); // defaul project
-            if (fileName.StartsWith("dbg://"))
+            if (debugMode)
+            {
                 run("dc", "output", true);
+            }
             run("aa");
             run("pxa 4000",         "hexview");
             run("aaa",              "output", true);
@@ -948,7 +971,7 @@ namespace r2pipe_test
             run("iSj",             "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj",             "processes_listView", false, new List<string> { "path", "status", "pid" });
             popup_cmds_async(       "Call graph", "agf", false);
-            if (fileName.StartsWith("dbg://"))
+            if ( debugMode ) //fileName.StartsWith("-d "))
             {
                 popup_cmds_async("Maps", "dmj", true);
                 popup_cmds_async("regs", "drj", true);

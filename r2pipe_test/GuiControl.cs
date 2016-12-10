@@ -99,6 +99,7 @@ namespace r2pipe_test
         }
         public GuiControl findControlBy_name(string name, int skip=0)
         {
+            if (name == null) return null;
             foreach (GuiControl c in controls)
             {
                 if (name.Equals(c.name))

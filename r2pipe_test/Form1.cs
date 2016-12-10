@@ -59,8 +59,8 @@ namespace r2pipe_test
             r2pw.add_decorator("short_addr_name", short_addr_name, new List<string>() { "name" });
             //add menu options and function callbacks
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
-            r2pw.add_menucmd("&View", "Disassembly", "pd", mainMenu);
-            r2pw.add_menucmd("&View", "Hexadecimal", "px", mainMenu);
+            r2pw.add_menucmd("&View", "Disassembly", "pd 256", mainMenu);
+            r2pw.add_menucmd("&View", "Hexadecimal", "pxa 4000", mainMenu);
             r2pw.add_menucmd("&View", "Functions", "aflj", mainMenu);
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
@@ -163,11 +163,12 @@ namespace r2pipe_test
         }
         private void DoLoadFile()
         {
-            bool run_initial_analysis = false;
+            bool force_initial_analysis = false;
             if (r2pw == null) return;
             r2pw.open(fileName);
-            if (fileName.StartsWith("-")) run_initial_analysis = true;
-            if (run_initial_analysis == true ||
+            if (fileName.StartsWith("-"))
+                force_initial_analysis = true;
+            if (force_initial_analysis == true ||
                 MessageBox.Show("File loaded. Analyze now?", "File loaded",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) ==
                     System.Windows.Forms.DialogResult.OK)
@@ -230,7 +231,7 @@ namespace r2pipe_test
                 CheckR2path();
                 return;
             }
-            realFilename = realFilename.Replace("dbg://", "");
+            realFilename = realFilename.Replace("-d ", "");
             if (realFilename != null && !File.Exists(realFilename) && !realFilename.StartsWith("-"))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
@@ -386,6 +387,11 @@ namespace r2pipe_test
         }
         private void popup_tab(GuiControl c)
         {
+            if (c == null)
+            {
+                r2pw.Show("can't popup tab, control is null", "popup_tab");
+                return;
+            }
             r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
         }
         public void popup_cmds(string title, string cmds, bool popup=true)
@@ -1069,7 +1075,7 @@ namespace r2pipe_test
             string binary_path = null;
             if (r2pw == null) return;
             maximize("output");
-            binary_path = Prompt("Program to attach:", "debug", @"dbg://c:\windows\syswow64\notepad.exe");
+            binary_path = Prompt("Program to attach:", "debug", @"-d c:\windows\syswow64\notepad.exe");
             if (binary_path != null)
                 LoadFile(binary_path);
         }
