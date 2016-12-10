@@ -1,17 +1,19 @@
-# radare2gui_dotnet
+# R4w alpha 1.0 radare2 gui
 Another radare2 gui for windows ( alpha 1.0 )
+## Install ##
+See [Releases](https://github.com/m4ndingo/radare2gui_dotnet/releases) section for downloading the precompiled binaries.
 ## Screenshots
 **Dissasembly View**
 
-![r2pipe_disasemblyclassic](https://cloud.githubusercontent.com/assets/12532269/20548153/55d3f44a-b121-11e6-8871-eb9e02f9c311.png)
+![dissasembly_view_classic](https://cloud.githubusercontent.com/assets/12532269/21076331/d1153ef6-bf28-11e6-8fc0-123cb89c77c0.png)
+
+**Interactive Call graphs**
+
+![r4w_gui_screenshot_classic_](https://cloud.githubusercontent.com/assets/12532269/21076303/228e1ce0-bf28-11e6-8016-641e216031e6.png)
 
 **Hexadecimal View**
 
 ![hexview_lemon](https://cloud.githubusercontent.com/assets/12532269/20545911/2c376e50-b112-11e6-885a-82e315de21d6.png)
-
-**Sections**
-
-![r2pipeguidotnet_sections](https://cloud.githubusercontent.com/assets/12532269/20545956/8533dcbe-b112-11e6-9e5d-0496e209f663.png)
 
 **radare2 usage help ( ? )**
 
