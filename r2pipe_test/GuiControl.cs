@@ -59,7 +59,7 @@ namespace r2pipe_test
             controls = new List<GuiControl>();
         }
         public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null,
-            string pre_cmd = null, string pos_cmd = null, int tab_index = -1)
+        string pre_cmd = null, string pos_cmd = null, int tab_index = -1)
         {
             GuiControl gui_control = null;
             if (name == null || name.Length == 0) return null;

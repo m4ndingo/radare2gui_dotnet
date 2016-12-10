@@ -860,7 +860,6 @@ namespace r2pipe_test
             }
             return null;
         }
-        // no tocar
         public ToolStripMenuItem find_menucmd(string menuName, MenuStrip menu)
         {
             foreach (ToolStripMenuItem item in menu.Items)

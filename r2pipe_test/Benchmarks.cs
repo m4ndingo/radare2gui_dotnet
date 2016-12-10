@@ -11,7 +11,6 @@ namespace r2pipe_test
     {
         private PerformanceCounter cpuCounter;
         private PerformanceCounter ramCounter;
-
         public Benchmarks()
         {
             cpuCounter = new PerformanceCounter();
