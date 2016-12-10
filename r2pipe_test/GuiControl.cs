@@ -15,10 +15,11 @@ namespace r2pipe_test
         public string tabTitle  = null;
         public string pre_cmd   = null;
         public string pos_cmd   = null;
+        public int    tab_index = -1;
         public bool synchronize = true;
         public List<string> column_titles = null;
         public GuiControl(object control, string name, string sName, string cmds, string tabTitle, 
-            List<string> column_titles = null, string pre_cmd = null, string pos_cmd=null)
+            List<string> column_titles = null, string pre_cmd = null, string pos_cmd=null, int tab_index = -1)
         {
             this.control    = control;
             this.name       = name;
@@ -28,13 +29,15 @@ namespace r2pipe_test
             this.column_titles = column_titles;
             this.pre_cmd    = pre_cmd;
             this.pos_cmd    = pos_cmd;
+            this.tab_index  = tab_index;
         }
         public void set_columnTitles(List<string> column_titles)
         {
             this.column_titles = column_titles;
-        }        
+        }
+        /*
         public override string ToString()
-        {
+        {            
             return string.Format(
                 "control  : {0}\n" +
                 "name     : {1}\n" +
@@ -44,7 +47,7 @@ namespace r2pipe_test
                 control.ToString(), // access problems
                 name, cmds, tabTitle,
                 column_titles.ToString());
-        }
+        }*/
     }
     public class GuiControls
     {
@@ -56,7 +59,7 @@ namespace r2pipe_test
             controls = new List<GuiControl>();
         }
         public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null,
-            string pre_cmd = null, string pos_cmd = null)
+            string pre_cmd = null, string pos_cmd = null, int tab_index = -1)
         {
             GuiControl gui_control = null;
             try
@@ -67,7 +70,9 @@ namespace r2pipe_test
                     int pos = sName.IndexOf("_");
                     sName = sName.Substring(0, pos);
                 }
-                gui_control = new GuiControl(control, name, sName, cmds, tabTitle, null, pre_cmd, pos_cmd);
+                gui_control = new GuiControl(
+                    control, name, sName, cmds, tabTitle, null, 
+                    pre_cmd, pos_cmd, tab_index);
                 controls.Add(gui_control);
             }
             catch (Exception e)
@@ -86,12 +91,15 @@ namespace r2pipe_test
                     c.tabTitle, c.cmds, c.name, ctype));
             }
         }
-        public GuiControl findControlBy_name(string name)
+        public GuiControl findControlBy_name(string name, int skip=0)
         {
             foreach (GuiControl c in controls)
             {
                 if (name.Equals(c.name))
+                {
+                    if (skip-- > 0) continue; 
                     return c;
+                }
             }
             return null;
         }

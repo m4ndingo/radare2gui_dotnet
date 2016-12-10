@@ -111,10 +111,14 @@ namespace r2pipe_test
             if (controlName!=null)
             {
                 //todo: find tab index with cmds and select it if exists
-                //if (controls.ContainsKey(controlName))
-                //    tabcontrol.SelectTab(controlName);
-                if(!controls.ContainsKey(controlName))
+                if (!controls.ContainsKey(controlName))
                     add_control_tab(controlName, cmds);
+                else
+                {
+                    GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
+                    if( gc_tab!=null )
+                        tabcontrol.SelectedIndex = gc_tab.tab_index;
+                }
             }
             if (controlName!=null && !controls.ContainsKey(controlName))
             {
@@ -561,7 +565,9 @@ namespace r2pipe_test
                 pre_cmd = "e asm.section=false";
                 pos_cmd = "e asm.section=true";
             }
-            GuiControl gui_control = gui_controls.add_control(name, control, tabTitle, cmds, pre_cmd, pos_cmd);
+            GuiControl gui_control = gui_controls.add_control
+                (name, control, tabTitle, cmds,
+                pre_cmd, pos_cmd, tabcontrol.SelectedIndex);
             if (control.GetType() == typeof(WebBrowser))
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
@@ -595,8 +601,8 @@ namespace r2pipe_test
                 newitem = item.DropDownItems.Add(menuText);
                 newitem.Tag = callback_args;
                 newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
-                string cname = text.Replace(" ", "").ToLower();
-                gui_controls.add_control(cname, null, menuText, args);
+                string cname = text; // text.Replace(" ", "").ToLower();
+                gui_controls.add_control(cname, null, menuText, args, "", "", tabcontrol.SelectedIndex);
             }
         }
         public void add_control_tab(string tabname, string cmds)
@@ -625,8 +631,6 @@ namespace r2pipe_test
             try
             {
                 tabcontrol.TabPages.Add(page);
-                page.Select();
-                tabcontrol.SelectedTab = page;
             }
             catch (Exception e)
             {
@@ -634,7 +638,11 @@ namespace r2pipe_test
                 return;
             }
             if (browser != null)
+            {
+                page.Select();
+                tabcontrol.SelectedTab = page;
                 add_control(tabname, browser, tabname, cmds);
+            }
             guicontrol.autoresize_output();
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -781,11 +789,17 @@ namespace r2pipe_test
         }
         public string find_dataPath(string def="")
         {
-            string path = guicontrol.Prompt("gui media path?", "Please, locate your data path...", def);
-            rconfig.save("gui.datapath", path);
+            string datapath = rconfig.load<string>("gui.datapath", def);
+            if (datapath == null)
+                datapath = def;
+            if (!Directory.Exists(datapath))
+            {
+                datapath = guicontrol.Prompt("gui media path?", "Please, locate your data path...", def);
+            }
+            rconfig.save("gui.datapath", datapath);
             rconfig.save("gui.hexview.css", "r2pipe.css");
             rconfig.save("gui.theme_name", guicontrol.themeName);
-            return path;
+            return datapath;
         }
         public string findControlBy_tabTitle(string title)
         {
@@ -925,7 +939,7 @@ namespace r2pipe_test
             run("iij",             "imports_listview", false, new List<string> { "name", "plt" });                        
             run("iSj",             "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
             run("dpj",             "processes_listView", false, new List<string> { "path", "status", "pid" });
-            popup_cmds_async(       "Callgraph", "agf", false);
+            popup_cmds_async(       "Call graph", "agf", false);
             if (fileName.StartsWith("dbg://"))
             {
                 popup_cmds_async("Maps", "dmj", true);

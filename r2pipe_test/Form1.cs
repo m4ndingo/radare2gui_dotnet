@@ -379,6 +379,7 @@ namespace r2pipe_test
         public void popup_cmds(string title, string cmds, bool popup=true)
         {
             int i;
+            TabPage selected = tabcontrol.SelectedTab;
             tabcontrol.SuspendLayout();
             string address = get_selectedAddress(listView1);
             this.SuspendLayout();
@@ -400,6 +401,7 @@ namespace r2pipe_test
                     }
                 }
             }
+            tabcontrol.SelectedTab = selected; // don't lost focus on selected tab
             this.ResumeLayout();
         }
         private void Form1_ResizeEnd(object sender, EventArgs e)
@@ -460,7 +462,7 @@ namespace r2pipe_test
             GuiControl gc = find_control_by_cmds(cmds);
             if (gc == null)
             {
-                gc = r2pw.gui_controls.add_control(cmds, null, cmds, cmds);
+                gc = r2pw.gui_controls.add_control(cmds, null, cmds, cmds, "", "", tabcontrol.SelectedIndex);
             }
             popup_tab(gc);
         }
