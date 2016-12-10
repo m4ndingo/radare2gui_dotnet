@@ -97,10 +97,6 @@ namespace r2pipe_test
                 "gui.scripts.js_def", "r2html.js");
             string jquery_base = r2pw.rconfig.load<string>(
                  "gui.datapath");
-            if (jquery_base != null)
-                jquery_base = "file:///" + jquery_base + @"\..\scripts\";
-            else
-                jquery_base = "https://code.jquery.com/";
             if (r2pw.rconfig.dataPath == null)
             {
                 r2pw.rconfig.dataPath = 
@@ -110,8 +106,14 @@ namespace r2pipe_test
                             System.IO.Path.GetDirectoryName(Application.ExecutablePath)
                          )                    
                     );
+                jquery_base = r2pw.rconfig.load<string>(
+                 "gui.datapath");
             }
-            themeName    = r2pw.rconfig.load<string>("gui.theme_name", themeName);
+            if (jquery_base != null)
+                jquery_base = "file:///" + jquery_base + @"\..\scripts\";
+            else
+                jquery_base = "https://code.jquery.com/";
+            themeName = r2pw.rconfig.load<string>("gui.theme_name", themeName);
             js_filename  = r2pw.rconfig.load<string>("gui.datapath") + @"\..\scripts\" + js_filename;
             css_filename = 
                 string.Format(

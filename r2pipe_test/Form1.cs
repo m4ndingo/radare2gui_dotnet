@@ -191,14 +191,26 @@ namespace r2pipe_test
                 r2pw.run_script("openfile_post.txt");
             }
         }
-        private void CheckBinaryPath(string fileName, string varName)
+        private void CheckBinaryPath(string fileName, string varName, string defaultPath=null)
         {
             string binPath = rconfig.load<string>(varName);
-            if (binPath == null || !File.Exists(binPath))
+            string fullPath =
+            fullPath = rconfig.load<string>(varName);
+            if (fullPath != null && File.Exists(fullPath))
+                return;
+            fullPath =
+                System.IO.Path.GetDirectoryName(Application.ExecutablePath) +
+                @"\" + defaultPath + @"\" + fileName;
+            if (File.Exists(fullPath))
             {
-                if (((object)r2pw) != null) r2pw.Show("Form1: CheckDotpath(): Path for '"+fileName+"' not found...", fileName+" not found");
-                rconfig.save(varName, FindFile(fileName, "Please, locate your "+fileName+" binary"));
+                rconfig.save(varName, fullPath);
+                return;
             }
+            if (((object)r2pw) != null)
+            {
+                r2pw.Show("Form1: CheckBinaryPath(): Path for '" + fileName + "' not found...", fileName + " not found");
+            }
+            rconfig.save(varName, FindFile(fileName, "Please, locate your "+fileName+" binary"));
         }
         public void CheckDotpath()
         {
@@ -206,7 +218,7 @@ namespace r2pipe_test
         }
         private void CheckR2path()
         {
-            CheckBinaryPath("radare2.exe", "r2path");
+            CheckBinaryPath("radare2.exe", "r2path", "radare2-w64-1.1.0-git");
         }
         private void LoadFile(String fileName)
         {
@@ -256,7 +268,7 @@ namespace r2pipe_test
             {
                 slabel1.Text = text;
             }
-            catch (Exception e) { 
+            catch (Exception) { 
                 //r2pw.Show(e.ToString(), "show_message"); 
             } // manage this, script_executed_cb fails on this when prompt
             try
