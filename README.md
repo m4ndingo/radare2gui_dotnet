@@ -1,5 +1,7 @@
 # radare2gui_dotnet
 Another radare2 gui for windows ( alpha 1.0 )
+## Install ##
+See [Releases](https://github.com/m4ndingo/radare2gui_dotnet/releases) section for downloading the precompiled binaries.
 ## Screenshots
 **Dissasembly View**
 
