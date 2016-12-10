@@ -1213,7 +1213,11 @@ namespace r2pipe_test
                             items_as_csv += row.SubItems[i].Text + ";";
                         }
                     }
-                    Clipboard.SetText(items_as_csv);
+                    try
+                    {
+                        Clipboard.SetText(items_as_csv);
+                    }
+                    catch (Exception) { } // may fail
                 }                    
             }
         }

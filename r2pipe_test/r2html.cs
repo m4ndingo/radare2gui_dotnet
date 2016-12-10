@@ -95,6 +95,12 @@ namespace r2pipe_test
             string themeName = "classic";
             string js_filename = r2pw.rconfig.load<string>(
                 "gui.scripts.js_def", "r2html.js");
+            string jquery_base = r2pw.rconfig.load<string>(
+                 "gui.datapath");
+            if (jquery_base != null)
+                jquery_base = "file:///" + jquery_base + @"\..\scripts\";
+            else
+                jquery_base = "https://code.jquery.com/";
             if (r2pw.rconfig.dataPath == null)
             {
                 r2pw.rconfig.dataPath = 
@@ -119,8 +125,8 @@ namespace r2pipe_test
             html_header += "<html>\r\n";
             html_header += "<head>\r\n";
             html_header += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
-            html_header += "<link rel = \"stylesheet\" href = \"https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css\" >\r\n";
-            html_header += "<script src=\"https://code.jquery.com/jquery-1.11.3.js\"></script>\r\n";
+            //html_header += "<link rel = \"stylesheet\" href = \"https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css\" >\r\n";
+            html_header += "<script src=\"" + jquery_base + "jquery-1.11.3.js\"></script>\r\n";
             html_header += "<script>var r2output = null; addresses = null; pd_previews = null;</script>\r\n";
             html_header += "</head>\r\n";
             html_header += "<body>\r\n";
