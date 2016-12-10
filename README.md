@@ -5,6 +5,10 @@ See [Releases](https://github.com/m4ndingo/radare2gui_dotnet/releases) section f
 ## Screenshots
 **Dissasembly View**
 
+![dissasembly_view_classic](https://cloud.githubusercontent.com/assets/12532269/21076331/d1153ef6-bf28-11e6-8fc0-123cb89c77c0.png)
+
+**Call graph View**
+
 ![r4w_gui_screenshot_classic_](https://cloud.githubusercontent.com/assets/12532269/21076303/228e1ce0-bf28-11e6-8016-641e216031e6.png)
 
 **Hexadecimal View**
