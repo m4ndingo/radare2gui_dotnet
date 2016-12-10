@@ -100,7 +100,7 @@ namespace r2pipe_test
                 r2pw.rconfig.dataPath = 
                     r2pw.find_dataPath(
                         string.Format(
-                            @"{0}\..\..\media",
+                            @"{0}\media",
                             System.IO.Path.GetDirectoryName(Application.ExecutablePath)
                          )                    
                     );
