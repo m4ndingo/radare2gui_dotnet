@@ -5,7 +5,7 @@ See [Releases](https://github.com/m4ndingo/radare2gui_dotnet/releases) section f
 ## Screenshots
 **Dissasembly View**
 
-![r2pipe_disasemblyclassic](https://cloud.githubusercontent.com/assets/12532269/20548153/55d3f44a-b121-11e6-8871-eb9e02f9c311.png)
+![r4w_gui_screenshot_classic_](https://cloud.githubusercontent.com/assets/12532269/21076303/228e1ce0-bf28-11e6-8016-641e216031e6.png)
 
 **Hexadecimal View**
 
