@@ -78,7 +78,8 @@ namespace r2pipe_test
                 string output_msg = "";
                 if(controlName!=null)
                 {
-                    gc = gui_controls.findControlBy_name(controlName);
+                    if( gc==null )
+                        gc = gui_controls.findControlBy_name(controlName);
                     if( gc!=null && gc.control!=null)
                         control_type = gc.control.GetType().ToString();
                 }
@@ -111,16 +112,16 @@ namespace r2pipe_test
             if (controlName!=null)
             {
                 //todo: find tab index with cmds and select it if exists
-                if (!controls.ContainsKey(controlName))
-                    add_control_tab(controlName, cmds);
-                else
-                {
-                    GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
-                    if( gc_tab!=null )
-                        tabcontrol.SelectedIndex = gc_tab.tab_index;
-                }
+                //if (!controls.ContainsKey(controlName))
+                GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
+                if( gc_tab!=null )
+                    tabcontrol.SelectedIndex = gc_tab.tab_index;
+                //else
+                //{
+                //    add_control_tab(controlName, cmds);
+                //}
             }
-            if (controlName!=null && !controls.ContainsKey(controlName))
+            if (controlName!=null && gui_controls.findControlBy_name(controlName)==null) //!controls.ContainsKey(controlName))
             {
                 Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
                 return null;
@@ -184,7 +185,7 @@ namespace r2pipe_test
             if (controlName != null)
             {
                 // send results and "others" to control (ex: listview)
-                setText(controlName, cmds, res, append, json_obj, cols);
+                setText(controlName, cmds, res, append, json_obj, cols, gc);
                 if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
                 cached_results.Add(controlName, res);
             }
@@ -218,26 +219,34 @@ namespace r2pipe_test
         {
             return run(cmds, null, false, null, null, false, true).Replace("\n","").Replace("\r","");
         }
-        public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null)
+        public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null, GuiControl gc_orig = null)
         {
-            object c = null;
-            if (!controls.ContainsKey(controlName))
+            GuiControl gc = gc_orig;
+            if( gc==null )
+                gc=gui_controls.findControlBy_name(controlName);
+            //object c = null;
+            if ( gc == null)
             {
                 // some problems trying to use: add_control_* here ...
-                Show(string.Format("setText: control {0} not found, please 'add_control'",controlName),"error");
+                Console.WriteLine(string.Format("setText: gui_control {0} not found, please 'add_control'", controlName), "error");
                 return;
             }
-            c = controls[controlName];
+            //c = controls[controlName];
             if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
-            if (c.GetType() == typeof(RichTextBox))
+            if (gc.control == null)
             {
-                RichTextBox rtbox = (RichTextBox)c;
+                Console.WriteLine(string.Format("setText: gc.control {0} is null, please set some control before 'setText'", controlName), "error");
+                return;
+            }
+            if (gc.control.GetType() == typeof(RichTextBox))
+            {
+                RichTextBox rtbox = (RichTextBox) gc.control;
                 if (rtbox.InvokeRequired)
                 {
                     SetTextCallback d = new SetTextCallback(setText);
                     try
                     {
-                        rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols });
+                        rtbox.Invoke(d, new object[] { controlName, cmds, someText, append, json_obj, cols, gc });
                     }
                     catch (Exception e) // may fail on closing gui
                     {
@@ -251,9 +260,9 @@ namespace r2pipe_test
                     rtbox.Text += r2html.encodeutf8(someText); //movethis
                 }
             }
-            else if (c.GetType() == typeof(ListView))
+            else if (gc.control.GetType() == typeof(ListView))
             {
-                ListView lstview = (ListView)c;
+                ListView lstview = (ListView) gc.control;
                 if (cols == null || cols.Count == 0)
                     cols = save_active_cols(controlName, lstview);
                 lstview.Invoke(new BeginListviewUpdate(listviewUpdate),
@@ -288,9 +297,9 @@ namespace r2pipe_test
                 }
                 else
                 {
-                    Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", controlName, c.GetType()));
-                }
-                
+                    Console.WriteLine(string.Format("setText: controlName='{0}' type='{1}' no json results received?", 
+                        controlName, gc.control.GetType()));
+                }           
                 try
                 {
                     lstview.Invoke(new BeginListviewUpdate(listviewUpdate), new object[] { lstview, false, controlName, null });
@@ -300,16 +309,16 @@ namespace r2pipe_test
                     Show(e.ToString(), "listViewUpdate");
                 }
             }
-            else if (c.GetType() == typeof(WebBrowser))
+            else if (gc.control.GetType() == typeof(WebBrowser))
             {
                 sendToWebBrowser(controlName, cmds, someText, json_obj);
             }
             else
             {
-                Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, c.GetType()), "unknown control type");
+                Show(string.Format("setText: controlName='{0}' Unknown control:{1}", controlName, gc.control.GetType()), "unknown control type");
             }
         }
-        delegate void SetTextCallback(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null);
+        delegate void SetTextCallback(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null, GuiControl gc_orig=null );
         public object get_selected_control()
         {
             string controlName = null;
@@ -480,7 +489,7 @@ namespace r2pipe_test
                 //update controls
                 guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
-                guicontrol.refresh_control(gui_controls.findControlBy_name("Callgraph"));
+                guicontrol.refresh_control(gui_controls.findControlBy_name("Call graph"));
                 guicontrol.refresh_popups();
                 guicontrol.selectFunction(address);
             }

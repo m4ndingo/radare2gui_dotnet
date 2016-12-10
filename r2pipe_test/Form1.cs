@@ -361,7 +361,7 @@ namespace r2pipe_test
             int current_tab_index = tabcontrol.SelectedIndex;
             r2pw.refresh_control("hexview");
             r2pw.refresh_control("dissasembly");
-            r2pw.refresh_control("Callgraph");
+            r2pw.refresh_control("Call graph");
             refresh_popups();
             tabcontrol.SelectedIndex = current_tab_index;
         }
@@ -397,8 +397,10 @@ namespace r2pipe_test
             this.SuspendLayout();
             TabPage page = null;
             r2pw.run("s " + address);
-            r2pw.add_control_tab(title, cmds);
-            r2pw.run(cmds, title);
+            GuiControl gc = r2pw.gui_controls.findControlBy_cmds(cmds);
+            if( gc==null )
+                r2pw.add_control_tab(title, cmds);            
+            r2pw.run(cmds, title, false, null, null, false, false, gc);
             if (popup == true)
             {
                 for (i = 0; i < tabcontrol.TabPages.Count; i++)

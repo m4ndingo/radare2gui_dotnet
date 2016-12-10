@@ -62,6 +62,12 @@ namespace r2pipe_test
             string pre_cmd = null, string pos_cmd = null, int tab_index = -1)
         {
             GuiControl gui_control = null;
+            if (name == null || name.Length == 0) return null;
+            if (control == null)
+            {
+                Console.WriteLine("warning:\nGuiControl: add_control(): control name='" + name + "' is null", "control is null");
+                return null;
+            }
             try
             {
                 string sName = name;
