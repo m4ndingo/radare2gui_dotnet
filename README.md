@@ -1,4 +1,4 @@
-# R4w
+# R4w alpha radare2 gui
 Another radare2 gui for windows ( alpha 1.0 )
 ## Install ##
 See [Releases](https://github.com/m4ndingo/radare2gui_dotnet/releases) section for downloading the precompiled binaries.
