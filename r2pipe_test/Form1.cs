@@ -367,14 +367,13 @@ namespace r2pipe_test
         }
         private void menuXrefs_Click(object sender, EventArgs e)
         {
-            /* temporary disabled
-            string address = get_selectedAddress(listView1);
-            string title = "xrefs @ " + address;
-            string cmds = "axtj @ "+address;
-            //popup_cmds("xrefs", "axtj");
-            r2pw.add_control_tab(title, cmds);
-            r2pw.run(cmds, title);
-             */
+            string addr = null;
+            ListViewItem.ListViewSubItem item = null;
+            if (listView1.SelectedItems.Count == 0) return;
+            item = listView1.SelectedItems[0].SubItems[1]; // find address
+            addr = Prompt("Address:", "Xrefs", item.Text);
+            if (addr != null && addr.Length > 0)
+                runCmds("axtj @ " + addr);            
         }
         private void popup_tab(GuiControl c)
         {
@@ -1311,13 +1310,13 @@ namespace r2pipe_test
                     if( listView1.SelectedItems.Count==0 ) return;
                     item = listView1.SelectedItems[0].SubItems[listView1.SelectedItems[0].SubItems.Count-1];
                     json_obj = JsonConvert.DeserializeObject(item.Text);
-                    r2pw.clean_contextmenucmd("Xrefs ( axtj )", ctxFunctions);
+                    r2pw.clean_contextmenucmd("Data refs", ctxFunctions);
                     for (int i = 0; i < json_obj.Count; i++)
                     {
                         string address = "0x" + json_obj[i].ToString("x");
-                        string t_address = address + " " + r2pw.run_silent("axt @ " + address);
-                        
-                        r2pw.add_contextmenucmd("Xrefs ( axtj )", t_address, address, ctxFunctions);
+                        string t_address = "["+address + "] " + r2pw.run_silent("axt @ " + address);
+
+                        r2pw.add_contextmenucmd("Data refs", t_address, address, ctxFunctions);
                     }
                     // show context menu now
                     ctxFunctions.Show(Cursor.Position);
@@ -1346,13 +1345,16 @@ namespace r2pipe_test
 
         private void xrefsAxtjToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string addr = null;
-            ListViewItem.ListViewSubItem item = null;
-            if (listView1.SelectedItems.Count == 0) return;
-            item = listView1.SelectedItems[0].SubItems[1]; // find address
-            addr = Prompt("Address:", "Xrefs", item.Text);
-            if (addr != null && addr.Length > 0)
-                runCmds("axtj @ " + addr);
+            string address = get_selectedAddress(listView1);
+            string title = null, cmds = null;
+            address = Prompt("Address:", "Xrefs ( axtj @ )", address);
+            if (address == null) return;
+            address = address.Replace("\r", "").Replace("\n", "");
+            title = "xrefs @ " + address;
+            cmds = "axtj @ " + address;
+            //popup_cmds("xrefs", "axtj");
+            r2pw.add_control_tab(title, cmds);
+            r2pw.run(cmds, title);
         }
     }
     public class ListViewItemComparer : IComparer

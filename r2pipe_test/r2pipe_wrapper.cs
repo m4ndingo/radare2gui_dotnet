@@ -699,6 +699,7 @@ namespace r2pipe_test
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string address = (string)item.Tag;
             gotoAddress(address);
+            tabcontrol.SelectedIndex = 0; // select disasm
             //string name = item.Text;
             //GuiControl gc = gui_controls.findControlBy_cmds(cmds);
             //if (gc != null) name = gc.name;
@@ -926,7 +927,7 @@ namespace r2pipe_test
             popup_cmds_async("Callgraph", "agf", false);
             if (fileName.StartsWith("dbg://"))
             {
-                popup_cmds_async("Maps", "dmj", false);
+                popup_cmds_async("Maps", "dmj", true);
                 popup_cmds_async("regs", "drj", true);
             }
             guicontrol.refresh_popups();
