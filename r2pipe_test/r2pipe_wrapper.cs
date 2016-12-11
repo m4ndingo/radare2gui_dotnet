@@ -50,6 +50,9 @@ namespace r2pipe_test
             this.cached_results     = new Dictionary<string, string>();
             this.current_shell = 
                 rconfig.load<string>("gui.current_shell", "radare");
+            string r2dir = System.IO.Path.GetDirectoryName(rconfig.r2path);
+            //chdir to radare2 directory
+            Directory.SetCurrentDirectory(r2dir);
             //new Hotkeys();
         }
         // some problems found at dynamic tab append also timeouts     
@@ -721,7 +724,8 @@ namespace r2pipe_test
             if (!fileName.StartsWith("-"))
             {
                 rconfig.save("gui.lastfile", fileName);
-                quotedFileName = "\"" + fileName + "\"";
+                if(fileName.Contains(" "))
+                    quotedFileName = "\"" + fileName + "\"";
             }
             commandline = args + quotedFileName;
             this.r2 = new R2Pipe(commandline, r2path);
@@ -938,11 +942,11 @@ namespace r2pipe_test
         {
             // 1. read input from scriptFilename
             // 2. parse fields: <controlName[,bAppend,['col1','col2',...]> <r2 commands>            
-            run("Ps default"); // defaul project
             if (debugMode)
             {
-                run("dc", "output", true);
+                run("dcu entry0", "output", true);
             }
+            run("Ps default"); // defaul project
             run("aa");
             run("pxa 4000",         "hexview");
             run("aaa",              "output", true);
