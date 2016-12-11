@@ -71,6 +71,7 @@ namespace r2pipe_test
             string res = "";
             dynamic json_obj = null;
             int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
+            //Console.WriteLine("[cmds] "+cmds);
             while (cpu_usage == 100) // wait for some free cpu resources
             {
                 System.Threading.Thread.Sleep(50);
@@ -714,10 +715,16 @@ namespace r2pipe_test
             if (this.r2 != null) this.r2.RunCommand("q");
             this.r2 = null; // remove the object
             debugMode = false;
-            if(fileName.StartsWith("-d"))
+            if (fileName.StartsWith("-d"))
             {
-                fileName=fileName.Substring(3);
-                args = "-d ";
+                fileName = fileName.Substring(3);
+                args = "-d";
+                debugMode = true;
+            }
+            if (fileName.StartsWith("dbg://"))
+            {
+                fileName = fileName.Substring(6);
+                args = "dbg://";
                 debugMode = true;
             }
             string quotedFileName = fileName;

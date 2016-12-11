@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "r4w", "r2pipe_test\r4w.csproj", "{9BF6D0B4-04C2-419D-AAA1-6F1C41F023CA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{143674D7-ACFC-44AF-82B7-D9342A16C270}"
-	ProjectSection(SolutionItems) = preProject
-		Benchmarks.cs = Benchmarks.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "r2pipe", "r2pipe\r2pipe.csproj", "{D5B3F257-E13E-42B5-A77E-AA0F809311FD}"
 EndProject

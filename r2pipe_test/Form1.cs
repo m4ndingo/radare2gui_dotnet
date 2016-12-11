@@ -106,7 +106,7 @@ namespace r2pipe_test
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
-            LoadFile("-"); // -- = no file
+            LoadFile(@"-"); // -- = no file
         }
         public void UpdateGUI(string args = null)
         {
@@ -173,22 +173,23 @@ namespace r2pipe_test
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) ==
                     System.Windows.Forms.DialogResult.OK)
             {
+                /*
                 if (!fileName.Equals("-"))
                 {
-                    fileType = r2pw.run("e file.type");
+                    fileType = r2pw.run("e file.type", "output", true);
                     fileType = null;
                     if (fileType != null)
                         fileType = fileType.Replace("\n", "");
-                    arch = r2pw.run("iI~arch[1]");
+                    arch = r2pw.run("iI~arch[1]", "output",true);
                     if (arch == null || (arch!=null && arch.Length==0)) arch = "binary";
                     arch = arch.Replace("\n", "");
                     arch = Prompt("new arch", "select arch", arch);
                     if (arch != null)
                     {
                         arch = arch.Replace("\n", "");
-                        r2pw.run("e asm.arch = " + arch);
+                        r2pw.run("e asm.arch = " + arch, "output", true);
                     }
-                }
+                }*/
                 r2pw.run_script("openfile_post.txt");
             }
         }
@@ -232,6 +233,7 @@ namespace r2pipe_test
                 return;
             }
             realFilename = realFilename.Replace("-d ", "");
+            realFilename = realFilename.Replace("dbg://", "");
             if (realFilename != null && !File.Exists(realFilename) && !realFilename.StartsWith("-"))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
@@ -240,7 +242,7 @@ namespace r2pipe_test
             clearControls();
             this.fileName = fileName;
 
-            Refresh();
+            //Refresh();
             Thread newThread = new Thread(new ThreadStart(this.DoLoadFile));
             newThread.Start();
             cmbCmdline.Focus();
@@ -1075,9 +1077,13 @@ namespace r2pipe_test
             string binary_path = null;
             if (r2pw == null) return;
             maximize("output");
-            binary_path = Prompt("Program to attach:", "debug", @"-d c:\windows\syswow64\notepad.exe");
+            binary_path = Prompt("Program to attach:", "debug", @"dbg://c:\windows\syswow64\notepad.exe");
             if (binary_path != null)
+            {
+                if (!binary_path.StartsWith("-d") && !binary_path.StartsWith("dbg://"))
+                    binary_path = "dbg://" + binary_path;
                 LoadFile(binary_path);
+            }
         }
         private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1309,6 +1315,7 @@ namespace r2pipe_test
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (benchmarks == null) return;
             int usage = (int)benchmarks.getCurrentCpuUsage();
             if (usage > 70)
                 lblCpu.Text = "CPU "+usage.ToString()+"%";

@@ -94,10 +94,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.ctxFunctions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renameAfnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.xrefsAxtjToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuXrefs = new System.Windows.Forms.ToolStripMenuItem();
             this.xrefsToFunctionAxgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuXrefs = new System.Windows.Forms.ToolStripMenuItem();
             this.functionInformationAfiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.xrefsAxtjToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.copyNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -890,12 +890,12 @@
             this.renameAfnToolStripMenuItem.Text = "Rename ( afn )";
             this.renameAfnToolStripMenuItem.Click += new System.EventHandler(this.renameAfnToolStripMenuItem_Click);
             // 
-            // xrefsAxtjToolStripMenuItem
+            // xrefsToFunctionAxgToolStripMenuItem
             // 
-            this.xrefsAxtjToolStripMenuItem.Name = "xrefsAxtjToolStripMenuItem";
-            this.xrefsAxtjToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.xrefsAxtjToolStripMenuItem.Text = "Data refs";
-            this.xrefsAxtjToolStripMenuItem.Click += new System.EventHandler(this.xrefsAxtjToolStripMenuItem_Click);
+            this.xrefsToFunctionAxgToolStripMenuItem.Name = "xrefsToFunctionAxgToolStripMenuItem";
+            this.xrefsToFunctionAxgToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.xrefsToFunctionAxgToolStripMenuItem.Text = "Tree ( axg )";
+            this.xrefsToFunctionAxgToolStripMenuItem.Click += new System.EventHandler(this.xrefsToFunctionAxgToolStripMenuItem_Click);
             // 
             // menuXrefs
             // 
@@ -904,19 +904,19 @@
             this.menuXrefs.Text = "Xrefs ( axtj )";
             this.menuXrefs.Click += new System.EventHandler(this.menuXrefs_Click);
             // 
-            // xrefsToFunctionAxgToolStripMenuItem
-            // 
-            this.xrefsToFunctionAxgToolStripMenuItem.Name = "xrefsToFunctionAxgToolStripMenuItem";
-            this.xrefsToFunctionAxgToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.xrefsToFunctionAxgToolStripMenuItem.Text = "Tree ( axg )";
-            this.xrefsToFunctionAxgToolStripMenuItem.Click += new System.EventHandler(this.xrefsToFunctionAxgToolStripMenuItem_Click);
-            // 
             // functionInformationAfiToolStripMenuItem
             // 
             this.functionInformationAfiToolStripMenuItem.Name = "functionInformationAfiToolStripMenuItem";
             this.functionInformationAfiToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.functionInformationAfiToolStripMenuItem.Text = "Information ( afij @ )";
             this.functionInformationAfiToolStripMenuItem.Click += new System.EventHandler(this.functionInformationAfiToolStripMenuItem_Click);
+            // 
+            // xrefsAxtjToolStripMenuItem
+            // 
+            this.xrefsAxtjToolStripMenuItem.Name = "xrefsAxtjToolStripMenuItem";
+            this.xrefsAxtjToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.xrefsAxtjToolStripMenuItem.Text = "Data refs";
+            this.xrefsAxtjToolStripMenuItem.Click += new System.EventHandler(this.xrefsAxtjToolStripMenuItem_Click);
             // 
             // toolStripSeparator11
             // 
@@ -1350,7 +1350,6 @@
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 

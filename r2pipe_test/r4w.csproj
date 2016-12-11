@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="Benchmarks.cs" />
     <Compile Include="decoratorParam.cs" />
+    <Compile Include="SimplePipe.cs" />
     <Compile Include="webbrowser_container_form.cs">
       <SubType>Form</SubType>
     </Compile>

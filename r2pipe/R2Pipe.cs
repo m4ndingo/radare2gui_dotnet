@@ -64,7 +64,7 @@ namespace r2pipe
                 Arguments = "-q0 " + file,
                 FileName = r2executable
             };
-
+            //Console.WriteLine("[curdir] "+Directory.GetCurrentDirectory());
             r2Process.Start();
             r2Process.StandardInput.AutoFlush = true;
             // ignore first run
