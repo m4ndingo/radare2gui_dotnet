@@ -262,8 +262,7 @@ namespace r2pipe_test
                 else
                 {
                     if (!append) rtbox.Text = "";
-
-                    rtbox.Text += r2html.encodeutf8(someText); //movethis
+                    rtbox.Text += someText;
                 }
             }
             else if (gc.control.GetType() == typeof(ListView))
@@ -978,8 +977,8 @@ namespace r2pipe_test
             run("aflj",            "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
             run("pd 256",          "dissasembly"); // pd or pdf?
             run("izzj",            "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
-            run("iij",             "imports_listview", false, new List<string> { "name", "plt" });                        
-            run("iSj",             "sections_listview", false, new List<string> { "name", "size", "flags", "paddr", "vaddr" });
+            run("iij",             "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });                        
+            run("Sj",              "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
             run("dpj",             "processes_listView", false, new List<string> { "path", "status", "pid" });
             popup_cmds_async(       "Call graph", "agf", false);
             if ( debugMode ) //fileName.StartsWith("-d "))

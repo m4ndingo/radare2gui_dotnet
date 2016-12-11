@@ -48,7 +48,7 @@ namespace r2pipe_test
             r2pw.add_control("strings_listview", lstStrings, "Strings", "izzj");
             r2pw.add_control("functions_listview", listView1, "Functions", "aflj");
             r2pw.add_control("imports_listview", lstImports, "Imports", "iij");
-            r2pw.add_control("sections_listview", lstSections, "Sections", "iSj");
+            r2pw.add_control("sections_listview", lstSections, "Sections", "Sj");
             r2pw.add_control("processes_listView", lstProcesses, "Processes", "dpj");
            // r2pw.add_control("maps_listView", lstMaps, "Maps", "dmj");
             r2pw.add_control("hexview", webBrowser2, "Hex view", "pxa 4000");
@@ -172,8 +172,7 @@ namespace r2pipe_test
                 MessageBox.Show("File loaded. Analyze now?", "File loaded",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) ==
                     System.Windows.Forms.DialogResult.OK)
-            {
-                /*
+            {                
                 if (!fileName.Equals("-"))
                 {
                     fileType = r2pw.run("e file.type", "output", true);
@@ -189,7 +188,7 @@ namespace r2pipe_test
                         arch = arch.Replace("\n", "");
                         r2pw.run("e asm.arch = " + arch, "output", true);
                     }
-                }*/
+                }
                 r2pw.run_script("openfile_post.txt");
             }
         }
@@ -1219,7 +1218,11 @@ namespace r2pipe_test
         {
             string selected_address = get_currentlistview_selected_address();
             if (selected_address != null)
-                Clipboard.SetText(selected_address);
+                try
+                {
+                    Clipboard.SetText(selected_address);
+                }
+                catch (Exception) { } // may fail
         }
         private void copyAllFieldsMenuItem_Click(object sender, EventArgs e)
         {
