@@ -1342,12 +1342,39 @@ namespace r2pipe_test
                     item = listView1.SelectedItems[0].SubItems[listView1.SelectedItems[0].SubItems.Count-1];
                     json_obj = JsonConvert.DeserializeObject(item.Text);
                     r2pw.clean_contextmenucmd("Data refs", ctxFunctions);
+                    r2pw.enable_contextmenucmd("Data refs", ctxFunctions, json_obj.Count > 0);
                     Cursor.Current = Cursors.WaitCursor;
                     for (int i = 0; i < json_obj.Count; i++)
                     {
+                        dynamic json_fields = null;
+                        string t_address = null;
                         string address = "0x" + json_obj[i].ToString("x");
-                        string t_address = "["+address + "] " + r2pw.run_silent("axt @ " + address);
-                        r2pw.add_contextmenucmd("Data refs", t_address, address, ctxFunctions);
+                        string results = r2pw.run_silent("axtj @ " + address);
+                        string info = "";
+                        string type = null;
+                        string value = r2pw.run_silent("ps @ " + address);
+                        bool isAscii = value.Length>0 && !Regex.IsMatch(value, @"\\x");
+                        json_fields = JsonConvert.DeserializeObject(results);
+                        if (json_fields != null)
+                        {
+                            for (int j = 0; j < json_fields.Count; j++)
+                            {
+                                if (json_fields != null)
+                                {
+                                    if (isAscii)
+                                        info = value;
+                                    else
+                                        info = json_fields[j]["opcode"];
+                                }
+                                t_address = "[" + address + "] " + info; //atx
+                                r2pw.add_contextmenucmd("Data refs", t_address, address, ctxFunctions);
+                            }
+                        }
+                        else
+                        {
+                            t_address = "[" + address + "] ";
+                            r2pw.add_contextmenucmd("Data refs", t_address, address, ctxFunctions);
+                        }
                     }
                     Cursor.Current = Cursors.Default;
                     // show context menu now
@@ -1374,6 +1401,7 @@ namespace r2pipe_test
         }
         private void xrefsAxtjToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            /* disabled
             string address = get_selectedAddress(listView1);
             string title = null, cmds = null;
             address = Prompt("Address:", "Xrefs ( axtj @ )", address);
@@ -1383,7 +1411,7 @@ namespace r2pipe_test
             cmds = "axtj @ " + address;
             //popup_cmds("xrefs", "axtj");
             r2pw.add_control_tab(title, cmds);
-            r2pw.run(cmds, title);
+            r2pw.run(cmds, title);*/
         }
     }
     public class ListViewItemComparer : IComparer

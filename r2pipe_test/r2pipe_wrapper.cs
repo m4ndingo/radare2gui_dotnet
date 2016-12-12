@@ -864,6 +864,21 @@ namespace r2pipe_test
             }
             return null;
         }
+        public ToolStripMenuItem enable_contextmenucmd(string menuName, ContextMenuStrip menu, bool enabled = false)
+        {
+            foreach (object obj in menu.Items)
+            {
+                ToolStripMenuItem item = null;
+                if (obj.GetType() == typeof(ToolStripSeparator)) continue;
+                item = (ToolStripMenuItem)obj;
+                if (item.Text.Equals(menuName))
+                {
+                    item.Enabled = enabled;
+                    return null;
+                }
+            }
+            return null;
+        }
         public ToolStripMenuItem find_contextmenucmd(string menuName, ContextMenuStrip menu)
         {
             foreach (object obj in menu.Items)
