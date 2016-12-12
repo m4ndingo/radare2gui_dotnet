@@ -40,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,7 +60,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -102,6 +103,12 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -168,6 +175,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

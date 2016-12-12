@@ -28,8 +28,10 @@ namespace r2pipe_test
         List<string> locked_tabs = null;        // tab names used in Form1 design
         private bool skip_next_keydown = false;
         private bool esil_initilized = false;
-        public Form1()
+        public string [] gui_args = null;
+        public Form1(string[] gui_args)
         {
+            this.gui_args = gui_args;
             InitializeComponent();
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -106,7 +108,10 @@ namespace r2pipe_test
             r2pw.add_shellopt("javascript", guiPrompt_callback);
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
-            LoadFile(@"-"); // -- = no file
+            if(gui_args.Length>0)
+                LoadFile(gui_args[0]);
+            else
+                LoadFile("-"); // -- = no file
         }
         public void UpdateGUI(string args = null)
         {
@@ -1044,7 +1049,7 @@ namespace r2pipe_test
                     }
                 }
                 if (timeout == false)
-                    r2pw.run(control.cmds, control.name, false, column_titles,null,false,true); // no timeout
+                    r2pw.run(control.cmds, control.name, false, column_titles,null,false,true,control); // no timeout
                 else
                     r2pw.run_task(control.cmds, control.name, false, column_titles); // with timeout
             }

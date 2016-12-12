@@ -17,7 +17,7 @@ namespace r2pipe_test
         {
             this.owner      = owner;
             width_orig      = Width;
-            top_orig        = Height*2;
+            top_orig        = Height*3;
             askLabel.Text   = text;
             Text            = caption;
             txtHeader.Text  = caption;
@@ -30,7 +30,7 @@ namespace r2pipe_test
         }
         private void recenter_form()
         {           
-            int new_top = (top_orig * 16) / 32;
+            int new_top = (top_orig * 24) / 32;
             if (owner != null)
                 new_top += owner.Top;
             CenterToParent();
