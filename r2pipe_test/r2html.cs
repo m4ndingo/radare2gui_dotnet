@@ -25,26 +25,10 @@ namespace r2pipe_test
             string console_text_cut = "";
             string console_text_cut_copy = "";
             if (console_text == null) return null;
-            /*
-            foreach (string line in console_text.Split('\n'))
-            {
-                string line_cut= line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line);
-                line_cut = line_cut.Replace("<", "&lt");
-                line_cut = line_cut.Replace("&ltimg", "<img"); // find other way
-                console_text_cut += line_cut + "\n";
-            }
-            */
             console_text_cut = console_text;
-
-            //Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
-
-            //console_text_cut = encodeutf8(console_text_cut); //movethius
-            console_text_cut_copy = console_text_cut;
-            
-            //console_text_cut = (new Regex(@"(;.+)")).Replace(console_text_cut,
-            //    "<span class=comment>$1</span>");
+            console_text_cut_copy = console_text_cut;            
             console_text_cut = (new Regex(@"(- offset -.+|int3\b)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");       
             console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
