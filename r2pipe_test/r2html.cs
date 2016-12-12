@@ -25,6 +25,7 @@ namespace r2pipe_test
             string console_text_cut = "";
             string console_text_cut_copy = "";
             if (console_text == null) return null;
+            /*
             foreach (string line in console_text.Split('\n'))
             {
                 string line_cut= line.Substring(0, line.Length < maxlen_line ? line.Length : maxlen_line);
@@ -32,7 +33,8 @@ namespace r2pipe_test
                 line_cut = line_cut.Replace("&ltimg", "<img"); // find other way
                 console_text_cut += line_cut + "\n";
             }
-            
+            */
+            console_text_cut = console_text;
 
             //Regex  address_regex = new Regex((@"([\[\s])(0x[0-9a-f]{3,})([\]\s])"), RegexOptions.IgnoreCase);
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
