@@ -134,6 +134,12 @@
       <DependentUpon>askForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Benchmarks.cs" />
+    <Compile Include="convertFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="convertFrm.Designer.cs">
+      <DependentUpon>convertFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="decoratorParam.cs" />
     <Compile Include="webbrowser_container_form.cs">
       <SubType>Form</SubType>
@@ -141,6 +147,9 @@
     <Compile Include="webbrowser_container_form.Designer.cs">
       <DependentUpon>webbrowser_container_form.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="convertFrm.resx">
+      <DependentUpon>convertFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="webbrowser_container_form.resx">
       <DependentUpon>webbrowser_container_form.cs</DependentUpon>
     </EmbeddedResource>

@@ -85,6 +85,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Configuration", "ej", mainMenu);
             r2pw.add_menucmd("&View", "Debug registers", "drj", mainMenu);
             r2pw.add_menufcn("&View", "Call graph", "agf", newtab_cb, mainMenu);
+            r2pw.add_menucmd("&View", "Flags", "fj", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
@@ -1415,6 +1416,12 @@ namespace r2pipe_test
             //popup_cmds("xrefs", "axtj");
             r2pw.add_control_tab(title, cmds);
             r2pw.run(cmds, title);*/
+        }
+
+        private void converterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            convertFrm frm = new convertFrm(this.r2pw);
+            frm.ShowDialog();
         }
     }
     public class ListViewItemComparer : IComparer
