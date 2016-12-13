@@ -154,8 +154,6 @@ namespace r2pipe_test
                 lstSections.ForeColor = foreColor;
                 lstProcesses.BackColor = backColor;
                 lstProcesses.ForeColor = foreColor;
-                //lstMaps.BackColor = backColor;
-                //lstMaps.ForeColor = foreColor;
                 tsDebug.BackColor = backColor;
                 tsDebug.ForeColor = foreColor;
                 splitContainer1.Panel1.BackColor = backColor;
@@ -1421,7 +1419,7 @@ namespace r2pipe_test
         private void converterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             convertFrm frm = new convertFrm(this.r2pw);
-            frm.ShowDialog();
+            frm.Show();
         }
     }
     public class ListViewItemComparer : IComparer

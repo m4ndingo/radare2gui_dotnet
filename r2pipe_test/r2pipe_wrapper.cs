@@ -989,19 +989,22 @@ namespace r2pipe_test
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
             run("e cfg.editor      = c:\\windows\\notepad.exe", "output", true);
-            run("aflj",            "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
-            run("pd 256",          "dissasembly"); // pd or pdf?
-            run("izzj",            "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
-            run("iij",             "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });                        
-            run("Sj",              "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
-            run("dpj",             "processes_listView", false, new List<string> { "path", "status", "pid" });
-            popup_cmds_async(       "Call graph", "agf", false);
-            if ( debugMode ) //fileName.StartsWith("-d "))
+            if (!fileName.Equals("-"))
             {
-                popup_cmds_async("Maps", "dmj", true);
-                popup_cmds_async("regs", "drj", true);
+                run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
+                run("pd 256", "dissasembly"); // pd or pdf?
+                run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
+                run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
+                run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
+                run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" });
+                popup_cmds_async("Call graph", "agf", false);
+                if (debugMode) //fileName.StartsWith("-d "))
+                {
+                    popup_cmds_async("Maps", "dmj", true);
+                    popup_cmds_async("regs", "drj", true);
+                }
+                guicontrol.refresh_popups();
             }
-            guicontrol.refresh_popups();
         }
         public void popup_cmds_async(string title, string cmds, bool popup = true)
         {
