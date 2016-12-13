@@ -123,6 +123,7 @@ namespace r2pipe_test
             Color foreColor;
             if (r2pw == null) return;
             updating_gui = true;
+            
             currentShell = rconfig.load<string>("gui.current_shell", "radare2");
             themeName = rconfig.load<string>("gui.theme_name", "classic");
             foreColor = Color.FromName(rconfig.load<string>("gui.output.fg", "black"));

@@ -44,8 +44,7 @@ namespace r2pipe_test
                     command = "pa " + txtInput.Text;
                     break;
                 case "Hexpairs to ASM":
-                    if (     txtInput.Text.Equals(welcome_message) || 
-                            !Regex.IsMatch(txtInput.Text, @"^[0-9a-f\s]+$"))
+                    if (txtInput.Text.Equals(welcome_message) || !Regex.IsMatch(txtInput.Text, @"^[0-9a-f\s]+$"))
                         txtInput.Text = "90";
                     command = "pad " + txtInput.Text;
                     break;
@@ -120,8 +119,6 @@ namespace r2pipe_test
             lblBlock.ForeColor = foreColor_lbl;
             lblOutput.ForeColor = foreColor_lbl;
             lblCommands.ForeColor = foreColor_lbl;
-            //txtSeekAddress.SelectionAlignment = HorizontalAlignment.Center;
-            //txtBlockSize.SelectionAlignment = HorizontalAlignment.Center;
             lstOperations.Items.Add("To Hexdump");
             lstOperations.Items.Add("To Dissasembly");
             lstOperations.Items.Add("To MD5 hash");
@@ -138,13 +135,11 @@ namespace r2pipe_test
             if ( txtSeekAddress.TextLength == 0 ) return;
             this.seek_address = txtSeekAddress.Text;
         }
-
         private void txtBlockSize_TextChanged(object sender, EventArgs e)
         {
             if ( txtBlockSize.TextLength == 0 ) return;
             this.blocksize = txtBlockSize.Text;
         }
-
         private void txtCommands_KeyDown(object sender, KeyEventArgs e)
         {
             btnConvert.Enabled = true;
