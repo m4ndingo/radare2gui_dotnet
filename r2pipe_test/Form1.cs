@@ -60,6 +60,12 @@ namespace r2pipe_test
             r2pw.add_decorator("dec_b64", dec_b64, new List<string>() { "string" });
             r2pw.add_decorator("short_addr_name", short_addr_name, new List<string>() { "name" });
             //add menu options and function callbacks
+            r2pw.add_menucmd("Entropy", "Zoomed entropy", "pz", mainMenu);
+            r2pw.add_menucmd("Entropy", "Bar entropy", "p=", mainMenu);
+            r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
+            r2pw.add_menucmd("Histogram", "Ascii Art Bar Histogram", "p-", mainMenu);
+            r2pw.add_menucmd("Histogram", "Json Histogram", "p-j", mainMenu);
+            r2pw.add_menucmd("Histogram", "Metadata Histogram", "p-h", mainMenu);
             r2pw.add_menucmd("&View", "Processes", "dpj", mainMenu);
             r2pw.add_menucmd("&View", "Disassembly", "pd 256", mainMenu);
             r2pw.add_menucmd("&View", "Hexadecimal", "pxa 4000", mainMenu);
@@ -74,9 +80,6 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Symbols", "isj", mainMenu);
             r2pw.add_menucmd("&View", "Relocs", "irj", mainMenu);
             r2pw.add_menucmd("&View", "Maps", "dmj", mainMenu);
-            r2pw.add_menucmd("&View", "Entropy", "p=", mainMenu);
-            r2pw.add_menucmd("&View", "Entry Point", "pdfj @ entry0", mainMenu);
-            r2pw.add_menucmd("&View", "Ascii Art Bar", "p-", mainMenu);
             r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
             r2pw.add_menucmd("&View", "Configuration", "ej", mainMenu);
