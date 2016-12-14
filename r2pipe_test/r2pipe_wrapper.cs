@@ -968,6 +968,7 @@ namespace r2pipe_test
                 run("dcu entry0", "output", true);
             }
             run("Ps default"); // defaul project
+            run("e cfg.editor      = c:\\windows\\notepad.exe", "output", true);
             run("aa");
             run("pxa 4000",         "hexview");
             run("aaa",              "output", true);
@@ -988,7 +989,6 @@ namespace r2pipe_test
             run("e asm.bytes       = false", "output", true);
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
-            run("e cfg.editor      = c:\\windows\\notepad.exe", "output", true);
             run("pd 256",           "dissasembly"); // pd or pdf?
             if (!fileName.Equals("-"))
             {

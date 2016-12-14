@@ -29,7 +29,7 @@ namespace r2pipe_test
         private bool skip_next_keydown = false;
         private bool esil_initilized = false;
         public string [] gui_args = null;
-        public bool followESIL = false;
+        public bool followESIL = true;
         public Form1(string[] gui_args)
         {
             this.gui_args = gui_args;
@@ -483,8 +483,11 @@ namespace r2pipe_test
         }
         private void ESILcmds(string cmds)
         {
-            r2pw.run(cmds, "output", true);
-            if (cmds.StartsWith("ae"))
+            string controlName = "output";
+            if (cmds.Contains("pd "))
+                controlName = "dissasembly";
+            r2pw.run(cmds, controlName, true);
+            if(controlName=="output" && cmds.StartsWith("ae"))
                 refresh_tab();
         }
         private void newtab_cb(string cmds)
@@ -876,10 +879,12 @@ namespace r2pipe_test
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             string cmds = "aes";
+            int nHeaderLines = 8;
+            int nFooterLines = 24;
             if (esil_initilized == false)
                 initialize_esil();
             if (followESIL == true)
-                cmds += "; s `drn PC`-16";
+                cmds += "; pd -" + nHeaderLines + " @ `drn PC`; pd " + nFooterLines + " @ `drn PC`";
             ESILcmds(cmds);
         }
         private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
