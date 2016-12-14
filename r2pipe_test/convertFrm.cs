@@ -39,7 +39,7 @@ namespace r2pipe_test
                     command = "ph md5 " + this.blocksize + " @ " + this.seek_address;
                     break;
                 case "ASM to Hexpairs":
-                    if (txtInput.Text.Equals(welcome_message))
+                    if (txtInput.Text.Equals(welcome_message) || !Regex.IsMatch(txtInput.Text, @"^[0-9a-f\s]+$"))
                         txtInput.Text = "nop";
                     command = "pa " + txtInput.Text;
                     break;

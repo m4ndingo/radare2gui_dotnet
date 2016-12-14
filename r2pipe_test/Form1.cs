@@ -29,6 +29,7 @@ namespace r2pipe_test
         private bool skip_next_keydown = false;
         private bool esil_initilized = false;
         public string [] gui_args = null;
+        public bool followESIL = false;
         public Form1(string[] gui_args)
         {
             this.gui_args = gui_args;
@@ -874,9 +875,12 @@ namespace r2pipe_test
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
+            string cmds = "aes";
             if (esil_initilized == false)
                 initialize_esil();
-            ESILcmds("aes");
+            if (followESIL == true)
+                cmds += "; s `drn PC`-16";
+            ESILcmds(cmds);
         }
         private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
@@ -1124,6 +1128,7 @@ namespace r2pipe_test
         private void refresh_functions_listview()
         { 
             GuiControl gui_control = find_control_by_name("functions_listview");
+            r2pw.run("aaa", "output", true);
             refresh_control(gui_control); // need timeout here, but command *j fails sometimes :_/
         }
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1337,6 +1342,7 @@ namespace r2pipe_test
         {
             if (e.Button == MouseButtons.Right)
             {
+                if (listView1.FocusedItem == null) return;
                 if (listView1.FocusedItem.Bounds.Contains(e.Location) == true)
                 {
                     dynamic json_obj = null;
@@ -1421,6 +1427,17 @@ namespace r2pipe_test
         {
             convertFrm frm = new convertFrm(this.r2pw);
             frm.Show();
+        }
+
+        private void gotoAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.gotoAddress(Prompt("New address:", "Goto address (s)eek"));
+        }
+
+        private void followESILExecutionExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            followESIL = !followESIL;
+            output("followESIL: " + followESIL.ToString());
         }
     }
     public class ListViewItemComparer : IComparer

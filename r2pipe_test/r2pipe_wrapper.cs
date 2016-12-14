@@ -989,10 +989,10 @@ namespace r2pipe_test
             run("e anal.autoname   = false", "output", true);
             run("e io.cache        = true", "output", true); // needed for esil writes
             run("e cfg.editor      = c:\\windows\\notepad.exe", "output", true);
+            run("pd 256",           "dissasembly"); // pd or pdf?
             if (!fileName.Equals("-"))
             {
                 run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
-                run("pd 256", "dissasembly"); // pd or pdf?
                 run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
                 run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
                 run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
