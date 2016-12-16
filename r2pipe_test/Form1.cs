@@ -487,8 +487,8 @@ namespace r2pipe_test
             if (cmds.Contains("pd "))
                 controlName = "dissasembly";
             r2pw.run(cmds, controlName, true);
-            if(controlName=="output" && cmds.StartsWith("ae"))
-                refresh_tab();
+            if (controlName == "output" && cmds.StartsWith("ae"))
+                refresh_main_controls();
         }
         private void newtab_cb(string cmds)
         {
@@ -516,6 +516,8 @@ namespace r2pipe_test
             try
             {
                 rconfig.save("gui.hexdigits", int.Parse(nbits) / 8);
+                r2pw.run("aaa", "output", true);
+                refresh_main_controls();
             }
             catch (Exception e) { r2pw.Show(e.ToString(), "changeArch"); }
         }
@@ -1443,6 +1445,21 @@ namespace r2pipe_test
         {
             followESIL = !followESIL;
             output("followESIL: " + followESIL.ToString());
+        }
+
+        private void changePcBtn_Click(object sender, EventArgs e)
+        {
+            string pc = null, pc_name = null;
+            if (esil_initilized == false)
+                initialize_esil();
+            pc = r2pw.run("? $$~[1]", "output", true).Replace("\n", "");
+            pc_name = r2pw.run("drn PC", null, false, null, null, false, true).Replace("\n", "");
+            pc = Prompt("\"" + pc_name + "\" address?  aepc @", "Change ESIL " + pc_name + " register");
+            if (pc != null)
+            {
+                ESILcmds("aepc " + pc);
+            }
+
         }
     }
     public class ListViewItemComparer : IComparer

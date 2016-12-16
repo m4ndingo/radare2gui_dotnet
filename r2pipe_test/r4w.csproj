@@ -223,6 +223,7 @@
     <None Include="media\playbutton_small.png" />
     <None Include="media\step_over_icon.png" />
     <None Include="media\playbutton_gray_small.png" />
+    <None Include="media\paste.png" />
     <Content Include="r2logo3_boxed_rounded.ico" />
     <Content Include="scripts\r2html.js" />
   </ItemGroup>
