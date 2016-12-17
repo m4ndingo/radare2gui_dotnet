@@ -242,7 +242,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\r2pipe\r2pipe.csproj">
+    <ProjectReference Include="..\..\r2pipe\r2pipe.csproj">
       <Project>{d5b3f257-e13e-42b5-a77e-aa0f809311fd}</Project>
       <Name>r2pipe</Name>
     </ProjectReference>
