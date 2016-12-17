@@ -88,13 +88,15 @@
             this.txtHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtHeader.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtHeader.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHeader.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHeader.Location = new System.Drawing.Point(8, 20);
             this.txtHeader.Margin = new System.Windows.Forms.Padding(0);
+            this.txtHeader.Multiline = false;
             this.txtHeader.Name = "txtHeader";
             this.txtHeader.Size = new System.Drawing.Size(376, 29);
             this.txtHeader.TabIndex = 12;
             this.txtHeader.Text = "txtHeader";
+            this.txtHeader.WordWrap = false;
             // 
             // btnOpenfile
             // 
@@ -117,6 +119,7 @@
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click_1);
             // 
             // btnOk
             // 
@@ -128,6 +131,7 @@
             this.btnOk.TabIndex = 8;
             this.btnOk.Text = "Ok";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // txtAnswer
             // 

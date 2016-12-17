@@ -203,29 +203,34 @@ namespace r2pipe_test
         {
             change_r2config("asm.arch", "iI~arch[1]", "binary");
         }
-        private void change_r2config(string varname, string options_cmd, string def)
+        private void change_r2config(string varname, string options_cmd, string def, string desc=null, string type=null)
         {
             string res = null;
-            res = prompt_r2config(varname, options_cmd, def);
-            if (res != null)
+            res = prompt_r2config(varname, options_cmd, def, desc, type);
+            if (res != null && res!="?") // temp fix?
             {
                 res = res.Replace("\n", "");
+                if (res.Contains(" "))
+                    res = "\"" + res + "\"";
                 r2pw.run("e "+varname+" = " + res, "output", true);
-            }
-            switch (varname)
-            {
-                case "arch":
-                    arch = res;
-                    break;
+                switch (varname)
+                {
+                    case "arch":
+                        arch = res;
+                        break;
+                }
             }
         }
-        private string prompt_r2config(string varname, string options_cmd, string def="")
+        private string prompt_r2config(string varname, string options, string def="", string desc=null, string type=null)
         {
-            //arch = r2pw.run("iI~arch[1]", "output", true);
-            string res = r2pw.run("e " + varname, "output", true);
+            string res = null;
+            string msg = null;
             if (res == null || (res != null && res.Length == 0)) res = def;
+            if (desc == null) desc = "select " + varname;
+            msg = "new " + varname;
+            if (type != null) msg += "\ntype " + type;
             res = res.Replace("\n", "");
-            res = Prompt("new "+varname, "select "+varname, res);
+            res = Prompt(msg, desc, res);
             return res;
         }
         private void CheckBinaryPath(string fileName, string varName, string defaultPath=null)
@@ -550,9 +555,16 @@ namespace r2pipe_test
         }
         private void changeR2Config_cb(String varname)
         {
-            r2pw.run("e " + varname + "=?", "output", true);
-            r2pw.run("e?" + varname, "output", true);
-            r2pw.run("e " + varname, "output", true);
+            varname = varname.Replace(" ", "");
+            string desc_cmd = "e?"  + varname;
+            string def_cmd  = "e "  + varname;
+            string type_cmd = "et " + varname;
+            string ops_cmd  = "e "  + varname + "=?"; // buggy?
+            string def      = r2pw.run(def_cmd,  "output", true);
+            string options  = r2pw.run(ops_cmd,  "output", true);
+            string type     = r2pw.run(type_cmd, "output", true);
+            string desc     = r2pw.run(desc_cmd, "output", true).TrimStart(' ');
+            change_r2config(varname, options, def, desc, type);
         }
         private void changeCpu(String cpu)
         {
@@ -1546,22 +1558,31 @@ namespace r2pipe_test
         {
             change_arch();
         }
-        private void reloadToolStripMenuItem3_Click(object sender, EventArgs e)
-        {
-        }
         private void reloadToolStripMenuItem2_Click(object sender, EventArgs e)
         {
+            reload_r2configvars(sender);
+        }
+        private void reload_r2configvars(object sender)
+        {
             if (r2pw == null) return;
-            ((ToolStripMenuItem)sender).Visible = false;
+            ((ToolStripMenuItem)sender).Text = "Reload r2 vars";
             Refresh();
             Cursor.Current = Cursors.WaitCursor;
             foreach (string config in r2pw.r2_config_vars)
             {
                 string eAsmList = r2pw.run_silent("e~"+config+".");
+                ToolStripMenuItem item = r2pw.find_menucmd(config, mainMenu);
+                item.DropDownItems.Clear();
                 foreach (string eAsm in eAsmList.Split('\n'))
                 {
                     string []fields = eAsm.Split('=');
-                    r2pw.add_menufcn(config, fields[1].TrimEnd(' '), fields[0].TrimStart(' '), changeR2Config_cb, mainMenu, true);
+                    r2pw.add_menufcn(
+                        config, 
+                        fields[1].TrimEnd(' '), 
+                        fields[0].TrimStart(' '), 
+                        changeR2Config_cb, 
+                        mainMenu, 
+                        true);
                 }
             }
             Cursor.Current = Cursors.Default;

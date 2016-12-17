@@ -22,8 +22,7 @@ namespace r2pipe_test
             Text            = caption;
             txtHeader.Text  = caption;
             if (defval != null) txtAnswer.Text = defval;
-            o.ShowDialog();
-            answer = txtAnswer.Text;
+            o.ShowDialog();            
             if( answer!=null )
                 answer = answer.Replace("\n", "").Replace("\r", "");
             return answer;
@@ -91,6 +90,16 @@ namespace r2pipe_test
             }
             catch (Exception) { } // may fail
             resize_controls();
+        }
+
+        private void btnCancel_Click_1(object sender, EventArgs e)
+        {
+            answer = null;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            answer = txtAnswer.Text;
         }
     }
 }
