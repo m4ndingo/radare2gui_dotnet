@@ -15,8 +15,9 @@ namespace r2pipe_test
         public string tabTitle  = null;
         public string pre_cmd   = null;
         public string pos_cmd   = null;
-        public int    tab_index = -1;
+        public int tab_index    = -1;
         public bool synchronize = true;
+        public string address_tag = null;
         public List<string> column_titles = null;
         public GuiControl(object control, string name, string sName, string cmds, string tabTitle, 
             List<string> column_titles = null, string pre_cmd = null, string pos_cmd=null, int tab_index = -1)

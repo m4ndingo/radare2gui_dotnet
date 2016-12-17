@@ -1,3 +1,16 @@
+/*
+hash = window.location.hash;
+hash = "#0x0804842d";
+if(hash)
+{
+	hash = hash.substr(1);
+	window.location.hash = hash;
+	document.write(hash);
+	$("html,body").animate({scrollTop: $('span[title='+hash+']').offset().top},0);
+}
+*/
+//document.write(url);
+
 var html = "";
 var keys = [];
 
@@ -26,13 +39,25 @@ function inList(psString, laList)
     }
     return false;
 }
+function zeropad(sAddress, length)
+{
+	while (sAddress.length < length) {
+		sAddress = "0" + sAddress;
+	}
+	return sAddress;
+}
 function text2html(varname, value)
 {
-    var sAddress = value;
+    var sAddress = value;	
 	if(sAddress[0]=="-" || sAddress<0)
-		sAddress=sAddress.replace(/^-/ ,"-0x")
+	{
+		sAddress = sAddress.replace(/^-/ ,"");
+		sAddress = "-0x" + zeropad(sAddress, address_hexlength);
+	}
 	else
-		sAddress= "0x" + sAddress;
+	{
+		sAddress= "0x" + zeropad(sAddress, address_hexlength);
+	}
     var id = varname + "_" + sAddress;
     if (addresses && !inList(sAddress, addresses))
     {

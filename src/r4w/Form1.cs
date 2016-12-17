@@ -84,7 +84,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Maps", "dmj", mainMenu);
             r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
-            r2pw.add_menucmd("&View", "Configuration", "ej", mainMenu);
+            r2pw.add_menucmd("Options", "View all", "ej", mainMenu);
             r2pw.add_menucmd("&View", "Debug registers", "drj", mainMenu);
             r2pw.add_menufcn("&View", "Call graph", "agf", newtab_cb, mainMenu);
             r2pw.add_menucmd("&View", "Flags", "fj", mainMenu);
@@ -92,6 +92,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
             r2pw.add_menucmd("r2", "Dbg cmds", "d?", mainMenu);
+            r2pw.add_menucmd("r2", "Locals", "afv?", mainMenu);
             r2pw.add_menucmd("r2", "Processes", "dp?", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
             r2pw.add_menucmd("r2", "Search", "/?", mainMenu);
@@ -99,12 +100,16 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "ESIL", "ae?", mainMenu);
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
+            foreach (string config in r2pw.r2_config_vars)
+            {
+                r2pw.add_menucmd("r2 variables", config, "e?" + config, mainMenu);
+            }
             //add menu function callbacks
             r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
-            r2pw.add_menufcn("Settings", "switch utf8 encoding", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
-            r2pw.add_menufcn("Settings", "switch asm bytes", "e!asm.bytes", runCmds, mainMenu);
+            r2pw.add_menufcn("Switches", "switch utf8 encoding", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
+            r2pw.add_menufcn("Switches", "switch asm bytes", "e!asm.bytes", runCmds, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Dump controls", "*", r2pw.gui_controls.dump, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
@@ -189,18 +194,39 @@ namespace r2pipe_test
                     fileType = null;
                     if (fileType != null)
                         fileType = fileType.Replace("\n", "");
-                    arch = r2pw.run("iI~arch[1]", "output",true);
-                    if (arch == null || (arch!=null && arch.Length==0)) arch = "binary";
-                    arch = arch.Replace("\n", "");
-                    arch = Prompt("new arch", "select arch", arch);
-                    if (arch != null)
-                    {
-                        arch = arch.Replace("\n", "");
-                        r2pw.run("e asm.arch = " + arch, "output", true);
-                    }
+                    change_arch();
                 }
                 r2pw.run_script("openfile_post.txt");
             }
+        }
+        private void change_arch()
+        {
+            change_r2config("asm.arch", "iI~arch[1]", "binary");
+        }
+        private void change_r2config(string varname, string options_cmd, string def)
+        {
+            string res = null;
+            res = prompt_r2config(varname, options_cmd, def);
+            if (res != null)
+            {
+                res = res.Replace("\n", "");
+                r2pw.run("e "+varname+" = " + res, "output", true);
+            }
+            switch (varname)
+            {
+                case "arch":
+                    arch = res;
+                    break;
+            }
+        }
+        private string prompt_r2config(string varname, string options_cmd, string def="")
+        {
+            //arch = r2pw.run("iI~arch[1]", "output", true);
+            string res = r2pw.run("e " + varname, "output", true);
+            if (res == null || (res != null && res.Length == 0)) res = def;
+            res = res.Replace("\n", "");
+            res = Prompt("new "+varname, "select "+varname, res);
+            return res;
         }
         private void CheckBinaryPath(string fileName, string varName, string defaultPath=null)
         {
@@ -522,6 +548,12 @@ namespace r2pipe_test
             }
             catch (Exception e) { r2pw.Show(e.ToString(), "changeArch"); }
         }
+        private void changeR2Config_cb(String varname)
+        {
+            r2pw.run("e " + varname + "=?", "output", true);
+            r2pw.run("e?" + varname, "output", true);
+            r2pw.run("e " + varname, "output", true);
+        }
         private void changeCpu(String cpu)
         {
             string nbits = null;
@@ -535,8 +567,9 @@ namespace r2pipe_test
         }
         private string num2hex() // decorator
         {
-            int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
-            string format = "0x{0:x" + (hexdigits / 2).ToString() + "}";
+            //int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
+            string format = "0x{0:x" + r2pw.address_hexlength.ToString() + "}";
+            int addr_hexlength = r2pw.address_hexlength;
             string value = get_decoratorvalue_string();
             return string.Format(format, Int64.Parse(value));
         }
@@ -1451,11 +1484,6 @@ namespace r2pipe_test
         {
             r2pw.gotoAddress(Prompt("New address:", "Goto address (s)eek"));
         }
-        private void followESILExecutionExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            followESIL = !followESIL;
-            output("followESIL: " + followESIL.ToString());
-        }
         private void changePcBtn_Click(object sender, EventArgs e)
         {
             string pc = null, pc_name = null;
@@ -1495,6 +1523,53 @@ namespace r2pipe_test
                     r2pw.popup_cmds_send("Xrefs", "axtj @ " + selected_address, true);                    
                 }
                 catch (Exception) { } // may fail
+        }
+
+        private void changeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            change_arch();
+        }
+
+        private void archToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            r2pw.popup_cmds_send(item.Text, "e " + item.Text + "=?j", false);
+        }
+
+        private void followESILExecutionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            followESIL = !followESIL;
+            output("this.followESIL = " + followESIL.ToString());
+        }
+
+        private void archToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            change_arch();
+        }
+        private void reloadToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+        }
+        private void reloadToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (r2pw == null) return;
+            ((ToolStripMenuItem)sender).Visible = false;
+            Refresh();
+            Cursor.Current = Cursors.WaitCursor;
+            foreach (string config in r2pw.r2_config_vars)
+            {
+                string eAsmList = r2pw.run_silent("e~"+config+".");
+                foreach (string eAsm in eAsmList.Split('\n'))
+                {
+                    string []fields = eAsm.Split('=');
+                    r2pw.add_menufcn(config, fields[1].TrimEnd(' '), fields[0].TrimStart(' '), changeR2Config_cb, mainMenu, true);
+                }
+            }
+            Cursor.Current = Cursors.Default;
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.run("e?anal", "e anal", true);
         }
     }
     public class ListViewItemComparer : IComparer

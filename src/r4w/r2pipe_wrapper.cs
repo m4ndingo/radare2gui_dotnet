@@ -29,6 +29,8 @@ namespace r2pipe_test
         public             bool  autorefresh_activetab = true  ;
         private            bool  ignore_mouse_events =  false  ;
         private            bool  debugMode           =  false  ;
+        public              int  address_hexlength   =      8  ;
+        public     List<string>  r2_config_vars      =   null  ;
         // gui objects
         public  Dictionary<string, object>       controls          ;
         public  Dictionary<string, Func<string>> decorators_cb     ;
@@ -51,6 +53,11 @@ namespace r2pipe_test
             this.current_shell = 
                 rconfig.load<string>("gui.current_shell", "radare");
             string r2dir = System.IO.Path.GetDirectoryName(rconfig.r2path);
+            r2_config_vars = new List<string>(){
+                "anal", "asm", "bin", "cfg", "cmd", "dbg", "diff", "dir",
+                "esil", "file", "fs", "graph", "hex", "http", "hud", "io",
+                "key", "lines", "magic", "pdb", "prj", "rap", "rop", "scr",
+                "search", "stack", "time", "zign", "zoom"};
             //chdir to radare2 directory
             Directory.SetCurrentDirectory(r2dir);
             //new Hotkeys();
@@ -114,24 +121,14 @@ namespace r2pipe_test
                 //Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
-            if (controlName!=null)
-            {
-                //todo: find tab index with cmds and select it if exists
-                //if (!controls.ContainsKey(controlName))
+            if (controlName != null) //select target tab
+            {                
                 GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
                 if( gc_tab!=null )
                     tabcontrol.SelectedIndex = gc_tab.tab_index;
-                //else
-                //{
-                //    add_control_tab(controlName, cmds);
-                //}
             }
             if (controlName!=null && gui_controls.findControlBy_name(controlName)==null) //!controls.ContainsKey(controlName))
-            {
                 add_control_tab(controlName, cmds);
-                //Show(string.Format("{0}\ncontrols: control '{1}' not found...", cmds, controlName), "Wops!");
-                //return null;
-            }
             if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
             update_statusbar(cmds); // may fail
             if (cmds != null)
@@ -144,8 +141,8 @@ namespace r2pipe_test
                     case "radare":
                     case "radare2":
                         string pre_cmd = "", pos_cmd = "";
-                        if (gc != null && gc.pre_cmd != null) pre_cmd = gc.pre_cmd + ";";
-                        if (gc != null && gc.pos_cmd != null) pos_cmd = ";" + gc.pos_cmd;
+                        if (gc != null && gc.pre_cmd != null && gc.pre_cmd.Length > 0) pre_cmd = gc.pre_cmd + ";";
+                        if (gc != null && gc.pos_cmd != null && gc.pos_cmd.Length > 0) pos_cmd = ";" + gc.pos_cmd;
                         if (r2 == null) return null;
                         res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
                         break;
@@ -159,6 +156,8 @@ namespace r2pipe_test
                 }
                 if (res != null)
                 {
+                    if(gc!=null && gc.control.GetType() == typeof(WebBrowser))
+                        res = res.Replace("'", "&#39;"); //todo: find a better way to do this
                     res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
                 }
@@ -223,7 +222,7 @@ namespace r2pipe_test
         }
         public string run_silent(string cmds)
         {
-            return run(cmds, null, false, null, null, false, true).Replace("\n","").Replace("\r","");
+            return run(cmds, null, false, null, null, false, true).TrimEnd('\n').TrimEnd('\r');
         }
         public void setText(string controlName, string cmds, string someText, bool append = false, dynamic json_obj = null, List<string> cols = null, GuiControl gc_orig = null)
         {
@@ -316,7 +315,7 @@ namespace r2pipe_test
             }
             else if (gc.control.GetType() == typeof(WebBrowser))
             {
-                sendToWebBrowser(controlName, cmds, someText, json_obj);
+                sendToWebBrowser(controlName, cmds, someText, json_obj, gc);
             }
             else
             {
@@ -403,8 +402,9 @@ namespace r2pipe_test
             }
             return tmpName;
         }
-        public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj)
+        public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj, GuiControl gc=null)
         {
+            string url = null;
             if (!controls.ContainsKey(controlName))
             {
                 MessageBox.Show("Controls don't contain key " + controlName, 
@@ -412,10 +412,11 @@ namespace r2pipe_test
                 return;
             }
             object c = controls[controlName];
-            string url;
             if (someText == null && cached_results.ContainsKey(controlName)) 
                 someText = cached_results[controlName];
             url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
+            if (gc != null && gc.address_tag != null)
+                url += "#" + gc.address_tag;
             ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             try
             {
@@ -492,18 +493,28 @@ namespace r2pipe_test
                     break;
             }
         }
+        public void seekaddress_showtag(string address, string address_tag)
+        {
+            GuiControl dissasembly = gui_controls.findControlBy_name("dissasembly");
+            GuiControl hexview     = gui_controls.findControlBy_name("hexview");
+            GuiControl callgraph   = gui_controls.findControlBy_name("Call graph");
+            dissasembly.address_tag = address_tag;
+            run("s " + address, "output", true);
+            guicontrol.refresh_control(dissasembly);
+            run("s " + address_tag, "output", true);
+            guicontrol.refresh_control(hexview);
+            guicontrol.refresh_control(callgraph);
+            guicontrol.refresh_popups();
+            guicontrol.selectFunction(address);
+        }
         public void gotoAddress(string address)
         {
             if (address!=null && address.Length>0 && address != lastAddress)
             {
-                run("s " + address, "output", true);
-                //update controls
-                guicontrol.refresh_control(gui_controls.findControlBy_name("dissasembly"));
-                guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
-                guicontrol.refresh_control(gui_controls.findControlBy_name("Call graph"));
-                guicontrol.refresh_popups();
                 string current_function_address = run_silent("afi~offset[1]");
-                guicontrol.selectFunction(current_function_address);
+                seekaddress_showtag(current_function_address, address);
+                //run("s " + current_function_address, "output", true);
+                //update controls
             }
             lastAddress = address;
         }
@@ -607,7 +618,7 @@ namespace r2pipe_test
         {
             this.shellopts_cb.Add(name, callback);
         }
-        public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu)
+        public void add_menufcn(string menuName, string text, string args, Action<string> callback, MenuStrip menu, bool revere_order=false)
         {
             ToolStripMenuItem item = find_menucmd(menuName, menu);
             if (item != null)
@@ -615,8 +626,14 @@ namespace r2pipe_test
                 ToolStripItem newitem = null;
                 object[] callback_args = new object[] { callback, args };
                 string menuText = "";
+                item.Visible = true; // show now
                 if (text.Length > 0)
-                    menuText = string.Format("{0} ( {1} )", text, args);
+                {
+                    if(revere_order==false)
+                        menuText = string.Format("{0} ( {1} )", text, args);
+                    else
+                        menuText = string.Format("{1} {0}", text, args);
+                }
                 else
                     menuText = args;
                 newitem = item.DropDownItems.Add(menuText);
@@ -737,6 +754,7 @@ namespace r2pipe_test
             this.r2 = new R2Pipe(commandline, r2path);
             this.fileName = fileName;
             this.r2html = new r2html(this);
+            int addr_hexlength = int.Parse(run_silent("e asm.bits")) / 4;
         }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
         {
