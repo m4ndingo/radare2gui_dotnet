@@ -1525,7 +1525,6 @@ namespace r2pipe_test
         {
             sort_column(lstProcesses, e);
         }
-
         private void xrefsAxtjToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             string selected_address = get_currentlistview_selected_address();
@@ -1536,24 +1535,20 @@ namespace r2pipe_test
                 }
                 catch (Exception) { } // may fail
         }
-
         private void changeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             change_arch();
         }
-
         private void archToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem item = (ToolStripMenuItem)sender;
             r2pw.popup_cmds_send(item.Text, "e " + item.Text + "=?j", false);
         }
-
         private void followESILExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             followESIL = !followESIL;
             output("this.followESIL = " + followESIL.ToString());
         }
-
         private void archToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             change_arch();
@@ -1587,7 +1582,6 @@ namespace r2pipe_test
             }
             Cursor.Current = Cursors.Default;
         }
-
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.run("e?anal", "e anal", true);
