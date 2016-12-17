@@ -47,11 +47,12 @@
             this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTabsItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.windowsControlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.jsonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.HTMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Dissasembly = new System.Windows.Forms.TabPage();
             this.tsDebug = new System.Windows.Forms.ToolStrip();
+            this.playBtn = new System.Windows.Forms.ToolStripButton();
+            this.changePcBtn = new System.Windows.Forms.ToolStripButton();
+            this.stepBtn = new System.Windows.Forms.ToolStripButton();
+            this.continueUntilBtn = new System.Windows.Forms.ToolStripButton();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.HexView = new System.Windows.Forms.TabPage();
             this.webBrowser2 = new System.Windows.Forms.WebBrowser();
@@ -159,10 +160,7 @@
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.playBtn = new System.Windows.Forms.ToolStripButton();
-            this.stepBtn = new System.Windows.Forms.ToolStripButton();
-            this.continueUntilBtn = new System.Windows.Forms.ToolStripButton();
-            this.changePcBtn = new System.Windows.Forms.ToolStripButton();
+            this.xrefsAxtjToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -299,16 +297,14 @@
             this.gotoAddressToolStripMenuItem,
             this.ctxTabsItemClose,
             this.toolStripSeparator5,
-            this.windowsControlToolStripMenuItem,
-            this.jsonToolStripMenuItem,
-            this.HTMLToolStripMenuItem});
+            this.xrefsAxtjToolStripMenuItem1});
             this.ctxTabs.Name = "ctxTabs";
-            this.ctxTabs.Size = new System.Drawing.Size(165, 236);
+            this.ctxTabs.Size = new System.Drawing.Size(153, 214);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
@@ -318,91 +314,67 @@
             this.copySelAddressMenu,
             this.copyAllfieldsMenu});
             this.copyAddressToolStripMenuItem.Name = "copyAddressToolStripMenuItem";
-            this.copyAddressToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.copyAddressToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyAddressToolStripMenuItem.Text = "Copy";
             // 
             // copySelAddressMenu
             // 
             this.copySelAddressMenu.Name = "copySelAddressMenu";
-            this.copySelAddressMenu.Size = new System.Drawing.Size(122, 22);
+            this.copySelAddressMenu.Size = new System.Drawing.Size(152, 22);
             this.copySelAddressMenu.Text = "Address";
             this.copySelAddressMenu.Click += new System.EventHandler(this.addressToolStripMenuItem_Click);
             // 
             // copyAllfieldsMenu
             // 
             this.copyAllfieldsMenu.Name = "copyAllfieldsMenu";
-            this.copyAllfieldsMenu.Size = new System.Drawing.Size(122, 22);
+            this.copyAllfieldsMenu.Size = new System.Drawing.Size(152, 22);
             this.copyAllfieldsMenu.Text = "Selection";
             this.copyAllfieldsMenu.Click += new System.EventHandler(this.copyAllFieldsMenuItem_Click);
             // 
             // floatToolStripMenuItem
             // 
             this.floatToolStripMenuItem.Name = "floatToolStripMenuItem";
-            this.floatToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.floatToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.floatToolStripMenuItem.Text = "Popup tab";
             this.floatToolStripMenuItem.Click += new System.EventHandler(this.floatToolStripMenuItem_Click);
             // 
             // textToolStripMenuItem
             // 
             this.textToolStripMenuItem.Name = "textToolStripMenuItem";
-            this.textToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.textToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.textToolStripMenuItem.Text = "To output";
             this.textToolStripMenuItem.Click += new System.EventHandler(this.textToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(161, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
             // 
             // zoomToolStripMenuItem
             // 
             this.zoomToolStripMenuItem.Name = "zoomToolStripMenuItem";
-            this.zoomToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.zoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.zoomToolStripMenuItem.Text = "Zoom";
             this.zoomToolStripMenuItem.Click += new System.EventHandler(this.zoomToolStripMenuItem_Click);
             // 
             // gotoAddressToolStripMenuItem
             // 
             this.gotoAddressToolStripMenuItem.Name = "gotoAddressToolStripMenuItem";
-            this.gotoAddressToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.gotoAddressToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.gotoAddressToolStripMenuItem.Text = "Goto address";
             this.gotoAddressToolStripMenuItem.Click += new System.EventHandler(this.gotoAddressToolStripMenuItem_Click);
             // 
             // ctxTabsItemClose
             // 
             this.ctxTabsItemClose.Name = "ctxTabsItemClose";
-            this.ctxTabsItemClose.Size = new System.Drawing.Size(164, 22);
+            this.ctxTabsItemClose.Size = new System.Drawing.Size(152, 22);
             this.ctxTabsItemClose.Text = "Close tab";
             this.ctxTabsItemClose.Click += new System.EventHandler(this.ctxTabsItemClose_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(161, 6);
-            // 
-            // windowsControlToolStripMenuItem
-            // 
-            this.windowsControlToolStripMenuItem.Enabled = false;
-            this.windowsControlToolStripMenuItem.Name = "windowsControlToolStripMenuItem";
-            this.windowsControlToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.windowsControlToolStripMenuItem.Text = "Windows control";
-            this.windowsControlToolStripMenuItem.Click += new System.EventHandler(this.windowsControlToolStripMenuItem_Click);
-            // 
-            // jsonToolStripMenuItem
-            // 
-            this.jsonToolStripMenuItem.Enabled = false;
-            this.jsonToolStripMenuItem.Name = "jsonToolStripMenuItem";
-            this.jsonToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.jsonToolStripMenuItem.Text = "Json";
-            this.jsonToolStripMenuItem.Click += new System.EventHandler(this.jsonToolStripMenuItem_Click);
-            // 
-            // HTMLToolStripMenuItem
-            // 
-            this.HTMLToolStripMenuItem.Enabled = false;
-            this.HTMLToolStripMenuItem.Name = "HTMLToolStripMenuItem";
-            this.HTMLToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.HTMLToolStripMenuItem.Text = "HTML";
-            this.HTMLToolStripMenuItem.Click += new System.EventHandler(this.HTMLToolStripMenuItem_Click);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
             // 
             // Dissasembly
             // 
@@ -429,13 +401,62 @@
             this.changePcBtn,
             this.stepBtn,
             this.continueUntilBtn});
-            this.tsDebug.Location = new System.Drawing.Point(436, 3);
+            this.tsDebug.Location = new System.Drawing.Point(442, 3);
             this.tsDebug.Name = "tsDebug";
             this.tsDebug.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.tsDebug.Size = new System.Drawing.Size(32, 122);
+            this.tsDebug.Size = new System.Drawing.Size(26, 122);
             this.tsDebug.Stretch = true;
             this.tsDebug.TabIndex = 5;
             this.tsDebug.Text = "toolStrip1";
+            // 
+            // playBtn
+            // 
+            this.playBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.playBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.playBtn.Image = global::r4w.Properties.Resources.playbutton_gray_small;
+            this.playBtn.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
+            this.playBtn.Name = "playBtn";
+            this.playBtn.Size = new System.Drawing.Size(21, 20);
+            this.playBtn.Text = "Init ESIL";
+            this.playBtn.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // changePcBtn
+            // 
+            this.changePcBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.changePcBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.changePcBtn.Image = ((System.Drawing.Image)(resources.GetObject("changePcBtn.Image")));
+            this.changePcBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.changePcBtn.Name = "changePcBtn";
+            this.changePcBtn.Size = new System.Drawing.Size(23, 20);
+            this.changePcBtn.Text = "changePcBtn";
+            this.changePcBtn.ToolTipText = "Change ESIL pc";
+            this.changePcBtn.Click += new System.EventHandler(this.changePcBtn_Click);
+            // 
+            // stepBtn
+            // 
+            this.stepBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.stepBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.stepBtn.Image = global::r4w.Properties.Resources.step_over_icon;
+            this.stepBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.stepBtn.MergeIndex = 0;
+            this.stepBtn.Name = "stepBtn";
+            this.stepBtn.Size = new System.Drawing.Size(21, 20);
+            this.stepBtn.Text = "Step ESIL ( aes )";
+            this.stepBtn.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // continueUntilBtn
+            // 
+            this.continueUntilBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.continueUntilBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.continueUntilBtn.Image = ((System.Drawing.Image)(resources.GetObject("continueUntilBtn.Image")));
+            this.continueUntilBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.continueUntilBtn.Name = "continueUntilBtn";
+            this.continueUntilBtn.Size = new System.Drawing.Size(23, 20);
+            this.continueUntilBtn.Text = "Continue Until ESIL ( aesu )";
+            this.continueUntilBtn.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // webBrowser1
             // 
@@ -500,6 +521,7 @@
             this.lstStrings.TabIndex = 0;
             this.lstStrings.UseCompatibleStateImageBehavior = false;
             this.lstStrings.View = System.Windows.Forms.View.Details;
+            this.lstStrings.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstStrings_ColumnClick);
             this.lstStrings.DoubleClick += new System.EventHandler(this.lstStrings_DoubleClick);
             // 
             // Imports
@@ -531,6 +553,7 @@
             this.lstImports.TabIndex = 6;
             this.lstImports.UseCompatibleStateImageBehavior = false;
             this.lstImports.View = System.Windows.Forms.View.Details;
+            this.lstImports.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstImports_ColumnClick);
             this.lstImports.DoubleClick += new System.EventHandler(this.lstImports_DoubleClick);
             // 
             // columnHeader2
@@ -570,6 +593,7 @@
             this.lstSections.TileSize = new System.Drawing.Size(64, 30);
             this.lstSections.UseCompatibleStateImageBehavior = false;
             this.lstSections.View = System.Windows.Forms.View.Details;
+            this.lstSections.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstSections_ColumnClick);
             this.lstSections.DoubleClick += new System.EventHandler(this.lstSections_DoubleClick);
             // 
             // imageList1
@@ -627,6 +651,7 @@
             this.lstProcesses.TileSize = new System.Drawing.Size(64, 30);
             this.lstProcesses.UseCompatibleStateImageBehavior = false;
             this.lstProcesses.View = System.Windows.Forms.View.Details;
+            this.lstProcesses.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstProcesses_ColumnClick);
             this.lstProcesses.Click += new System.EventHandler(this.lstProcesses_Click);
             this.lstProcesses.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.lstProcesses_KeyPress);
             // 
@@ -1372,54 +1397,12 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // playBtn
+            // xrefsAxtjToolStripMenuItem1
             // 
-            this.playBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.playBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.playBtn.Image = global::r4w.Properties.Resources.playbutton_gray_small;
-            this.playBtn.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
-            this.playBtn.Name = "playBtn";
-            this.playBtn.Size = new System.Drawing.Size(27, 20);
-            this.playBtn.Text = "Init ESIL";
-            this.playBtn.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // stepBtn
-            // 
-            this.stepBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.stepBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stepBtn.Image = global::r4w.Properties.Resources.step_over_icon;
-            this.stepBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
-            this.stepBtn.MergeIndex = 0;
-            this.stepBtn.Name = "stepBtn";
-            this.stepBtn.Size = new System.Drawing.Size(27, 20);
-            this.stepBtn.Text = "Step ESIL ( aes )";
-            this.stepBtn.Click += new System.EventHandler(this.toolStripButton2_Click);
-            // 
-            // continueUntilBtn
-            // 
-            this.continueUntilBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.continueUntilBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.continueUntilBtn.Image = ((System.Drawing.Image)(resources.GetObject("continueUntilBtn.Image")));
-            this.continueUntilBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.continueUntilBtn.Name = "continueUntilBtn";
-            this.continueUntilBtn.Size = new System.Drawing.Size(29, 20);
-            this.continueUntilBtn.Text = "Continue Until ESIL ( aesu )";
-            this.continueUntilBtn.Click += new System.EventHandler(this.toolStripButton1_Click_1);
-            // 
-            // changePcBtn
-            // 
-            this.changePcBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.changePcBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.changePcBtn.Image = ((System.Drawing.Image)(resources.GetObject("changePcBtn.Image")));
-            this.changePcBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.changePcBtn.Name = "changePcBtn";
-            this.changePcBtn.Size = new System.Drawing.Size(29, 20);
-            this.changePcBtn.Text = "changePcBtn";
-            this.changePcBtn.ToolTipText = "Change ESIL pc";
-            this.changePcBtn.Click += new System.EventHandler(this.changePcBtn_Click);
+            this.xrefsAxtjToolStripMenuItem1.Name = "xrefsAxtjToolStripMenuItem1";
+            this.xrefsAxtjToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.xrefsAxtjToolStripMenuItem1.Text = "Xrefs ( axtj )";
+            this.xrefsAxtjToolStripMenuItem1.Click += new System.EventHandler(this.xrefsAxtjToolStripMenuItem1_Click);
             // 
             // Form1
             // 
@@ -1514,10 +1497,7 @@
         private System.Windows.Forms.ToolStripMenuItem optionsMenu;
         private System.Windows.Forms.ToolStripMenuItem architectureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem HTMLToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem jsonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem windowsControlToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem floatToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem wordWrapToolStripMenuItem;
@@ -1603,6 +1583,7 @@
         private System.Windows.Forms.ToolStripMenuItem followESILExecutionExperimentalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem goBackEscapeToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton changePcBtn;
+        private System.Windows.Forms.ToolStripMenuItem xrefsAxtjToolStripMenuItem1;
     }
 }
 

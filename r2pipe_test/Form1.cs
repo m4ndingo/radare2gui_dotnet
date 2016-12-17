@@ -1202,15 +1202,24 @@ namespace r2pipe_test
             catch (Exception) { }
         }
         public void selectFunction(string address){
-            ListViewItem item   = null;
-            string fcnName      = address; // 1st column of listview
-            item                = listView1.FindItemWithText(fcnName);
+            ListViewItem item = null;
+            string address_value = Regex.Replace(address, "^0x0*", "");
+            foreach (ListViewItem i in listView1.Items)
+            {
+                ListViewItem.ListViewSubItem sitem = i.SubItems[1];
+                string sitem_value = sitem.Text;
+                sitem_value = Regex.Replace(sitem_value, "^0x0*", "");
+                if (sitem_value.Equals(address_value))
+                {
+                    item = i;
+                    break;
+                }
+            }
             if (item!=null)
             {
                 listView1.SelectedIndices.Clear();
                 item.Selected = true;
                 item.EnsureVisible();
-                //Console.WriteLine(item);
             }
         }
         private string get_currentlistview_selected_address()
@@ -1312,13 +1321,17 @@ namespace r2pipe_test
         private int sortColumn = -1;
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
+            sort_column(listView1, e);
+        }
+        private void sort_column(ListView lstView, ColumnClickEventArgs e)
+        {
             // Determine whether the column is the same as the last column clicked.
             if (e.Column != sortColumn)
             {
                 // Set the sort column to the new column.
                 sortColumn = e.Column;
                 // Set the sort order to ascending by default.
-                listView1.Sorting = SortOrder.Ascending;
+                lstView.Sorting = SortOrder.Ascending;
             }
             else
             {
@@ -1330,11 +1343,11 @@ namespace r2pipe_test
             }
 
             // Call the sort method to manually sort.
-            listView1.Sort();
+            lstView.Sort();
             // Set the ListViewItemSorter property to a new ListViewItemComparer
             // object.
-            this.listView1.ListViewItemSorter = new ListViewItemComparer(e.Column,
-                                                              listView1.Sorting);
+            lstView.ListViewItemSorter = new ListViewItemComparer(e.Column,
+                                                              lstView.Sorting);
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -1459,7 +1472,33 @@ namespace r2pipe_test
             {
                 ESILcmds("aepc " + pc);
             }
+        }
+        private void lstStrings_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstStrings, e);
+        }
+        private void lstImports_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstImports, e);
+        }
+        private void lstSections_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstSections, e);
+        }
+        private void lstProcesses_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstProcesses, e);
+        }
 
+        private void xrefsAxtjToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            string selected_address = get_currentlistview_selected_address();
+            if (selected_address != null)
+                try
+                {
+                    r2pw.popup_cmds_send("Xrefs", "axtj @ " + selected_address, true);                    
+                }
+                catch (Exception) { } // may fail
         }
     }
     public class ListViewItemComparer : IComparer

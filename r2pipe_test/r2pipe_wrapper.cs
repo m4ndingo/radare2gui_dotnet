@@ -502,7 +502,8 @@ namespace r2pipe_test
                 guicontrol.refresh_control(gui_controls.findControlBy_name("hexview"));
                 guicontrol.refresh_control(gui_controls.findControlBy_name("Call graph"));
                 guicontrol.refresh_popups();
-                guicontrol.selectFunction(address);
+                string current_function_address = run_silent("afi~offset[1]");
+                guicontrol.selectFunction(current_function_address);
             }
             lastAddress = address;
             //tabcontrol.SelectedIndex = 0;
