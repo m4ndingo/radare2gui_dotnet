@@ -506,7 +506,6 @@ namespace r2pipe_test
                 guicontrol.selectFunction(current_function_address);
             }
             lastAddress = address;
-            //tabcontrol.SelectedIndex = 0;
         }
         public delegate void BeginListviewUpdate(ListView lstview, bool update, string controlName, List<string> cols);
         public delegate void AddToListviewCallback(ListView lstview, ListViewItem item);

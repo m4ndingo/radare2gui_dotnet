@@ -30,6 +30,7 @@ namespace r2pipe_test
         private bool esil_initilized = false;
         public string [] gui_args = null;
         public bool followESIL = true;
+        private int sortColumn = -1;
         public Form1(string[] gui_args)
         {
             this.gui_args = gui_args;
@@ -1318,7 +1319,6 @@ namespace r2pipe_test
                 ESILcmds("aesu " + pc);
             }
         }
-        private int sortColumn = -1;
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             sort_column(listView1, e);
@@ -1442,24 +1442,20 @@ namespace r2pipe_test
             r2pw.add_control_tab(title, cmds);
             r2pw.run(cmds, title);*/
         }
-
         private void converterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             convertFrm frm = new convertFrm(this.r2pw);
             frm.Show();
         }
-
         private void gotoAddressToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.gotoAddress(Prompt("New address:", "Goto address (s)eek"));
         }
-
         private void followESILExecutionExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             followESIL = !followESIL;
             output("followESIL: " + followESIL.ToString());
         }
-
         private void changePcBtn_Click(object sender, EventArgs e)
         {
             string pc = null, pc_name = null;
