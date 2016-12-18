@@ -506,19 +506,21 @@ namespace r2pipe_test
             GuiControl hexview     = gui_controls.findControlBy_name("hexview");
             GuiControl callgraph   = gui_controls.findControlBy_name("Call graph");
             dissasembly.address_tag = address_tag;
-            run("s " + address, "output", true);
-            guicontrol.refresh_control(dissasembly);
             run("s " + address_tag, "output", true);
             guicontrol.refresh_control(hexview);
             guicontrol.refresh_control(callgraph);
             guicontrol.refresh_popups();
+            run("s " + address, "output", true);
+            guicontrol.refresh_control(dissasembly);
             guicontrol.selectFunction(address);
         }
         public void gotoAddress(string address)
         {
             if (address!=null && address.Length>0 && address != lastAddress)
             {
-                string current_function_address = run_silent("afi~offset[1]");
+                string current_function_address = address;
+                if(tabcontrol.SelectedTab.Text.StartsWith("Dissasembly")==false)
+                    current_function_address = run_silent("afi~offset[1]");
                 seekaddress_showtag(current_function_address, address);
                 //run("s " + current_function_address, "output", true);
                 //update controls

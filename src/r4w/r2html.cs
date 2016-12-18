@@ -26,6 +26,7 @@ namespace r2pipe_test
             string console_text_cut_copy = "";
             if (console_text == null) return null;
             console_text_cut = console_text;
+            console_text_cut = console_text_cut.Replace("<", "&lt");
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
             console_text_cut_copy = console_text_cut;            

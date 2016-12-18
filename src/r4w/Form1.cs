@@ -1311,7 +1311,8 @@ namespace r2pipe_test
                             addr_index = i;
                         i++;
                     }
-                    if (addr_index != -1) address = lstView.SelectedItems[0].SubItems[addr_index].Text;
+                    if (addr_index != -1 && lstView.SelectedItems.Count>0) 
+                        address = lstView.SelectedItems[0].SubItems[addr_index].Text;
                 }
             }
             return address;
