@@ -536,7 +536,7 @@ namespace r2pipe_test
             if (cmds.Contains("pd "))
                 controlName = "dissasembly";
             r2pw.run(cmds, controlName, true);
-            if (controlName == "output" && cmds.StartsWith("ae"))
+            if (/*controlName == "output" && */cmds.StartsWith("ae"))
                 refresh_main_controls();
         }
         private void newtab_cb(string cmds)
@@ -953,6 +953,10 @@ namespace r2pipe_test
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
+            esil_aes();
+        }
+        private void esil_aes()
+        {
             string cmds = "aes";
             int nHeaderLines = 8;
             int nFooterLines = 24;
@@ -1063,7 +1067,12 @@ namespace r2pipe_test
         }
         private void tabControl1_Click(object sender, EventArgs e)
         {
-            //autoresize_output();
+            tsDebug.Enabled = false;
+            if (tabcontrol.SelectedTab.Text.Equals("Dissasembly") ||
+                tabcontrol.SelectedTab.Text.Equals("Hex view") ||
+                tabcontrol.SelectedTab.Text.Equals("Call graph"))
+                tsDebug.Enabled = true;
+
             cmbCmdline.Focus();
         }
         private void maximizeOutputToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1381,6 +1390,10 @@ namespace r2pipe_test
         }
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
+            esil_continueuntiladdress();
+        }
+        private void esil_continueuntiladdress()
+        {
             string pc = null;
             if ( esil_initilized == false )
                 initialize_esil();
@@ -1526,6 +1539,10 @@ namespace r2pipe_test
         }
         private void changePcBtn_Click(object sender, EventArgs e)
         {
+            esil_changepc();
+        }
+        private void esil_changepc()
+        {
             string pc = null, pc_name = null;
             if (esil_initilized == false)
                 initialize_esil();
@@ -1613,6 +1630,26 @@ namespace r2pipe_test
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             r2pw.run("e?anal", "e anal", true);
+        }
+        private void playBtn_Click(object sender, EventArgs e)
+        {
+            initialize_esil();
+        }
+        private void changePcBtn_Click_1(object sender, EventArgs e)
+        {
+            esil_changepc();
+        }
+        private void stepBtn_Click(object sender, EventArgs e)
+        {
+            esil_aes();
+        }
+        private void continueUntilBtn_Click(object sender, EventArgs e)
+        {
+            esil_continueuntiladdress();
+        }
+
+        private void tabControl1_TabIndexChanged(object sender, EventArgs e)
+        {
         }
     }
     public class ListViewItemComparer : IComparer

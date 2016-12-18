@@ -34,6 +34,11 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tsDebug = new System.Windows.Forms.ToolStrip();
+            this.playBtn = new System.Windows.Forms.ToolStripButton();
+            this.changePcBtn = new System.Windows.Forms.ToolStripButton();
+            this.stepBtn = new System.Windows.Forms.ToolStripButton();
+            this.continueUntilBtn = new System.Windows.Forms.ToolStripButton();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.ctxTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,11 +54,6 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.xrefsAxtjToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.Dissasembly = new System.Windows.Forms.TabPage();
-            this.tsDebug = new System.Windows.Forms.ToolStrip();
-            this.playBtn = new System.Windows.Forms.ToolStripButton();
-            this.changePcBtn = new System.Windows.Forms.ToolStripButton();
-            this.stepBtn = new System.Windows.Forms.ToolStripButton();
-            this.continueUntilBtn = new System.Windows.Forms.ToolStripButton();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.HexView = new System.Windows.Forms.TabPage();
             this.webBrowser2 = new System.Windows.Forms.WebBrowser();
@@ -203,10 +203,10 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.tsDebug.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.ctxTabs.SuspendLayout();
             this.Dissasembly.SuspendLayout();
-            this.tsDebug.SuspendLayout();
             this.HexView.SuspendLayout();
             this.Strings.SuspendLayout();
             this.Imports.SuspendLayout();
@@ -283,6 +283,7 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.tsDebug);
             this.splitContainer2.Panel1.Controls.Add(this.tabControl1);
             // 
             // splitContainer2.Panel2
@@ -292,6 +293,75 @@
             this.splitContainer2.SplitterDistance = 157;
             this.splitContainer2.TabIndex = 3;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
+            // 
+            // tsDebug
+            // 
+            this.tsDebug.AllowItemReorder = true;
+            this.tsDebug.Dock = System.Windows.Forms.DockStyle.Right;
+            this.tsDebug.GripMargin = new System.Windows.Forms.Padding(0);
+            this.tsDebug.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.tsDebug.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.tsDebug.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.playBtn,
+            this.changePcBtn,
+            this.stepBtn,
+            this.continueUntilBtn});
+            this.tsDebug.Location = new System.Drawing.Point(452, 0);
+            this.tsDebug.Name = "tsDebug";
+            this.tsDebug.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.tsDebug.Size = new System.Drawing.Size(26, 157);
+            this.tsDebug.Stretch = true;
+            this.tsDebug.TabIndex = 6;
+            this.tsDebug.Text = "toolStrip1";
+            // 
+            // playBtn
+            // 
+            this.playBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.playBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.playBtn.Image = global::r4w.Properties.Resources.playbutton_gray_small;
+            this.playBtn.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
+            this.playBtn.Name = "playBtn";
+            this.playBtn.Size = new System.Drawing.Size(21, 20);
+            this.playBtn.Text = "Init ESIL";
+            this.playBtn.Click += new System.EventHandler(this.playBtn_Click);
+            // 
+            // changePcBtn
+            // 
+            this.changePcBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.changePcBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.changePcBtn.Image = ((System.Drawing.Image)(resources.GetObject("changePcBtn.Image")));
+            this.changePcBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.changePcBtn.Name = "changePcBtn";
+            this.changePcBtn.Size = new System.Drawing.Size(23, 20);
+            this.changePcBtn.Text = "changePcBtn";
+            this.changePcBtn.ToolTipText = "Change ESIL pc";
+            this.changePcBtn.Click += new System.EventHandler(this.changePcBtn_Click_1);
+            // 
+            // stepBtn
+            // 
+            this.stepBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.stepBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.stepBtn.Image = global::r4w.Properties.Resources.step_over_icon;
+            this.stepBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.stepBtn.MergeIndex = 0;
+            this.stepBtn.Name = "stepBtn";
+            this.stepBtn.Size = new System.Drawing.Size(21, 20);
+            this.stepBtn.Text = "Step ESIL ( aes )";
+            this.stepBtn.Click += new System.EventHandler(this.stepBtn_Click);
+            // 
+            // continueUntilBtn
+            // 
+            this.continueUntilBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.continueUntilBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.continueUntilBtn.Image = ((System.Drawing.Image)(resources.GetObject("continueUntilBtn.Image")));
+            this.continueUntilBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.continueUntilBtn.Name = "continueUntilBtn";
+            this.continueUntilBtn.Size = new System.Drawing.Size(23, 20);
+            this.continueUntilBtn.Text = "Continue Until ESIL ( aesu )";
+            this.continueUntilBtn.Click += new System.EventHandler(this.continueUntilBtn_Click);
             // 
             // tabControl1
             // 
@@ -310,10 +380,11 @@
             this.tabControl1.Location = new System.Drawing.Point(-1, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(479, 155);
+            this.tabControl1.Size = new System.Drawing.Size(451, 155);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 2;
             this.tabControl1.Tag = "";
+            this.tabControl1.TabIndexChanged += new System.EventHandler(this.tabControl1_TabIndexChanged);
             this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
             this.tabControl1.DoubleClick += new System.EventHandler(this.tabControl1_DoubleClick);
             this.tabControl1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tabControl1_KeyDown);
@@ -420,84 +491,14 @@
             // Dissasembly
             // 
             this.Dissasembly.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Dissasembly.Controls.Add(this.tsDebug);
             this.Dissasembly.Controls.Add(this.webBrowser1);
             this.Dissasembly.ImageIndex = 1;
             this.Dissasembly.Location = new System.Drawing.Point(4, 23);
             this.Dissasembly.Name = "Dissasembly";
             this.Dissasembly.Padding = new System.Windows.Forms.Padding(3);
-            this.Dissasembly.Size = new System.Drawing.Size(471, 128);
+            this.Dissasembly.Size = new System.Drawing.Size(443, 128);
             this.Dissasembly.TabIndex = 0;
             this.Dissasembly.Text = "Dissasembly";
-            // 
-            // tsDebug
-            // 
-            this.tsDebug.AllowItemReorder = true;
-            this.tsDebug.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tsDebug.GripMargin = new System.Windows.Forms.Padding(0);
-            this.tsDebug.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.tsDebug.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.tsDebug.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.playBtn,
-            this.changePcBtn,
-            this.stepBtn,
-            this.continueUntilBtn});
-            this.tsDebug.Location = new System.Drawing.Point(442, 3);
-            this.tsDebug.Name = "tsDebug";
-            this.tsDebug.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.tsDebug.Size = new System.Drawing.Size(26, 122);
-            this.tsDebug.Stretch = true;
-            this.tsDebug.TabIndex = 5;
-            this.tsDebug.Text = "toolStrip1";
-            // 
-            // playBtn
-            // 
-            this.playBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.playBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.playBtn.Image = global::r4w.Properties.Resources.playbutton_gray_small;
-            this.playBtn.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.playBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.playBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 4);
-            this.playBtn.Name = "playBtn";
-            this.playBtn.Size = new System.Drawing.Size(21, 20);
-            this.playBtn.Text = "Init ESIL";
-            this.playBtn.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // changePcBtn
-            // 
-            this.changePcBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.changePcBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.changePcBtn.Image = ((System.Drawing.Image)(resources.GetObject("changePcBtn.Image")));
-            this.changePcBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.changePcBtn.Name = "changePcBtn";
-            this.changePcBtn.Size = new System.Drawing.Size(23, 20);
-            this.changePcBtn.Text = "changePcBtn";
-            this.changePcBtn.ToolTipText = "Change ESIL pc";
-            this.changePcBtn.Click += new System.EventHandler(this.changePcBtn_Click);
-            // 
-            // stepBtn
-            // 
-            this.stepBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.stepBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stepBtn.Image = global::r4w.Properties.Resources.step_over_icon;
-            this.stepBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stepBtn.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
-            this.stepBtn.MergeIndex = 0;
-            this.stepBtn.Name = "stepBtn";
-            this.stepBtn.Size = new System.Drawing.Size(21, 20);
-            this.stepBtn.Text = "Step ESIL ( aes )";
-            this.stepBtn.Click += new System.EventHandler(this.toolStripButton2_Click);
-            // 
-            // continueUntilBtn
-            // 
-            this.continueUntilBtn.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.continueUntilBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.continueUntilBtn.Image = ((System.Drawing.Image)(resources.GetObject("continueUntilBtn.Image")));
-            this.continueUntilBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.continueUntilBtn.Name = "continueUntilBtn";
-            this.continueUntilBtn.Size = new System.Drawing.Size(23, 20);
-            this.continueUntilBtn.Text = "Continue Until ESIL ( aesu )";
-            this.continueUntilBtn.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // webBrowser1
             // 
@@ -507,7 +508,7 @@
             this.webBrowser1.Location = new System.Drawing.Point(0, 2);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(442, 124);
+            this.webBrowser1.Size = new System.Drawing.Size(443, 124);
             this.webBrowser1.TabIndex = 4;
             this.webBrowser1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.webBrowser1_PreviewKeyDown);
             // 
@@ -519,7 +520,7 @@
             this.HexView.Location = new System.Drawing.Point(4, 23);
             this.HexView.Name = "HexView";
             this.HexView.Padding = new System.Windows.Forms.Padding(3);
-            this.HexView.Size = new System.Drawing.Size(471, 128);
+            this.HexView.Size = new System.Drawing.Size(443, 128);
             this.HexView.TabIndex = 3;
             this.HexView.Text = "Hex view";
             // 
@@ -531,7 +532,7 @@
             this.webBrowser2.Location = new System.Drawing.Point(0, 3);
             this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser2.Name = "webBrowser2";
-            this.webBrowser2.Size = new System.Drawing.Size(466, 123);
+            this.webBrowser2.Size = new System.Drawing.Size(443, 123);
             this.webBrowser2.TabIndex = 0;
             // 
             // Strings
@@ -542,7 +543,7 @@
             this.Strings.Location = new System.Drawing.Point(4, 23);
             this.Strings.Name = "Strings";
             this.Strings.Padding = new System.Windows.Forms.Padding(3);
-            this.Strings.Size = new System.Drawing.Size(471, 128);
+            this.Strings.Size = new System.Drawing.Size(443, 128);
             this.Strings.TabIndex = 1;
             this.Strings.Text = "Strings";
             // 
@@ -558,7 +559,7 @@
             this.lstStrings.FullRowSelect = true;
             this.lstStrings.Location = new System.Drawing.Point(0, 0);
             this.lstStrings.Name = "lstStrings";
-            this.lstStrings.Size = new System.Drawing.Size(471, 131);
+            this.lstStrings.Size = new System.Drawing.Size(443, 131);
             this.lstStrings.TabIndex = 0;
             this.lstStrings.UseCompatibleStateImageBehavior = false;
             this.lstStrings.View = System.Windows.Forms.View.Details;
@@ -573,7 +574,7 @@
             this.Imports.Location = new System.Drawing.Point(4, 23);
             this.Imports.Name = "Imports";
             this.Imports.Padding = new System.Windows.Forms.Padding(3);
-            this.Imports.Size = new System.Drawing.Size(471, 128);
+            this.Imports.Size = new System.Drawing.Size(443, 128);
             this.Imports.TabIndex = 2;
             this.Imports.Text = "Imports";
             // 
@@ -590,7 +591,7 @@
             this.lstImports.FullRowSelect = true;
             this.lstImports.Location = new System.Drawing.Point(1, 0);
             this.lstImports.Name = "lstImports";
-            this.lstImports.Size = new System.Drawing.Size(469, 127);
+            this.lstImports.Size = new System.Drawing.Size(441, 127);
             this.lstImports.TabIndex = 6;
             this.lstImports.UseCompatibleStateImageBehavior = false;
             this.lstImports.View = System.Windows.Forms.View.Details;
@@ -607,7 +608,7 @@
             this.Sections.ImageIndex = 1;
             this.Sections.Location = new System.Drawing.Point(4, 23);
             this.Sections.Name = "Sections";
-            this.Sections.Size = new System.Drawing.Size(471, 128);
+            this.Sections.Size = new System.Drawing.Size(443, 128);
             this.Sections.TabIndex = 5;
             this.Sections.Text = "Sections";
             this.Sections.UseVisualStyleBackColor = true;
@@ -627,7 +628,7 @@
             this.lstSections.Location = new System.Drawing.Point(1, 0);
             this.lstSections.Margin = new System.Windows.Forms.Padding(0);
             this.lstSections.Name = "lstSections";
-            this.lstSections.Size = new System.Drawing.Size(470, 131);
+            this.lstSections.Size = new System.Drawing.Size(442, 131);
             this.lstSections.SmallImageList = this.imageList1;
             this.lstSections.StateImageList = this.imageList1;
             this.lstSections.TabIndex = 1;
@@ -653,7 +654,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 23);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(471, 128);
+            this.tabPage1.Size = new System.Drawing.Size(443, 128);
             this.tabPage1.TabIndex = 6;
             this.tabPage1.Text = "Processes";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -664,7 +665,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(1, 106);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(453, 20);
+            this.txtSearch.Size = new System.Drawing.Size(425, 20);
             this.txtSearch.TabIndex = 3;
             this.txtSearch.Visible = false;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
@@ -685,7 +686,7 @@
             this.lstProcesses.Location = new System.Drawing.Point(1, -1);
             this.lstProcesses.Margin = new System.Windows.Forms.Padding(0);
             this.lstProcesses.Name = "lstProcesses";
-            this.lstProcesses.Size = new System.Drawing.Size(470, 127);
+            this.lstProcesses.Size = new System.Drawing.Size(442, 127);
             this.lstProcesses.SmallImageList = this.imageList1;
             this.lstProcesses.StateImageList = this.imageList1;
             this.lstProcesses.TabIndex = 2;
@@ -1725,15 +1726,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.tsDebug.ResumeLayout(false);
+            this.tsDebug.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.ctxTabs.ResumeLayout(false);
             this.Dissasembly.ResumeLayout(false);
-            this.Dissasembly.PerformLayout();
-            this.tsDebug.ResumeLayout(false);
-            this.tsDebug.PerformLayout();
             this.HexView.ResumeLayout(false);
             this.Strings.ResumeLayout(false);
             this.Imports.ResumeLayout(false);
@@ -1853,10 +1854,6 @@
         private System.Windows.Forms.ToolStripMenuItem renameAfnToolStripMenuItem;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage Dissasembly;
-        private System.Windows.Forms.ToolStrip tsDebug;
-        private System.Windows.Forms.ToolStripButton playBtn;
-        private System.Windows.Forms.ToolStripButton stepBtn;
-        private System.Windows.Forms.ToolStripButton continueUntilBtn;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.TabPage HexView;
         private System.Windows.Forms.WebBrowser webBrowser2;
@@ -1881,7 +1878,6 @@
         private System.Windows.Forms.ToolStripMenuItem converterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gotoAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem goBackEscapeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton changePcBtn;
         private System.Windows.Forms.ToolStripMenuItem xrefsAxtjToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem changeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
@@ -1919,6 +1915,11 @@
         private System.Windows.Forms.ToolStripMenuItem zignToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem r2VariablesToolStripMenuItem;
+        private System.Windows.Forms.ToolStrip tsDebug;
+        private System.Windows.Forms.ToolStripButton playBtn;
+        private System.Windows.Forms.ToolStripButton changePcBtn;
+        private System.Windows.Forms.ToolStripButton stepBtn;
+        private System.Windows.Forms.ToolStripButton continueUntilBtn;
     }
 }
 

@@ -740,6 +740,7 @@ namespace r2pipe_test
             string r2path = rconfig.r2path;
             if (this.r2 != null) this.r2.RunCommand("q");
             this.r2 = null; // remove the object
+            this.lastAddress = "";
             debugMode = false;
             if (fileName.StartsWith("-d"))
             {
