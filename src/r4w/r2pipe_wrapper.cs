@@ -127,8 +127,11 @@ namespace r2pipe_test
                 if( gc_tab!=null )
                     tabcontrol.SelectedIndex = gc_tab.tab_index;
             }
-            if (controlName!=null && gui_controls.findControlBy_name(controlName)==null) //!controls.ContainsKey(controlName))
-                add_control_tab(controlName, cmds);
+            if (controlName!=null)
+            {   GuiControl gc_=gui_controls.findControlBy_name(controlName);
+                if(gc_==null || gc_.closed==true)
+                    add_control_tab(controlName, cmds);
+            }
             if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
             update_statusbar(cmds); // may fail
             if (cmds != null)
@@ -405,13 +408,17 @@ namespace r2pipe_test
         public void sendToWebBrowser(string controlName, string cmds, string someText, dynamic json_obj, GuiControl gc=null)
         {
             string url = null;
+            object c = null;
             if (!controls.ContainsKey(controlName))
             {
-                MessageBox.Show("Controls don't contain key " + controlName, 
+                Console.WriteLine("Controls don't contain key " + controlName,
                     "sendToWebBrowser", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                c = gc.control;
             }
-            object c = controls[controlName];
+            else
+            {
+                c = controls[controlName];
+            }
             if (someText == null && cached_results.ContainsKey(controlName)) 
                 someText = cached_results[controlName];
             url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
@@ -643,12 +650,12 @@ namespace r2pipe_test
                 gui_controls.add_control(cname, null, menuText, args, "", "", tabcontrol.SelectedIndex);
             }
         }
-        public void add_control_tab(string tabname, string cmds)
+        public WebBrowser add_control_tab(string tabname, string cmds, WebBrowser browser = null)
         {
             if ( tabcontrol == null)
-                return;
+                return null;
             var page = new TabPage(tabname);
-            WebBrowser browser = null;
+            ;
             try
             {
                 browser = new WebBrowser();
@@ -656,7 +663,7 @@ namespace r2pipe_test
             catch (Exception e)
             {
                 //Show(e.ToString(), "add_control_tab: browser");
-                return;
+                return null;
             }
             page.Tag = cmds; // tabname.ToLower();
             page.ImageIndex = 1;
@@ -673,7 +680,7 @@ namespace r2pipe_test
             catch (Exception e)
             {
                 Show(e.ToString(), "add_control_tab: page");
-                return;
+                return browser;
             }
             if (browser != null)
             {
@@ -682,6 +689,7 @@ namespace r2pipe_test
                 add_control(tabname, browser, tabname, cmds);
             }
             guicontrol.autoresize_output();
+            return browser;
         }
         private void webBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -778,9 +786,13 @@ namespace r2pipe_test
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string name = item.Text;
             string cmds = item.Tag.ToString();
+            /*
             GuiControl gc = gui_controls.findControlBy_cmds(cmds);
-            if (gc != null) name = gc.name;
-            run(cmds, name, false, null, null, false, false, gc);
+            if (gc != null)
+            {
+                name = gc.name;
+            }*/
+            run(cmds, name);
         }
         public DialogResult Show(string text, string caption)
         {

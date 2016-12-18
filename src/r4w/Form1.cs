@@ -429,10 +429,17 @@ namespace r2pipe_test
         }
         private void popup_tab(GuiControl c)
         {
+            WebBrowser wb = null;
             if (c == null)
             {
                 r2pw.Show("can't popup tab, control is null", "popup_tab");
                 return;
+            }
+            
+            if (r2pw.controls.ContainsKey(c.name) == false)
+            {
+                wb = r2pw.add_control_tab(c.name, c.cmds, (WebBrowser)c.control);
+                c.control = wb;
             }
             r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
         }
@@ -446,8 +453,13 @@ namespace r2pipe_test
             TabPage page = null;
             r2pw.run("s " + address);
             GuiControl gc = r2pw.gui_controls.findControlBy_cmds(cmds);
-            if( gc==null )
-                r2pw.add_control_tab(title, cmds);            
+            if (gc == null || gc.control == null)
+            {
+                WebBrowser wb=r2pw.add_control_tab(title, cmds);
+                if (gc == null)
+                    gc = new GuiControl(wb, title, title, cmds, title);
+                gc.control = wb;
+            }
             r2pw.run(cmds, title, false, null, null, false, false, gc);
             if (popup == true)
             {
@@ -758,7 +770,7 @@ namespace r2pipe_test
             if (locked_tabs.Contains(controlName)) return;
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
             r2pw.controls.Remove(controlName); //check this
-            r2pw.gui_controls.remove_control_byName(controlName);
+            r2pw.gui_controls.close_control_byName(controlName);
         }
         private void hide_selected_tab()
         {
@@ -855,14 +867,24 @@ namespace r2pipe_test
         public webbrowser_container_form popup_tab()
         {
             WebBrowser webbrowser = new WebBrowser();
+            string cmds = "";
             string new_controlName = null;
             string tabTitle = selected_tab("title");
             String timeStamp = r2pw.get_timestamp();
             new_controlName = genControlName(tabTitle); // generate a short name for the control            
             new_controlName += "_" + timeStamp; // add some "mark" (timestamp)
             GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            if (gui_control_tab == null)
+            {
+                output("popup_tab(): error on findControlBy_tabTitle: tabTitle=" + tabTitle);
+                gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            }
+            else
+            {
+                cmds = gui_control_tab.cmds;
+            }
             GuiControl gui_control = r2pw.add_control(
-                new_controlName, webbrowser, "popup" + "_" + timeStamp, gui_control_tab.cmds);
+                new_controlName, webbrowser, "popup" + "_" + timeStamp, cmds);
             webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, gui_control);
 
             webbrowser.Dock = DockStyle.Fill;
@@ -872,7 +894,7 @@ namespace r2pipe_test
             refresh_control(gui_control);
             string frmTitle = tabTitle;
             if (!tabTitle.Contains("(") && !tabTitle.Equals(gui_control.cmds))
-                frmTitle = string.Format("{0} ( {1} )", tabTitle, gui_control_tab.cmds);
+                frmTitle = string.Format("{0} ( {1} )", tabTitle, cmds);
             webFrm.Text = frmTitle;
             webFrm.Show();
             return webFrm;

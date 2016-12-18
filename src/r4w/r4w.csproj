@@ -153,7 +153,9 @@
     <EmbeddedResource Include="webbrowser_container_form.resx">
       <DependentUpon>webbrowser_container_form.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Hotkeys.cs" />
+    <None Include="..\..\test_custom_wcontrol\Hotkeys.cs">
+      <Link>Hotkeys.cs</Link>
+    </None>
     <Compile Include="GuiControl.cs" />
     <Compile Include="r2html.cs" />
     <Compile Include="rconfig.cs" />
