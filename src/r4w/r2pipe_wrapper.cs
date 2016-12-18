@@ -159,7 +159,7 @@ namespace r2pipe_test
                 }
                 if (res != null)
                 {
-                    if(gc!=null && gc.control.GetType() == typeof(WebBrowser))
+                    if(gc!=null && gc.control!=null && gc.control.GetType() == typeof(WebBrowser))
                         res = res.Replace("'", "&#39;"); //todo: find a better way to do this
                     res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
