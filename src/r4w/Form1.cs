@@ -221,11 +221,16 @@ namespace r2pipe_test
                 }
             }
         }
-        private string prompt_r2config(string varname, string options, string def="", string desc=null, string type=null)
+        private string prompt_r2config(string varname, string cmd_options, string def="", string desc=null, string type=null)
         {
             string res = null;
             string msg = null;
-            if (res == null || (res != null && res.Length == 0)) res = def;
+            if (res == null || (res != null && res.Length == 0))
+            {
+                //res = def;
+                res = r2pw.run_silent(cmd_options);
+                if (res.Length == 0) res = def;
+            }
             if (desc == null) desc = "select " + varname;
             msg = "new " + varname;
             if (type != null) msg += "\ntype " + type;
@@ -576,7 +581,7 @@ namespace r2pipe_test
             string options  = r2pw.run(ops_cmd,  "output", true);
             string type     = r2pw.run(type_cmd, "output", true);
             string desc     = r2pw.run(desc_cmd, "output", true).TrimStart(' ');
-            change_r2config(varname, options, def, desc, type);
+            change_r2config(varname, ops_cmd, def, desc, type);
         }
         private void changeCpu(String cpu)
         {
