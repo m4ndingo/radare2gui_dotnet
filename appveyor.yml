@@ -21,3 +21,4 @@ after_build:
 artifacts:
 - path: '*.zip'
   name: zip
+
