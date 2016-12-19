@@ -75,7 +75,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(828, 456);
+            this.splitContainer1.Size = new System.Drawing.Size(828, 501);
             this.splitContainer1.SplitterDistance = 203;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -85,7 +85,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClear.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.btnClear.Location = new System.Drawing.Point(2, 422);
+            this.btnClear.Location = new System.Drawing.Point(2, 467);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(201, 30);
             this.btnClear.TabIndex = 9;
@@ -99,7 +99,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnConvert.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConvert.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.btnConvert.Location = new System.Drawing.Point(2, 391);
+            this.btnConvert.Location = new System.Drawing.Point(2, 436);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(201, 30);
             this.btnConvert.TabIndex = 8;
@@ -113,7 +113,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCommands.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtCommands.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtCommands.Location = new System.Drawing.Point(4, 278);
+            this.txtCommands.Location = new System.Drawing.Point(4, 323);
             this.txtCommands.Name = "txtCommands";
             this.txtCommands.Size = new System.Drawing.Size(199, 110);
             this.txtCommands.TabIndex = 7;
@@ -125,7 +125,7 @@
             this.lblCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCommands.AutoSize = true;
             this.lblCommands.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lblCommands.Location = new System.Drawing.Point(2, 257);
+            this.lblCommands.Location = new System.Drawing.Point(2, 302);
             this.lblCommands.Name = "lblCommands";
             this.lblCommands.Size = new System.Drawing.Size(96, 18);
             this.lblCommands.TabIndex = 2;
@@ -145,7 +145,7 @@
             this.lstOperations.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstOperations.Location = new System.Drawing.Point(4, -2);
             this.lstOperations.Name = "lstOperations";
-            this.lstOperations.Size = new System.Drawing.Size(199, 254);
+            this.lstOperations.Size = new System.Drawing.Size(199, 299);
             this.lstOperations.TabIndex = 0;
             this.lstOperations.UseCompatibleStateImageBehavior = false;
             this.lstOperations.View = System.Windows.Forms.View.Details;
@@ -180,8 +180,8 @@
             this.splitContainer2.Panel2.Controls.Add(this.lblSeek);
             this.splitContainer2.Panel2.Controls.Add(this.txtOutput);
             this.splitContainer2.Panel2.Controls.Add(this.lblOutput);
-            this.splitContainer2.Size = new System.Drawing.Size(621, 456);
-            this.splitContainer2.SplitterDistance = 127;
+            this.splitContainer2.Size = new System.Drawing.Size(621, 501);
+            this.splitContainer2.SplitterDistance = 126;
             this.splitContainer2.TabIndex = 0;
             // 
             // cmdWriteInput
@@ -190,7 +190,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdWriteInput.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.cmdWriteInput.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.cmdWriteInput.Location = new System.Drawing.Point(3, 101);
+            this.cmdWriteInput.Location = new System.Drawing.Point(3, 100);
             this.cmdWriteInput.Multiline = false;
             this.cmdWriteInput.Name = "cmdWriteInput";
             this.cmdWriteInput.Size = new System.Drawing.Size(612, 25);
@@ -216,7 +216,7 @@
             this.txtInput.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtInput.Location = new System.Drawing.Point(3, 19);
             this.txtInput.Name = "txtInput";
-            this.txtInput.Size = new System.Drawing.Size(612, 79);
+            this.txtInput.Size = new System.Drawing.Size(612, 78);
             this.txtInput.TabIndex = 0;
             this.txtInput.Text = "welcome to r4w gui powered by radare2";
             this.txtInput.TextChanged += new System.EventHandler(this.txtInput_TextChanged);
@@ -226,7 +226,7 @@
             this.txtBlockSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBlockSize.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtBlockSize.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtBlockSize.Location = new System.Drawing.Point(553, 298);
+            this.txtBlockSize.Location = new System.Drawing.Point(553, 344);
             this.txtBlockSize.Multiline = false;
             this.txtBlockSize.Name = "txtBlockSize";
             this.txtBlockSize.Size = new System.Drawing.Size(62, 20);
@@ -239,7 +239,7 @@
             this.lblBlock.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBlock.AutoSize = true;
             this.lblBlock.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.lblBlock.Location = new System.Drawing.Point(504, 298);
+            this.lblBlock.Location = new System.Drawing.Point(504, 344);
             this.lblBlock.Name = "lblBlock";
             this.lblBlock.Size = new System.Drawing.Size(48, 18);
             this.lblBlock.TabIndex = 17;
@@ -250,7 +250,7 @@
             this.txtSeekAddress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSeekAddress.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSeekAddress.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtSeekAddress.Location = new System.Drawing.Point(429, 298);
+            this.txtSeekAddress.Location = new System.Drawing.Point(429, 344);
             this.txtSeekAddress.Multiline = false;
             this.txtSeekAddress.Name = "txtSeekAddress";
             this.txtSeekAddress.Size = new System.Drawing.Size(69, 20);
@@ -263,7 +263,7 @@
             this.lblSeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSeek.AutoSize = true;
             this.lblSeek.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.lblSeek.Location = new System.Drawing.Point(383, 298);
+            this.lblSeek.Location = new System.Drawing.Point(383, 344);
             this.lblSeek.Name = "lblSeek";
             this.lblSeek.Size = new System.Drawing.Size(40, 18);
             this.lblSeek.TabIndex = 15;
@@ -279,7 +279,7 @@
             this.txtOutput.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtOutput.Location = new System.Drawing.Point(3, 22);
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(612, 268);
+            this.txtOutput.Size = new System.Drawing.Size(612, 314);
             this.txtOutput.TabIndex = 5;
             this.txtOutput.Text = "";
             this.txtOutput.WordWrap = false;
@@ -298,7 +298,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 455);
+            this.ClientSize = new System.Drawing.Size(825, 500);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

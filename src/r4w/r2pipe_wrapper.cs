@@ -645,7 +645,7 @@ namespace r2pipe_test
                 }
                 else
                     menuText = args;
-                newitem = item.DropDownItems.Add(menuText);
+                newitem = item.DropDownItems.Add(menuText);                
                 newitem.Tag = callback_args;
                 newitem.Click += new EventHandler(MenuItemClick_CallbackHandler);
                 string cname = text; // text.Replace(" ", "").ToLower();
@@ -730,7 +730,7 @@ namespace r2pipe_test
             }
             newitem = item.DropDownItems.Add(string.Format("{0} ( {1} )", text, cmds));
             newitem.Tag = cmds;
-            newitem.Click += new EventHandler(MenuItemClickHandler);
+            newitem.Click += new EventHandler(MenuItemClickHandler);            
         }
         public void open(String fileName)
         {

@@ -13,7 +13,7 @@ namespace r2pipe_test
 {
     public partial class convertFrm : Form
     {
-        const string welcome_message    = "welcome to r4w gui powered by radare2";
+        const string welcome_message    = "Welcome to r4w gui powered by radare2";
         public string seek_address      = "0";
         public string blocksize         = "128";
         private R2PIPE_WRAPPER r2pw = null;
@@ -37,6 +37,12 @@ namespace r2pipe_test
                     break;
                 case "To MD5 hash":
                     command = "ph md5 " + this.blocksize + " @ " + this.seek_address;
+                    break;
+                case "To Entropy value":
+                    command = "ph entropy " + this.blocksize + " @ " + this.seek_address;
+                    break;
+                case "To C array":
+                    command = "pc " + this.blocksize + " @ " + this.seek_address;
                     break;
                 case "To Base64":
                     command = "p6e " + this.blocksize + " @ " + this.seek_address;
@@ -131,7 +137,9 @@ namespace r2pipe_test
             lstOperations.Items.Add("To Dissasembly");
             lstOperations.Items.Add("To Base64");
             lstOperations.Items.Add("From Base64");
+            lstOperations.Items.Add("To C array");
             lstOperations.Items.Add("To MD5 hash");
+            lstOperations.Items.Add("To Entropy value");            
             lstOperations.Items.Add("ASM to Hexpairs");
             lstOperations.Items.Add("Hexpairs to ASM");
             init_r2_commands();
@@ -171,12 +179,10 @@ namespace r2pipe_test
         {
             Close();
         }
-
         private void txtSeekAddress_TextChanged_1(object sender, EventArgs e)
         {
             this.seek_address = txtSeekAddress.Text;
         }
-
         private void txtBlockSize_TextChanged_1(object sender, EventArgs e)
         {
             this.blocksize = txtBlockSize.Text;
