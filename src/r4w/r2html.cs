@@ -26,15 +26,16 @@ namespace r2pipe_test
             string console_text_cut_copy = "";
             if (console_text == null) return null;
             console_text_cut = console_text;
+            console_text_cut = console_text_cut.Replace("<", "&lt");
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
             console_text_cut_copy = console_text_cut;            
             console_text_cut = (new Regex(@"(- offset -.+|int3\b)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");       
             console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=address id=_ title='$0'>$3 <span class=agfpad>$2</span></span>");
+                "<a name=$3></a><span class=address id=_ title='$0'>$3 <span class=agfpad>$2</span></span>");
             console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
-                "<span class=address id='_' title='$1'>$5<span class=agfpad>$2.$3$4</span></span>");
+                "<a name=$5></a><span class=address id='_' title='$1'>$5<span class=agfpad>$2.$3$4</span></span>");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2})([\s\]])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=number>$1</span>$2");
             console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -44,7 +45,7 @@ namespace r2pipe_test
             console_text_cut = (new Regex(@"([-\+]\s)([0-9]{1,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=number>$2</span>");
             console_text_cut = (address_regex.Replace(console_text_cut,
-                "<span class=address></span><span class=address title='$1' id=_>$1</span>"));
+                "<a name=$1></a><span class=address></span><span class=address title='$1' id=_>$1</span>"));
             console_text_cut = (new Regex(@"(push|pop\b|cli\b|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
             console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
@@ -61,7 +62,7 @@ namespace r2pipe_test
                 "<span class=op_err>$1</span>");
             console_text_cut = (new Regex(@"([\,\-\+\[\]\(\)])", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=group>$1</span>");
-            console_text_cut = (new Regex(@"([re]ip:|pc:)")).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"([re]ip:|pc\d?:)")).Replace(console_text_cut,
                 "<span class=esil_rip>$1</span>");
             
             html = "<div class=r2code id=r2code>" + console_text_cut + "</div>";
@@ -115,7 +116,8 @@ namespace r2pipe_test
             html_header += "<link href='" + css_filename + "' rel='stylesheet'>\r\n";
             //html_header += "<link rel = \"stylesheet\" href = \"https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css\" >\r\n";
             html_header += "<script src=\"" + jquery_base + "jquery-1.11.3.js\"></script>\r\n";
-            html_header += "<script>var r2output = null; addresses = null; pd_previews = null;</script>\r\n";
+            html_header += "<script>var r2output = null; addresses = null; pd_previews = null; </script>\r\n";
+            html_header += "<script>var address_hexlength = '" + r2pw.address_hexlength + "'; </script>\r\n";
             html_header += "</head>\r\n";
             html_header += "<body>\r\n";
             html_header += "<div id=my_dialog class=msg></div>\r\n";            

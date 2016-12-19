@@ -153,7 +153,9 @@
     <EmbeddedResource Include="webbrowser_container_form.resx">
       <DependentUpon>webbrowser_container_form.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Hotkeys.cs" />
+    <None Include="..\..\test_custom_wcontrol\Hotkeys.cs">
+      <Link>Hotkeys.cs</Link>
+    </None>
     <Compile Include="GuiControl.cs" />
     <Compile Include="r2html.cs" />
     <Compile Include="rconfig.cs" />
@@ -223,6 +225,7 @@
     <None Include="media\playbutton_small.png" />
     <None Include="media\step_over_icon.png" />
     <None Include="media\playbutton_gray_small.png" />
+    <None Include="media\paste.png" />
     <Content Include="r2logo3_boxed_rounded.ico" />
     <Content Include="scripts\r2html.js" />
   </ItemGroup>
@@ -241,7 +244,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\r2pipe\r2pipe.csproj">
+    <ProjectReference Include="..\..\r2pipe\r2pipe.csproj">
       <Project>{d5b3f257-e13e-42b5-a77e-aa0f809311fd}</Project>
       <Name>r2pipe</Name>
     </ProjectReference>

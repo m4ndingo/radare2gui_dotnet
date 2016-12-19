@@ -28,6 +28,8 @@ namespace r2pipe_test
         private bool skip_next_keydown = false;
         private bool esil_initilized = false;
         public string [] gui_args = null;
+        public bool followESIL = true;
+        private int sortColumn = -1;
         public Form1(string[] gui_args)
         {
             this.gui_args = gui_args;
@@ -81,7 +83,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Maps", "dmj", mainMenu);
             r2pw.add_menufcn("&View", "ESIL registers", "aerj", popup_cb, mainMenu);
             r2pw.add_menucmd("&View", "List all RBin plugins loaded", "iL", mainMenu);
-            r2pw.add_menucmd("&View", "Configuration", "ej", mainMenu);
+            r2pw.add_menucmd("Options", "View all", "ej", mainMenu);
             r2pw.add_menucmd("&View", "Debug registers", "drj", mainMenu);
             r2pw.add_menufcn("&View", "Call graph", "agf", newtab_cb, mainMenu);
             r2pw.add_menucmd("&View", "Flags", "fj", mainMenu);
@@ -89,6 +91,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
             r2pw.add_menucmd("r2", "Dbg cmds", "d?", mainMenu);
+            r2pw.add_menucmd("r2", "Locals", "afv?", mainMenu);
             r2pw.add_menucmd("r2", "Processes", "dp?", mainMenu);
             r2pw.add_menucmd("r2", "Strings", "i?", mainMenu);
             r2pw.add_menucmd("r2", "Search", "/?", mainMenu);
@@ -96,12 +99,16 @@ namespace r2pipe_test
             r2pw.add_menucmd("r2", "ESIL", "ae?", mainMenu);
             r2pw.add_menucmd("r2", "Print help", "p?", mainMenu);
             r2pw.add_menucmd("r2", "Version", "?V", mainMenu);
+            foreach (string config in r2pw.r2_config_vars)
+            {
+                r2pw.add_menucmd("r2 variables", config, "e?" + config, mainMenu);
+            }
             //add menu function callbacks
             r2pw.add_menufcn("ESIL", "initialize ESIL VM state", "aei", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "step", "aes", ESILcmds, mainMenu);
             r2pw.add_menufcn("ESIL", "registers", "aer", ESILcmds, mainMenu);
-            r2pw.add_menufcn("Settings", "switch utf8 encoding", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
-            r2pw.add_menufcn("Settings", "switch asm bytes", "e!asm.bytes", runCmds, mainMenu);
+            r2pw.add_menufcn("Switches", "switch utf8 encoding", "e!scr.utf8;e scr.utf8", runCmds, mainMenu);
+            r2pw.add_menufcn("Switches", "switch asm bytes", "e!asm.bytes", runCmds, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Dump controls", "*", r2pw.gui_controls.dump, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Enum registry vars", "*", dumpGuiVars, mainMenu);
             r2pw.add_menufcn("Miscelanea", "Purge r2pipe_gui_dotnet registry", "*", purgeR2pipeGuiRegistry, mainMenu);
@@ -186,18 +193,49 @@ namespace r2pipe_test
                     fileType = null;
                     if (fileType != null)
                         fileType = fileType.Replace("\n", "");
-                    arch = r2pw.run("iI~arch[1]", "output",true);
-                    if (arch == null || (arch!=null && arch.Length==0)) arch = "binary";
-                    arch = arch.Replace("\n", "");
-                    arch = Prompt("new arch", "select arch", arch);
-                    if (arch != null)
-                    {
-                        arch = arch.Replace("\n", "");
-                        r2pw.run("e asm.arch = " + arch, "output", true);
-                    }
+                    change_arch();
                 }
                 r2pw.run_script("openfile_post.txt");
             }
+        }
+        private void change_arch()
+        {
+            change_r2config("asm.arch", "iI~arch[1]", "binary");
+        }
+        private void change_r2config(string varname, string options_cmd, string def, string desc=null, string type=null)
+        {
+            string res = null;
+            res = prompt_r2config(varname, options_cmd, def, desc, type);
+            if (res != null && res!="?") // temp fix?
+            {
+                res = res.Replace("\n", "");
+                if (res.Contains(" "))
+                    res = "\"" + res + "\"";
+                r2pw.run("e "+varname+" = " + res, "output", true);
+                switch (varname)
+                {
+                    case "arch":
+                        arch = res;
+                        break;
+                }
+            }
+        }
+        private string prompt_r2config(string varname, string cmd_options, string def="", string desc=null, string type=null)
+        {
+            string res = null;
+            string msg = null;
+            if (res == null || (res != null && res.Length == 0))
+            {
+                //res = def;
+                res = r2pw.run_silent(cmd_options);
+                if (res.Length == 0) res = def;
+            }
+            if (desc == null) desc = "select " + varname;
+            msg = "new " + varname;
+            if (type != null) msg += "\ntype " + type;
+            res = res.Replace("\n", "");
+            res = Prompt(msg, desc, res);
+            return res;
         }
         private void CheckBinaryPath(string fileName, string varName, string defaultPath=null)
         {
@@ -395,10 +433,17 @@ namespace r2pipe_test
         }
         private void popup_tab(GuiControl c)
         {
+            WebBrowser wb = null;
             if (c == null)
             {
                 r2pw.Show("can't popup tab, control is null", "popup_tab");
                 return;
+            }
+            
+            if (r2pw.controls.ContainsKey(c.name) == false)
+            {
+                wb = r2pw.add_control_tab(c.name, c.cmds, (WebBrowser)c.control);
+                c.control = wb;
             }
             r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
         }
@@ -412,8 +457,13 @@ namespace r2pipe_test
             TabPage page = null;
             r2pw.run("s " + address);
             GuiControl gc = r2pw.gui_controls.findControlBy_cmds(cmds);
-            if( gc==null )
-                r2pw.add_control_tab(title, cmds);            
+            if (gc == null || gc.control == null)
+            {
+                WebBrowser wb=r2pw.add_control_tab(title, cmds);
+                if (gc == null)
+                    gc = new GuiControl(wb, title, title, cmds, title);
+                gc.control = wb;
+            }
             r2pw.run(cmds, title, false, null, null, false, false, gc);
             if (popup == true)
             {
@@ -481,9 +531,12 @@ namespace r2pipe_test
         }
         private void ESILcmds(string cmds)
         {
-            r2pw.run(cmds, "output", true);
-            if (cmds.StartsWith("ae"))
-                refresh_tab();
+            string controlName = "output";
+            if (cmds.Contains("pd "))
+                controlName = "dissasembly";
+            r2pw.run(cmds, controlName, true);
+            if (/*controlName == "output" && */cmds.StartsWith("ae"))
+                refresh_main_controls();
         }
         private void newtab_cb(string cmds)
         {
@@ -511,8 +564,23 @@ namespace r2pipe_test
             try
             {
                 rconfig.save("gui.hexdigits", int.Parse(nbits) / 8);
+                r2pw.run("aaa", "output", true);
+                refresh_main_controls();
             }
             catch (Exception e) { r2pw.Show(e.ToString(), "changeArch"); }
+        }
+        private void changeR2Config_cb(String varname)
+        {
+            varname = varname.Replace(" ", "");
+            string desc_cmd = "e?"  + varname;
+            string def_cmd  = "e "  + varname;
+            string type_cmd = "et " + varname;
+            string ops_cmd  = "e "  + varname + "=?"; // buggy?
+            string def      = r2pw.run(def_cmd,  "output", true);
+            string options  = r2pw.run(ops_cmd,  "output", true);
+            string type     = r2pw.run(type_cmd, "output", true);
+            string desc     = r2pw.run(desc_cmd, "output", true).TrimStart(' ');
+            change_r2config(varname, ops_cmd, def, desc, type);
         }
         private void changeCpu(String cpu)
         {
@@ -527,8 +595,9 @@ namespace r2pipe_test
         }
         private string num2hex() // decorator
         {
-            int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
-            string format = "0x{0:x" + (hexdigits / 2).ToString() + "}";
+            //int hexdigits = int.Parse(rconfig.load<int>("gui.hexdigits", 8));
+            string format = "0x{0:x" + r2pw.address_hexlength.ToString() + "}";
+            int addr_hexlength = r2pw.address_hexlength;
             string value = get_decoratorvalue_string();
             return string.Format(format, Int64.Parse(value));
         }
@@ -705,7 +774,7 @@ namespace r2pipe_test
             if (locked_tabs.Contains(controlName)) return;
             tabControl1.TabPages.Remove(tabControl1.SelectedTab);
             r2pw.controls.Remove(controlName); //check this
-            r2pw.gui_controls.remove_control_byName(controlName);
+            r2pw.gui_controls.close_control_byName(controlName);
         }
         private void hide_selected_tab()
         {
@@ -802,14 +871,24 @@ namespace r2pipe_test
         public webbrowser_container_form popup_tab()
         {
             WebBrowser webbrowser = new WebBrowser();
+            string cmds = "";
             string new_controlName = null;
             string tabTitle = selected_tab("title");
             String timeStamp = r2pw.get_timestamp();
             new_controlName = genControlName(tabTitle); // generate a short name for the control            
             new_controlName += "_" + timeStamp; // add some "mark" (timestamp)
             GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            if (gui_control_tab == null)
+            {
+                output("popup_tab(): error on findControlBy_tabTitle: tabTitle=" + tabTitle);
+                gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            }
+            else
+            {
+                cmds = gui_control_tab.cmds;
+            }
             GuiControl gui_control = r2pw.add_control(
-                new_controlName, webbrowser, "popup" + "_" + timeStamp, gui_control_tab.cmds);
+                new_controlName, webbrowser, "popup" + "_" + timeStamp, cmds);
             webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, gui_control);
 
             webbrowser.Dock = DockStyle.Fill;
@@ -819,7 +898,7 @@ namespace r2pipe_test
             refresh_control(gui_control);
             string frmTitle = tabTitle;
             if (!tabTitle.Contains("(") && !tabTitle.Equals(gui_control.cmds))
-                frmTitle = string.Format("{0} ( {1} )", tabTitle, gui_control_tab.cmds);
+                frmTitle = string.Format("{0} ( {1} )", tabTitle, cmds);
             webFrm.Text = frmTitle;
             webFrm.Show();
             return webFrm;
@@ -873,9 +952,18 @@ namespace r2pipe_test
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
+            esil_aes();
+        }
+        private void esil_aes()
+        {
+            string cmds = "aes";
+            int nHeaderLines = 8;
+            int nFooterLines = 24;
             if (esil_initilized == false)
                 initialize_esil();
-            ESILcmds("aes");
+            if (followESIL == true)
+                cmds += "; pd -" + nHeaderLines + " @ `drn PC`; pd " + nFooterLines + " @ `drn PC`";
+            ESILcmds(cmds);
         }
         private void classicToolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
@@ -978,7 +1066,12 @@ namespace r2pipe_test
         }
         private void tabControl1_Click(object sender, EventArgs e)
         {
-            //autoresize_output();
+            tsDebug.Enabled = false;
+            if (tabcontrol.SelectedTab.Text.Equals("Dissasembly") ||
+                tabcontrol.SelectedTab.Text.Equals("Hex view") ||
+                tabcontrol.SelectedTab.Text.Equals("Call graph"))
+                tsDebug.Enabled = true;
+
             cmbCmdline.Focus();
         }
         private void maximizeOutputToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1123,6 +1216,7 @@ namespace r2pipe_test
         private void refresh_functions_listview()
         { 
             GuiControl gui_control = find_control_by_name("functions_listview");
+            r2pw.run("aaa", "output", true);
             refresh_control(gui_control); // need timeout here, but command *j fails sometimes :_/
         }
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1189,15 +1283,24 @@ namespace r2pipe_test
             catch (Exception) { }
         }
         public void selectFunction(string address){
-            ListViewItem item   = null;
-            string fcnName      = address; // 1st column of listview
-            item                = listView1.FindItemWithText(fcnName);
+            ListViewItem item = null;
+            string address_value = Regex.Replace(address, "^0x0*", "");
+            foreach (ListViewItem i in listView1.Items)
+            {
+                ListViewItem.ListViewSubItem sitem = i.SubItems[1];
+                string sitem_value = sitem.Text;
+                sitem_value = Regex.Replace(sitem_value, "^0x0*", "");
+                if (sitem_value.Equals(address_value))
+                {
+                    item = i;
+                    break;
+                }
+            }
             if (item!=null)
             {
                 listView1.SelectedIndices.Clear();
                 item.Selected = true;
                 item.EnsureVisible();
-                //Console.WriteLine(item);
             }
         }
         private string get_currentlistview_selected_address()
@@ -1216,7 +1319,8 @@ namespace r2pipe_test
                             addr_index = i;
                         i++;
                     }
-                    if (addr_index != -1) address = lstView.SelectedItems[0].SubItems[addr_index].Text;
+                    if (addr_index != -1 && lstView.SelectedItems.Count>0) 
+                        address = lstView.SelectedItems[0].SubItems[addr_index].Text;
                 }
             }
             return address;
@@ -1285,6 +1389,10 @@ namespace r2pipe_test
         }
         private void toolStripButton1_Click_1(object sender, EventArgs e)
         {
+            esil_continueuntiladdress();
+        }
+        private void esil_continueuntiladdress()
+        {
             string pc = null;
             if ( esil_initilized == false )
                 initialize_esil();
@@ -1296,8 +1404,11 @@ namespace r2pipe_test
                 ESILcmds("aesu " + pc);
             }
         }
-        private int sortColumn = -1;
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(listView1, e);
+        }
+        private void sort_column(ListView lstView, ColumnClickEventArgs e)
         {
             // Determine whether the column is the same as the last column clicked.
             if (e.Column != sortColumn)
@@ -1305,7 +1416,7 @@ namespace r2pipe_test
                 // Set the sort column to the new column.
                 sortColumn = e.Column;
                 // Set the sort order to ascending by default.
-                listView1.Sorting = SortOrder.Ascending;
+                lstView.Sorting = SortOrder.Ascending;
             }
             else
             {
@@ -1317,11 +1428,11 @@ namespace r2pipe_test
             }
 
             // Call the sort method to manually sort.
-            listView1.Sort();
+            lstView.Sort();
             // Set the ListViewItemSorter property to a new ListViewItemComparer
             // object.
-            this.listView1.ListViewItemSorter = new ListViewItemComparer(e.Column,
-                                                              listView1.Sorting);
+            lstView.ListViewItemSorter = new ListViewItemComparer(e.Column,
+                                                              lstView.Sorting);
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -1416,11 +1527,128 @@ namespace r2pipe_test
             r2pw.add_control_tab(title, cmds);
             r2pw.run(cmds, title);*/
         }
-
         private void converterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             convertFrm frm = new convertFrm(this.r2pw);
             frm.Show();
+        }
+        private void gotoAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.gotoAddress(Prompt("New address:", "Goto address (s)eek"));
+        }
+        private void changePcBtn_Click(object sender, EventArgs e)
+        {
+            esil_changepc();
+        }
+        private void esil_changepc()
+        {
+            string pc = null, pc_name = null;
+            if (esil_initilized == false)
+                initialize_esil();
+            pc = r2pw.run("? $$~[1]", "output", true).Replace("\n", "");
+            pc_name = r2pw.run("drn PC", null, false, null, null, false, true).Replace("\n", "");
+            pc = Prompt("\"" + pc_name + "\" address?  aepc @", "Change ESIL " + pc_name + " register");
+            if (pc != null)
+            {
+                ESILcmds("aepc " + pc);
+            }
+        }
+        private void lstStrings_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstStrings, e);
+        }
+        private void lstImports_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstImports, e);
+        }
+        private void lstSections_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstSections, e);
+        }
+        private void lstProcesses_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            sort_column(lstProcesses, e);
+        }
+        private void xrefsAxtjToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            string selected_address = get_currentlistview_selected_address();
+            if (selected_address != null)
+                try
+                {
+                    r2pw.popup_cmds_send("Xrefs", "axtj @ " + selected_address, true);                    
+                }
+                catch (Exception) { } // may fail
+        }
+        private void changeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            change_arch();
+        }
+        private void archToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            r2pw.popup_cmds_send(item.Text, "e " + item.Text + "=?j", false);
+        }
+        private void followESILExecutionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            followESIL = !followESIL;
+            output("this.followESIL = " + followESIL.ToString());
+        }
+        private void archToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            change_arch();
+        }
+        private void reloadToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            reload_r2configvars(sender);
+        }
+        private void reload_r2configvars(object sender)
+        {
+            if (r2pw == null) return;
+            ((ToolStripMenuItem)sender).Text = "Reload r2 vars";
+            Refresh();
+            Cursor.Current = Cursors.WaitCursor;
+            foreach (string config in r2pw.r2_config_vars)
+            {
+                string eAsmList = r2pw.run_silent("e~"+config+".");
+                ToolStripMenuItem item = r2pw.find_menucmd(config, mainMenu);
+                item.DropDownItems.Clear();
+                foreach (string eAsm in eAsmList.Split('\n'))
+                {
+                    string []fields = eAsm.Split('=');
+                    r2pw.add_menufcn(
+                        config, 
+                        fields[1].TrimEnd(' '), 
+                        fields[0].TrimStart(' '), 
+                        changeR2Config_cb, 
+                        mainMenu, 
+                        true);
+                }
+            }
+            Cursor.Current = Cursors.Default;
+        }
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            r2pw.run("e?anal", "e anal", true);
+        }
+        private void playBtn_Click(object sender, EventArgs e)
+        {
+            initialize_esil();
+        }
+        private void changePcBtn_Click_1(object sender, EventArgs e)
+        {
+            esil_changepc();
+        }
+        private void stepBtn_Click(object sender, EventArgs e)
+        {
+            esil_aes();
+        }
+        private void continueUntilBtn_Click(object sender, EventArgs e)
+        {
+            esil_continueuntiladdress();
+        }
+
+        private void tabControl1_TabIndexChanged(object sender, EventArgs e)
+        {
         }
     }
     public class ListViewItemComparer : IComparer

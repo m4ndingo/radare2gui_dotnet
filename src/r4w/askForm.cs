@@ -22,24 +22,20 @@ namespace r2pipe_test
             Text            = caption;
             txtHeader.Text  = caption;
             if (defval != null) txtAnswer.Text = defval;
-            resize_controls();
-            o.ShowDialog();
+            o.ShowDialog();            
             if( answer!=null )
                 answer = answer.Replace("\n", "").Replace("\r", "");
             return answer;
         }
         private void recenter_form()
         {           
-            int new_top = (top_orig * 24) / 32;
-            if (owner != null)
-                new_top += owner.Top;
-            CenterToParent();
-            this.Top = new_top;
+            //CenterToParent();
+            CenterToScreen();
         }
         private void resize_controls()
         {
             if (txtAnswer.TextLength > 20)
-                this.Width = width_orig * 2;
+                this.Width = ( width_orig * 30 ) / 20;
             recenter_form();
         }
         private void txtAnswer_TextChanged(object sender, System.EventArgs e)
@@ -51,7 +47,38 @@ namespace r2pipe_test
             if (e.KeyCode == Keys.Escape ||
                 e.KeyCode == Keys.Enter) this.Close();
         }
-        private void btnOpenfile_Click(object sender, System.EventArgs e)
+        private void askForm_VisibleChanged(object sender, System.EventArgs e)
+        {
+            recenter_form();
+        }
+        private void btnCancel_Click(object sender, System.EventArgs e)
+        {
+            answer = null;
+        }
+
+        private void pasteClipboard()
+        {
+            txtAnswer.Text = Clipboard.GetText();
+            txtAnswer.Focus();
+            if (txtAnswer.TextLength > 0)
+            {
+                txtAnswer.SelectionStart = txtAnswer.TextLength;
+                txtAnswer.SelectionLength = 0;
+            }
+        }
+
+        private void askForm_Load(object sender, EventArgs e)
+        {
+            recenter_form();
+            System.Windows.Forms.ToolTip ToolTip1 = new System.Windows.Forms.ToolTip();
+            ToolTip1.SetToolTip(btnPaste, "Paste clipboard text");
+            ToolTip1.SetToolTip(btnOpenfile, "Browse for file ...");            
+        }
+        private void btnPaste_Click_1(object sender, EventArgs e)
+        {
+            pasteClipboard();
+        }
+        private void btnOpenfile_Click_1(object sender, EventArgs e)
         {
             openFileDialog1.Title = txtHeader.Text;
             openFileDialog1.FileName = txtAnswer.Text;
@@ -63,14 +90,16 @@ namespace r2pipe_test
             }
             catch (Exception) { } // may fail
             resize_controls();
-         }
-        private void askForm_VisibleChanged(object sender, System.EventArgs e)
-        {
-            recenter_form();
         }
-        private void btnCancel_Click(object sender, System.EventArgs e)
+
+        private void btnCancel_Click_1(object sender, EventArgs e)
         {
             answer = null;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            answer = txtAnswer.Text;
         }
     }
 }
