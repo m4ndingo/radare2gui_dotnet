@@ -38,6 +38,12 @@ namespace r2pipe_test
                 case "To MD5 hash":
                     command = "ph md5 " + this.blocksize + " @ " + this.seek_address;
                     break;
+                case "To Base64":
+                    command = "p6e " + this.blocksize + " @ " + this.seek_address;
+                    break;
+                case "From Base64":
+                    command = "p6d " + this.blocksize + " @ " + this.seek_address;
+                    break;
                 case "ASM to Hexpairs":
                     if (txtInput.Text.Equals(welcome_message))
                         txtInput.Text = "nop";
@@ -95,25 +101,27 @@ namespace r2pipe_test
         {
             Color foreColor = Color.FromName(r2pw.rconfig.load<string>("gui.output.fg", "black"));
             Color backColor = r2pw.theme_background();
-            Color foreColor_lbl = Color.FromName(r2pw.rconfig.load<string>("gui.output.fg.sym", "black"));
+            Color foreColor_lbl = Color.FromName(r2pw.rconfig.load<string>("gui.output.fg", "black"));
+            Color backcolor_lst = Color.FromName(r2pw.rconfig.load<string>("gui.output.bg.imp", "white")); 
             this.ForeColor = foreColor;
             this.BackColor = backColor;
             lstOperations.BackColor = backColor;
             lstOperations.ForeColor = foreColor;
-            txtCommands.BackColor = backColor;
+            txtCommands.BackColor = backcolor_lst;
             txtCommands.ForeColor = foreColor;
             txtInput.BackColor = backColor;
             txtInput.ForeColor = foreColor;
-            cmdWriteInput.BackColor = backColor;
+            cmdWriteInput.BackColor = backcolor_lst;
             cmdWriteInput.ForeColor = foreColor;
-            txtSeekAddress.BackColor = backColor;
+            txtSeekAddress.BackColor = backcolor_lst;
             txtSeekAddress.ForeColor = foreColor;
-            txtBlockSize.BackColor = backColor;
+            txtBlockSize.BackColor = backcolor_lst;
             txtBlockSize.ForeColor = foreColor;
             txtOutput.BackColor = backColor;
             txtOutput.ForeColor = foreColor;
-            btnConvert.BackColor = foreColor;
-            btnConvert.ForeColor = backColor;
+            //btnConvert.BackColor = foreColor;
+            //btnConvert.ForeColor = backColor;
+            lstOperations.BackColor = backcolor_lst;
             lblInput.ForeColor = foreColor_lbl;
             lblSeek.ForeColor = foreColor_lbl;
             lblBlock.ForeColor = foreColor_lbl;
@@ -121,6 +129,8 @@ namespace r2pipe_test
             lblCommands.ForeColor = foreColor_lbl;
             lstOperations.Items.Add("To Hexdump");
             lstOperations.Items.Add("To Dissasembly");
+            lstOperations.Items.Add("To Base64");
+            lstOperations.Items.Add("From Base64");
             lstOperations.Items.Add("To MD5 hash");
             lstOperations.Items.Add("ASM to Hexpairs");
             lstOperations.Items.Add("Hexpairs to ASM");
@@ -143,6 +153,33 @@ namespace r2pipe_test
         private void txtCommands_KeyDown(object sender, KeyEventArgs e)
         {
             btnConvert.Enabled = true;
+        }
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtCommands.Clear();
+            txtOutput.Clear();
+            if (MessageBox.Show("Clear input?", "Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                txtInput.Clear();
+                txtInput.Focus();
+            }else
+            {
+                txtCommands.Focus();
+            }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void txtSeekAddress_TextChanged_1(object sender, EventArgs e)
+        {
+            this.seek_address = txtSeekAddress.Text;
+        }
+
+        private void txtBlockSize_TextChanged_1(object sender, EventArgs e)
+        {
+            this.blocksize = txtBlockSize.Text;
         }
     }
 }

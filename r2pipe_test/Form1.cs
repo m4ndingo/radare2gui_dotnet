@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -1337,6 +1336,7 @@ namespace r2pipe_test
         {
             if (e.Button == MouseButtons.Right)
             {
+                if (listView1.FocusedItem == null) return;
                 if (listView1.FocusedItem.Bounds.Contains(e.Location) == true)
                 {
                     dynamic json_obj = null;
