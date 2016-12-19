@@ -7,7 +7,7 @@ namespace r2pipe_test
     public partial class webbrowser_container_form : Form
     {
         R2PIPE_WRAPPER r2pw = null;
-        GuiControl control = null;
+        public GuiControl control = null;
         IntPtr MenuHandle;
         public webbrowser_container_form(R2PIPE_WRAPPER r2pw, GuiControl control)
         {

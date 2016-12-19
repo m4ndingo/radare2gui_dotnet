@@ -21,7 +21,7 @@ namespace r2pipe_test
             askLabel.Text   = text;
             Text            = caption;
             txtHeader.Text  = caption;
-            if (defval != null) txtAnswer.Text = defval;
+            if (defval != null) txtAnswer.Text = defval;            
             o.ShowDialog();            
             if( answer!=null )
                 answer = answer.Replace("\n", "").Replace("\r", "");

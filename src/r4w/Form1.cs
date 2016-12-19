@@ -456,13 +456,17 @@ namespace r2pipe_test
             string address = get_selectedAddress(listView1);
             this.SuspendLayout();
             TabPage page = null;
+            webbrowser_container_form webFrm = null;
             r2pw.run("s " + address);
             GuiControl gc = r2pw.gui_controls.findControlBy_cmds(cmds);
             if (gc == null || gc.control == null)
             {
                 WebBrowser wb=r2pw.add_control_tab(title, cmds);
+                webFrm = popup_tab();
+                gc.wcf = webFrm;
                 if (gc == null)
-                    gc = new GuiControl(wb, title, title, cmds, title);
+                    gc = new GuiControl(wb, title, title, cmds, title,
+                        null, null, null, -1, webFrm);
                 gc.control = wb;
             }
             r2pw.run(cmds, title, false, null, null, false, false, gc);
@@ -474,7 +478,7 @@ namespace r2pipe_test
                     if (page.Text == title)
                     {
                         tabcontrol.SelectedTab = page;
-                        webbrowser_container_form webFrm = popup_tab();
+                        
                         close_selected_tab();
                         webFrm.Focus();
                     }
@@ -891,7 +895,7 @@ namespace r2pipe_test
             GuiControl gui_control = r2pw.add_control(
                 new_controlName, webbrowser, "popup" + "_" + timeStamp, cmds);
             webbrowser_container_form webFrm = new webbrowser_container_form(r2pw, gui_control);
-
+            gui_control.wcf = webFrm;
             webbrowser.Dock = DockStyle.Fill;
             webFrm.Controls.Add(webbrowser);
             webFrm.Width = Width - splitContainer1.SplitterDistance;
@@ -1131,6 +1135,21 @@ namespace r2pipe_test
         {
             refresh_tab();
         }
+        public void minimize_control(GuiControl control, bool timeout = false)
+        {
+            if (control != null && control.wcf != null)
+            {
+                control.top_level = control.wcf.TopLevel;
+                control.wcf.TopLevel = false;
+            }
+        }
+        public void restore_control(GuiControl control, bool timeout = false)
+        {
+            if (control != null && control.wcf != null)
+            {
+                control.wcf.TopLevel = control.top_level;
+            }
+        }
         public void refresh_control(GuiControl control, bool timeout = false)
         {
             if (control != null && control.cmds != null)
@@ -1164,7 +1183,9 @@ namespace r2pipe_test
         public string Prompt(string text, string caption, string defval = "")
         {
             askForm frm = new askForm();
+            minimize_popups();
             string answer = frm.Prompt(text, caption, defval, frm, this);
+            restore_popups();
             if (answer != null) answer = answer.Replace("\n", "");
             return answer;
         }
@@ -1247,6 +1268,30 @@ namespace r2pipe_test
         private void refreshAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             refresh_popups();
+        }
+        public void restore_popups()
+        {
+            try
+            {
+                foreach (GuiControl c in r2pw.gui_controls.controls)
+                {
+                    if (c.tabTitle != null && c.tabTitle.StartsWith("popup_") && c.synchronize == true)
+                        restore_control(c);
+                }
+            }
+            catch (Exception) { }; // may fail, better catch
+        }
+        public void minimize_popups()
+        {
+            try
+            {
+                foreach (GuiControl c in r2pw.gui_controls.controls)
+                {
+                    if (c.tabTitle != null && c.tabTitle.StartsWith("popup_") && c.synchronize == true)
+                        minimize_control(c);
+                }
+            }
+            catch (Exception) { }; // may fail, better catch
         }
         public void refresh_popups()
         {

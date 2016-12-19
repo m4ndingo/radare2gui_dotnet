@@ -595,7 +595,7 @@ namespace r2pipe_test
             //controls.Remove(controlName);
             gui_controls.remove_control_byName(controlName);
         }
-        public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null)
+        public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null, webbrowser_container_form wcf = null)
         {
             string pre_cmd = "", pos_cmd = "";
             if (name == null) return null;
@@ -608,7 +608,8 @@ namespace r2pipe_test
             }
             GuiControl gui_control = gui_controls.add_control
                 (name, control, tabTitle, cmds,
-                pre_cmd, pos_cmd, tabcontrol.SelectedIndex);
+                pre_cmd, pos_cmd, tabcontrol.SelectedIndex,
+                wcf);
             if (control.GetType() == typeof(WebBrowser))
             {
                 ((WebBrowser)control).PreviewKeyDown -= new PreviewKeyDownEventHandler(webBrowser_PreviewKeyDown);
@@ -652,7 +653,7 @@ namespace r2pipe_test
                 gui_controls.add_control(cname, null, menuText, args, "", "", tabcontrol.SelectedIndex);
             }
         }
-        public WebBrowser add_control_tab(string tabname, string cmds, WebBrowser browser = null)
+        public WebBrowser add_control_tab(string tabname, string cmds, WebBrowser browser = null, webbrowser_container_form webFrm = null)
         {
             if ( tabcontrol == null)
                 return null;
@@ -688,7 +689,7 @@ namespace r2pipe_test
             {
                 page.Select();
                 tabcontrol.SelectedTab = page;
-                add_control(tabname, browser, tabname, cmds);
+                add_control(tabname, browser, tabname, cmds, webFrm);
             }
             guicontrol.autoresize_output();
             return browser;

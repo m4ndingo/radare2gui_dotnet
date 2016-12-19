@@ -16,12 +16,15 @@ namespace r2pipe_test
         public string pre_cmd   = null;
         public string pos_cmd   = null;
         public bool   closed    = false;
+        public bool   top_level = true;
         public int    tab_index = -1;
         public bool synchronize = true;
         public string address_tag = null;
+        public webbrowser_container_form wcf = null;
         public List<string> column_titles = null;
         public GuiControl(object control, string name, string sName, string cmds, string tabTitle, 
-            List<string> column_titles = null, string pre_cmd = null, string pos_cmd=null, int tab_index = -1)
+            List<string> column_titles = null, string pre_cmd = null, string pos_cmd=null, int tab_index = -1,
+            webbrowser_container_form wcf = null)
         {
             this.control    = control;
             this.name       = name;
@@ -32,6 +35,7 @@ namespace r2pipe_test
             this.pre_cmd    = pre_cmd;
             this.pos_cmd    = pos_cmd;
             this.tab_index  = tab_index;
+            this.wcf        = wcf;
         }
         public void set_columnTitles(List<string> column_titles)
         {
@@ -61,7 +65,8 @@ namespace r2pipe_test
             controls = new List<GuiControl>();
         }
         public GuiControl add_control(string name, object control, string tabTitle = null, string cmds = null,
-        string pre_cmd = null, string pos_cmd = null, int tab_index = -1)
+        string pre_cmd = null, string pos_cmd = null, int tab_index = -1,
+            webbrowser_container_form wcf = null)
         {
             GuiControl gui_control = null;
             if (name == null || name.Length == 0) return null;
@@ -85,8 +90,8 @@ namespace r2pipe_test
                     sName = sName.Substring(0, pos);
                 }
                 gui_control = new GuiControl(
-                    control, name, sName, cmds, tabTitle, null, 
-                    pre_cmd, pos_cmd, tab_index);
+                    control, name, sName, cmds, tabTitle, null,
+                    pre_cmd, pos_cmd, tab_index, wcf);
                 controls.Add(gui_control);
             }
             catch (Exception e)
