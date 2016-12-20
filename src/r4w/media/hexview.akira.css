@@ -1,0 +1,110 @@
+body{
+	background:#121314 url('akira.jpg');
+	color:#54e1b9;
+	font-weight:bold;
+	background-repeat: repeat;
+	background-attachment: fixed;
+	padding:0;
+	margin:0;
+	font-size:14px;
+}
+.hexb{
+	color:#eee;
+}
+.number{
+	color:#d07917;
+}
+.r2code, .tbl, .tbl_dict{
+	position:absolute;
+	left:0;
+	top:0;
+	line-height: 1.1em;
+	white-space:pre;
+	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
+	cursor:default;
+	font-weight:bold;
+	padding:3px;
+}
+.tbl{
+    border-collapse:collapse;
+}
+.tbl td{
+    display:table-cell;
+    padding:5px;
+    border:1px solid #446;
+}
+.tbl th{
+	color:black;
+    background:white;
+	text-align:left;
+    padding:5px;
+    font-weight:normal;
+    border:1px solid #bbaaaa;
+}
+.tbl tr { 
+	line-height: 6px; 
+}
+.tbl_dict th{
+	color:white;
+	text-align:left;
+}
+.tbl_dict{
+	font-size:14px;
+}
+.comment{
+	color:#bccad6;
+}
+.address, .shorted_address, .from{
+	color:#4ebf22;
+	}
+.address:hover, .from:hover{
+	text-decoration:underline;
+}
+.shorted_address:hover{
+	text-decoration:underline;
+	background:#ee0;
+}
+.address_selected, .from_selected {
+    background:#ee4;
+	color: #44f;
+}
+.group{
+	color: white;
+}
+.op_call{
+	background: #eedb73;
+	color: #000;
+}
+.op_stack{
+	color: #c949a4;
+}
+.op_ip{
+	color: #4ebf22;
+}
+.op_mov{
+	color: #fff;
+}
+.op_add{
+	color: #d07917;
+}
+.op_err{
+	color: red;
+}
+.op_nop{
+	color: #6060f0;
+}
+.esil_rip{
+	background:#aaa;
+	color:#008;
+}
+.msg{
+    background:#000;
+    border:solid 1px #aaa;
+    padding:2px;
+    display:none;
+    white-space:pre;
+	font-size:11px;
+}
+.agfpad{
+	color:#121314;
+}
