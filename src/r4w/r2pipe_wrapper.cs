@@ -409,34 +409,40 @@ namespace r2pipe_test
         {
             string url = null;
             object c = null;
-            if (gc.control == null)
+            if (gc != null)
             {
-                if (!controls.ContainsKey(controlName))
+                if (gc.control == null)
                 {
-                    Console.WriteLine("Controls don't contain key " + controlName,
-                        "sendToWebBrowser", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    c = gc.control;
+                    if (!controls.ContainsKey(controlName))
+                    {
+                        Console.WriteLine("Controls don't contain key " + controlName,
+                            "sendToWebBrowser", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        c = gc.control;
+                    }
+                    else
+                    {
+                        c = controls[controlName];
+                    }
                 }
                 else
                 {
-                    c = controls[controlName];
+                    c = gc.control;
                 }
-            }
-            else
-            {
-                c = gc.control;
             }
             if (someText == null && cached_results.ContainsKey(controlName)) 
                 someText = cached_results[controlName];
             url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
             if (gc != null && gc.address_tag != null)
                 url += "#" + gc.address_tag;
-            ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
-            try
+            if (c != null)
             {
-                ((WebBrowser)c).Navigate(url);
+                ((WebBrowser)c).DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
+                try
+                {
+                    ((WebBrowser)c).Navigate(url);
+                }
+                catch (Exception) { } // better manage
             }
-            catch (Exception) { } // better manage
         }
         public void set_theme(string themeName)
         {
