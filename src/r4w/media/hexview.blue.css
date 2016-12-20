@@ -1,0 +1,78 @@
+body{
+	background:#000084;
+	color:#ccc;
+	font-weight:bold;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+.r2code, .tbl, .tbl_dict{
+	line-height: 1.1em;
+	white-space:pre;
+	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
+	font-size:12px;
+	cursor:arrow;
+	font-weight:bold;
+}
+.tbl_dict{
+   border: 0px solid #a4c8e7;
+   padding:0:
+   margin:0;
+   border-spacing: 0;
+   border-collapse: collapse;
+}
+.comment{
+	color:#00ffff;
+}
+.address, .shorted_address, .from {
+	color:#ffff00;
+	cursor:default;
+}
+.address:hover, .from:hover{
+	text-decoration:underline;
+}
+.address_selected {
+    background:#ee4;
+	color:#646;
+}
+.shorted_address:hover{
+	text-decoration:underline;
+	background:#ee0;
+}
+.number{color:lime;}
+.hexb{
+	color:#a4c8e7;
+}
+.group{
+	color:#00ffff;
+}
+.op_stack{
+	color:#00ffff;
+}
+.op_ip{
+	color:#00ffff;
+}
+.op_call{
+	color:#00ffff;
+}
+.op_mov{
+	color:#00ffff;
+}
+.op_add{
+	color:#00ffff;
+}
+.op_err{
+	color: red;
+}
+.op_nop{
+	color:#00ffff;
+}
+.agfpad{
+	color:#000084;
+}
+.msg{
+    background:#220618;
+    border:solid 1px #cca;
+    padding:2px;
+    display:none;
+    white-space:pre;
+}
