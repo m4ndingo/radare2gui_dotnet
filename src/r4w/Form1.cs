@@ -432,7 +432,7 @@ namespace r2pipe_test
             if (addr != null && addr.Length > 0)
                 runCmds("axtj @ " + addr);            
         }
-        private void popup_tab(GuiControl c)
+        /*private void popup_tab(GuiControl c)
         {
             WebBrowser wb = null;
             if (c == null)
@@ -447,7 +447,7 @@ namespace r2pipe_test
                 c.control = wb;
             }
             r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
-        }
+        }*/
         public void popup_cmds(string title, string cmds, bool popup=true)
         {
             int i;
@@ -455,26 +455,27 @@ namespace r2pipe_test
             tabcontrol.SuspendLayout();
             string address = get_selectedAddress(listView1);
             this.SuspendLayout();
-            TabPage page = null;
+            //TabPage page = null;
             webbrowser_container_form webFrm = null;
             r2pw.run("s " + address);
             GuiControl gc = r2pw.gui_controls.findControlBy_cmds(cmds);
             if (gc == null || gc.control == null)
             {
-                WebBrowser wb=r2pw.add_control_tab(title, cmds);
-                webFrm = popup_tab();
+                WebBrowser wb=r2pw.add_control_tab(title, cmds, null, null, popup);
+                gc = new GuiControl(wb, title + cmds, title, cmds, title,
+                    null, null, null, -1, webFrm);
+                if (popup == true)
+                {
+                    webFrm = popup_tab(gc);
+                }
                 gc.wcf = webFrm;
-                if (gc == null)
-                    gc = new GuiControl(wb, title, title, cmds, title,
-                        null, null, null, -1, webFrm);
-                gc.control = wb;
             }
             r2pw.run(cmds, title, false, null, null, false, false, gc);
             if (popup == true)
             {
                 for (i = 0; i < tabcontrol.TabPages.Count; i++)
                 {
-                    page = tabcontrol.TabPages[i];
+                    TabPage page = tabcontrol.TabPages[i];
                     if (page.Text == title)
                     {
                         tabcontrol.SelectedTab = page;
@@ -851,7 +852,7 @@ namespace r2pipe_test
             if (tabTag != null) cmds = tabTag;
             if (tabTitle == "Dissasembly") cmds = "pd 20";
             if (tabTitle == "Hex view") cmds = "pxa";
-            if (tabTitle == "Strings") cmds = "iz";
+            if (tabTitle == "Strings") cmds = "izz";
             if (tabTitle == "Sections") cmds = "iS";
             if (tabTitle == "Imports") cmds = "ii";
             if (tabTitle == "Processes") cmds = "dp";
@@ -873,16 +874,24 @@ namespace r2pipe_test
         {
             popup_tab();
         }
-        public webbrowser_container_form popup_tab()
+        public webbrowser_container_form popup_tab(GuiControl gc=null)
         {
             WebBrowser webbrowser = new WebBrowser();
             string cmds = "";
             string new_controlName = null;
             string tabTitle = selected_tab("title");
             String timeStamp = r2pw.get_timestamp();
+            if (tabTitle == null && gc != null)
+            {
+                tabTitle = gc.tabTitle;
+            }
             new_controlName = genControlName(tabTitle); // generate a short name for the control            
             new_controlName += "_" + timeStamp; // add some "mark" (timestamp)
-            GuiControl gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
+            GuiControl gui_control_tab = null;
+            if (gc != null)
+                gui_control_tab = gc;
+            else
+                gui_control_tab = r2pw.gui_controls.findControlBy_tabTitle(tabTitle);
             if (gui_control_tab == null)
             {
                 output("popup_tab(): error on findControlBy_tabTitle: tabTitle=" + tabTitle);
@@ -906,6 +915,10 @@ namespace r2pipe_test
                 frmTitle = string.Format("{0} ( {1} )", tabTitle, cmds);
             webFrm.Text = frmTitle;
             webFrm.Show();
+           
+            //tabControl1.TabPages.Remove(tabControl1.SelectedTab);
+            //r2pw.controls.Remove(tabTitle); //check this
+            //r2pw.gui_controls.close_control_byName(tabTitle);
             return webFrm;
         }
         private string genControlName(string longName)
@@ -1044,6 +1057,7 @@ namespace r2pipe_test
         }
         public void autoresize_output() // useful after output maximized
         {
+            if (tabControl1.SelectedTab == null) return;
             try // may fail on async runs
             {
                 // left "functions" splitter
@@ -1164,7 +1178,7 @@ namespace r2pipe_test
                     }
                 }
                 if (timeout == false)
-                    r2pw.run(control.cmds, control.name, false, column_titles,null,false,true,control); // no timeout
+                    r2pw.run(control.cmds, control.name, false, column_titles,null,false,false,control); // no timeout
                 else
                     r2pw.run_task(control.cmds, control.name, false, column_titles); // with timeout
             }
@@ -1623,7 +1637,10 @@ namespace r2pipe_test
                 {
                     r2pw.popup_cmds_send("Xrefs", "axtj @ " + selected_address, true);                    
                 }
-                catch (Exception) { } // may fail
+                catch (Exception exc) 
+                { 
+                    output(exc.ToString());
+                } // may fail
         }
         private void changeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1692,9 +1709,12 @@ namespace r2pipe_test
         {
             esil_continueuntiladdress();
         }
-
         private void tabControl1_TabIndexChanged(object sender, EventArgs e)
         {
+        }
+        private void blueToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            changeTheme("blue");
         }
     }
     public class ListViewItemComparer : IComparer

@@ -70,6 +70,10 @@ namespace r2pipe_test
                     config.save("gui.output.bg", "Khaki");
                     config.save("gui.output.fg", "black");
                     break;
+                case "blue":
+                    config.save("gui.output.bg", "DarkBlue");
+                    config.save("gui.output.fg", "white");
+                    break;
             }
             Console.WriteLine("set_theme: {0}", themeName);
         }

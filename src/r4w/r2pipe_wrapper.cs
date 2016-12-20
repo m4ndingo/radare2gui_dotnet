@@ -505,13 +505,13 @@ namespace r2pipe_test
             GuiControl dissasembly = gui_controls.findControlBy_name("dissasembly");
             GuiControl hexview     = gui_controls.findControlBy_name("hexview");
             GuiControl callgraph   = gui_controls.findControlBy_name("Call graph");
+            run("s " + address, "output", true);
             dissasembly.address_tag = address_tag;
-            run("s " + address_tag, "output", true);
+            guicontrol.refresh_control(dissasembly);
+            run("s " + address_tag, "output", true);            
             guicontrol.refresh_control(hexview);
             guicontrol.refresh_control(callgraph);
             guicontrol.refresh_popups();
-            run("s " + address, "output", true);
-            guicontrol.refresh_control(dissasembly);
             guicontrol.selectFunction(address);
         }
         public void gotoAddress(string address)
@@ -520,7 +520,7 @@ namespace r2pipe_test
             {
                 string current_function_address = address;
                 if(tabcontrol.SelectedTab.Text.StartsWith("Dissasembly")==false)
-                    current_function_address = run_silent("afi~offset[1]");
+                    current_function_address = run_silent("s "+ address+"; afi~offset[1]; s -");
                 seekaddress_showtag(current_function_address, address);
                 //run("s " + current_function_address, "output", true);
                 //update controls
@@ -653,7 +653,7 @@ namespace r2pipe_test
                 gui_controls.add_control(cname, null, menuText, args, "", "", tabcontrol.SelectedIndex);
             }
         }
-        public WebBrowser add_control_tab(string tabname, string cmds, WebBrowser browser = null, webbrowser_container_form webFrm = null)
+        public WebBrowser add_control_tab(string tabname, string cmds, WebBrowser browser = null, webbrowser_container_form webFrm = null, bool popup=false)
         {
             if ( tabcontrol == null)
                 return null;
@@ -678,7 +678,7 @@ namespace r2pipe_test
             }
             try
             {
-                tabcontrol.TabPages.Add(page);
+                if(popup==false) tabcontrol.TabPages.Add(page);
             }
             catch (Exception e)
             {
@@ -1025,12 +1025,12 @@ namespace r2pipe_test
             run("e io.cache        = true", "output", true); // needed for esil writes
             run("pd 256",           "dissasembly"); // pd or pdf?
             run("dpj",              "processes_listView", false, new List<string> { "path", "status", "pid" });
+            run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
+            run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
+            run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
+            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
             if (!fileName.Equals("-"))
             {
-                run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
-                run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
-                run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
-                run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
                 popup_cmds_async("Call graph", "agf", false);
                 if (debugMode) //fileName.StartsWith("-d "))
                 {

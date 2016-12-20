@@ -79,6 +79,7 @@ namespace r2pipe_test
             if (gui_control != null)
             {
                 gui_control.closed = false;
+                gui_control.cmds = cmds;
                 return gui_control;
             }
             try
