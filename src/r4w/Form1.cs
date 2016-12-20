@@ -279,7 +279,7 @@ namespace r2pipe_test
             }
             realFilename = realFilename.Replace("-d ", "");
             realFilename = realFilename.Replace("dbg://", "");
-            if (realFilename != null && !File.Exists(realFilename) && !realFilename.StartsWith("-"))
+            if (realFilename != null && !File.Exists(realFilename) && !realFilename.StartsWith("-") && !fileName.Contains("://"))
             {
                 r2pw.Show(string.Format("Wops!\n{0}\nfile not found...", fileName), "LoadFile");
                 return;
@@ -490,10 +490,10 @@ namespace r2pipe_test
                         tabcontrol.SelectedTab = page;
                         
                         //close_selected_tab();
-                        if(webFrm!=null) 
-                            webFrm.Focus();
-                        else
-                            output("error: popup_cmds(): no webfrm title='"+title+"' cmds='"+cmds+"'");
+                        //if(webFrm!=null) 
+                        //    webFrm.Focus();
+                        //else
+                        //    output("error: popup_cmds(): no webfrm title='"+title+"' cmds='"+cmds+"'");
                     }
                 }
             }
@@ -1510,11 +1510,17 @@ namespace r2pipe_test
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (benchmarks == null) return;
-            int usage = (int)benchmarks.getCurrentCpuUsage();
-            if (usage > 70)
-                lblCpu.Text = "CPU "+usage.ToString()+"%";
+            int usage        = (int)benchmarks.getCurrentCpuUsage();
+            string ram_avail =      benchmarks.getAvailableRAM();
+            string ram_used   =     benchmarks.getUsedRAM();
+            if (benchmarks.shouldRefresh()) // temp
+            {
+                lblCpu.Text = string.Format("[ {0,3}% CPU  {1}/{2} RAM ] ", usage, ram_used, ram_avail);
+            }
             else
+            {
                 lblCpu.Text = "";
+            }
         }
         private void listView1_MouseDown(object sender, MouseEventArgs e)
         {

@@ -59,6 +59,10 @@
             this.webBrowser2 = new System.Windows.Forms.WebBrowser();
             this.Strings = new System.Windows.Forms.TabPage();
             this.lstStrings = new System.Windows.Forms.ListView();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Imports = new System.Windows.Forms.TabPage();
             this.lstImports = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -84,6 +88,7 @@
             this.blueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.terminal256ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.hideR2RunCmdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -195,11 +200,6 @@
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.blueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -576,6 +576,22 @@
             this.lstStrings.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstStrings_ColumnClick);
             this.lstStrings.DoubleClick += new System.EventHandler(this.lstStrings_DoubleClick);
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "section";
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "string";
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "vaddr";
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "type";
+            // 
             // Imports
             // 
             this.Imports.BackColor = System.Drawing.SystemColors.Control;
@@ -780,7 +796,7 @@
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
             this.ctxMenuOutput.Name = "ctxMenuOutput";
-            this.ctxMenuOutput.Size = new System.Drawing.Size(153, 170);
+            this.ctxMenuOutput.Size = new System.Drawing.Size(135, 148);
             // 
             // copyToolStripMenuItem
             // 
@@ -830,7 +846,7 @@
             this.blueToolStripMenuItem1,
             this.terminal256ToolStripMenuItem1});
             this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
-            this.themeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.themeToolStripMenuItem.Text = "Theme";
             // 
             // classicToolStripMenuItem
@@ -867,6 +883,13 @@
             this.darkToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.darkToolStripMenuItem.Text = "Pink";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
+            // 
+            // blueToolStripMenuItem1
+            // 
+            this.blueToolStripMenuItem1.Name = "blueToolStripMenuItem1";
+            this.blueToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
+            this.blueToolStripMenuItem1.Text = "Blue";
+            this.blueToolStripMenuItem1.Click += new System.EventHandler(this.blueToolStripMenuItem1_Click);
             // 
             // terminal256ToolStripMenuItem1
             // 
@@ -1020,7 +1043,7 @@
             // 
             // lblCpu
             // 
-            this.lblCpu.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCpu.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCpu.Name = "lblCpu";
             this.lblCpu.Size = new System.Drawing.Size(28, 17);
             this.lblCpu.Text = "CPU";
@@ -1716,29 +1739,6 @@
             this.timer1.Enabled = true;
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "section";
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "string";
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "vaddr";
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "type";
-            // 
-            // blueToolStripMenuItem1
-            // 
-            this.blueToolStripMenuItem1.Name = "blueToolStripMenuItem1";
-            this.blueToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
-            this.blueToolStripMenuItem1.Text = "Blue";
-            this.blueToolStripMenuItem1.Click += new System.EventHandler(this.blueToolStripMenuItem1_Click);
             // 
             // Form1
             // 
