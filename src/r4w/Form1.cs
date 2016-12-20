@@ -20,7 +20,6 @@ namespace r2pipe_test
         public string fileType = null;
         public string arch = null;
         private bool updating_gui = false;
-        public TabControl tabcontrol = null;
         public Benchmarks benchmarks = null;
         public string themeName = null;
         public string currentShell = null;
@@ -41,10 +40,7 @@ namespace r2pipe_test
             benchmarks = new Benchmarks();
             locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps" };
             CheckR2path();            
-            tabcontrol = tabControl1;
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
-            tabControl1.SelectedTab = tabControl1.TabPages[1]; // def tab when start gui
-            UpdateGUI();
             //add controls
             r2pw.add_control("output", txtOutput);
             r2pw.add_control("dissasembly", webBrowser1, "Dissasembly", "pd 256");
@@ -117,6 +113,9 @@ namespace r2pipe_test
             //add shell options
             r2pw.add_shellopt("radare2", guiPrompt_callback);
             r2pw.add_shellopt("javascript", guiPrompt_callback);
+            UpdateGUI();
+            r2pw.popup_cmds_async("Call graph", "agf", false);
+            tabcontrol.SelectedTab = tabcontrol.TabPages[1]; // def tab when start gui (hex view)
             //load some example file
             //LoadFile(@"c:\windows\SysWOW64\notepad.exe");
             if(gui_args.Length>0)
@@ -144,8 +143,8 @@ namespace r2pipe_test
                 BackColor = backColor;
                 mainMenu.BackColor = backColor;
                 mainMenu.ForeColor = foreColor;
-                tabControl1.BackColor = backColor;
-                tabControl1.ForeColor = foreColor;
+                tabcontrol.BackColor = backColor;
+                tabcontrol.ForeColor = foreColor;
                 statusStrip1.BackColor = backColor;
                 statusStrip1.ForeColor = foreColor;
                 cmbCmdline.BackColor = backColor;
@@ -240,7 +239,6 @@ namespace r2pipe_test
         }
         private void CheckBinaryPath(string fileName, string varName, string defaultPath=null)
         {
-            string binPath = rconfig.load<string>(varName);
             string fullPath =
             fullPath = rconfig.load<string>(varName);
             if (fullPath != null && File.Exists(fullPath))
@@ -789,15 +787,15 @@ namespace r2pipe_test
         }
         private void close_selected_tab()
         {
-            string controlName = tabControl1.SelectedTab.Text;
+            string controlName = tabcontrol.SelectedTab.Text;
             if (locked_tabs.Contains(controlName)) return;
-            tabControl1.TabPages.Remove(tabControl1.SelectedTab);
+            tabcontrol.TabPages.Remove(tabcontrol.SelectedTab);
             r2pw.controls.Remove(controlName); //check this
             r2pw.gui_controls.close_control_byName(controlName);
         }
         private void hide_selected_tab()
         {
-            tabControl1.SelectedTab.Hide();
+            tabcontrol.SelectedTab.Hide();
         }
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -830,7 +828,7 @@ namespace r2pipe_test
         }
         private void filterResultsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            r2pw.Show(tabControl1.SelectedTab.Text, "filter");
+            r2pw.Show(tabcontrol.SelectedTab.Text, "filter");
         }
         private void closeFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -853,7 +851,7 @@ namespace r2pipe_test
         }
         private void windowsControlToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("Windows control", "check best control for render " + tabControl1.SelectedTab.Text + " data");
+            todo("Windows control", "check best control for render " + tabcontrol.SelectedTab.Text + " data");
         }
         private void textToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -881,7 +879,7 @@ namespace r2pipe_test
         }
         private void jsonToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("Json Formated Output", "ListView required for " + tabControl1.SelectedTab.Text);
+            todo("Json Formated Output", "ListView required for " + tabcontrol.SelectedTab.Text);
         }
         private void floatToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -947,7 +945,7 @@ namespace r2pipe_test
         }
         private void HTMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            todo("HTML Formated Output", "WeBrowser required for " + tabControl1.SelectedTab.Text);
+            todo("HTML Formated Output", "WeBrowser required for " + tabcontrol.SelectedTab.Text);
         }
         private void enableToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1025,9 +1023,9 @@ namespace r2pipe_test
             string text = null;
             try // may fail
             {
-                if (attr.Equals("title")) text = tabControl1.SelectedTab.Text;
-                if (attr.Equals("tag") && tabControl1.SelectedTab.Tag != null)
-                    text = tabControl1.SelectedTab.Tag.ToString();
+                if (attr.Equals("title")) text = tabcontrol.SelectedTab.Text;
+                if (attr.Equals("tag") && tabcontrol.SelectedTab.Tag != null)
+                    text = tabcontrol.SelectedTab.Tag.ToString();
                 if (attr.Equals("controlName"))
                     text = r2pw.findControlBy_tabTitle(attr);
             }
@@ -1070,11 +1068,11 @@ namespace r2pipe_test
         }
         public void autoresize_output() // useful after output maximized
         {
-            if (tabControl1.SelectedTab == null) return;
+            if (tabcontrol.SelectedTab == null) return;
             try // may fail on async runs
             {
                 // left "functions" splitter
-                if (tabControl1.SelectedTab.Text.Equals("Dissasembly"))
+                if (tabcontrol.SelectedTab.Text.Equals("Dissasembly"))
                 {
                     //if (splitContainer1.SplitterDistance == 118)
                     //    todo("elf", "invalid distance");

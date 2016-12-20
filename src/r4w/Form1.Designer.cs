@@ -39,7 +39,7 @@
             this.changePcBtn = new System.Windows.Forms.ToolStripButton();
             this.stepBtn = new System.Windows.Forms.ToolStripButton();
             this.continueUntilBtn = new System.Windows.Forms.ToolStripButton();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabcontrol = new System.Windows.Forms.TabControl();
             this.ctxTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTabsItemClose = new System.Windows.Forms.ToolStripMenuItem();
@@ -209,7 +209,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.tsDebug.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabcontrol.SuspendLayout();
             this.ctxTabs.SuspendLayout();
             this.Dissasembly.SuspendLayout();
             this.HexView.SuspendLayout();
@@ -289,7 +289,7 @@
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.Controls.Add(this.tsDebug);
-            this.splitContainer2.Panel1.Controls.Add(this.tabControl1);
+            this.splitContainer2.Panel1.Controls.Add(this.tabcontrol);
             // 
             // splitContainer2.Panel2
             // 
@@ -368,32 +368,32 @@
             this.continueUntilBtn.Text = "Continue Until ESIL ( aesu )";
             this.continueUntilBtn.Click += new System.EventHandler(this.continueUntilBtn_Click);
             // 
-            // tabControl1
+            // tabcontrol
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabcontrol.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.ContextMenuStrip = this.ctxTabs;
-            this.tabControl1.Controls.Add(this.Dissasembly);
-            this.tabControl1.Controls.Add(this.HexView);
-            this.tabControl1.Controls.Add(this.Strings);
-            this.tabControl1.Controls.Add(this.Imports);
-            this.tabControl1.Controls.Add(this.Sections);
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.HotTrack = true;
-            this.tabControl1.ImageList = this.imageList1;
-            this.tabControl1.Location = new System.Drawing.Point(-1, 3);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(451, 155);
-            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
-            this.tabControl1.TabIndex = 2;
-            this.tabControl1.Tag = "";
-            this.tabControl1.TabIndexChanged += new System.EventHandler(this.tabControl1_TabIndexChanged);
-            this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
-            this.tabControl1.DoubleClick += new System.EventHandler(this.tabControl1_DoubleClick);
-            this.tabControl1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tabControl1_KeyDown);
-            this.tabControl1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tabControl1_PreviewKeyDown);
+            this.tabcontrol.ContextMenuStrip = this.ctxTabs;
+            this.tabcontrol.Controls.Add(this.Dissasembly);
+            this.tabcontrol.Controls.Add(this.HexView);
+            this.tabcontrol.Controls.Add(this.Strings);
+            this.tabcontrol.Controls.Add(this.Imports);
+            this.tabcontrol.Controls.Add(this.Sections);
+            this.tabcontrol.Controls.Add(this.tabPage1);
+            this.tabcontrol.HotTrack = true;
+            this.tabcontrol.ImageList = this.imageList1;
+            this.tabcontrol.Location = new System.Drawing.Point(-1, 3);
+            this.tabcontrol.Name = "tabcontrol";
+            this.tabcontrol.SelectedIndex = 0;
+            this.tabcontrol.Size = new System.Drawing.Size(451, 155);
+            this.tabcontrol.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
+            this.tabcontrol.TabIndex = 2;
+            this.tabcontrol.Tag = "";
+            this.tabcontrol.TabIndexChanged += new System.EventHandler(this.tabControl1_TabIndexChanged);
+            this.tabcontrol.Click += new System.EventHandler(this.tabControl1_Click);
+            this.tabcontrol.DoubleClick += new System.EventHandler(this.tabControl1_DoubleClick);
+            this.tabcontrol.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tabControl1_KeyDown);
+            this.tabcontrol.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tabControl1_PreviewKeyDown);
             // 
             // ctxTabs
             // 
@@ -1766,7 +1766,7 @@
             this.splitContainer2.ResumeLayout(false);
             this.tsDebug.ResumeLayout(false);
             this.tsDebug.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
+            this.tabcontrol.ResumeLayout(false);
             this.ctxTabs.ResumeLayout(false);
             this.Dissasembly.ResumeLayout(false);
             this.HexView.ResumeLayout(false);
@@ -1886,7 +1886,7 @@
         private System.Windows.Forms.ToolStripMenuItem copySelAddressMenu;
         private System.Windows.Forms.ToolStripMenuItem copyAllfieldsMenu;
         private System.Windows.Forms.ToolStripMenuItem renameAfnToolStripMenuItem;
-        private System.Windows.Forms.TabControl tabControl1;
+        public  System.Windows.Forms.TabControl tabcontrol;
         private System.Windows.Forms.TabPage Dissasembly;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.TabPage HexView;

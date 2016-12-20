@@ -44,6 +44,7 @@ namespace r2pipe_test
             this.guicontrol         = frm;
             this.tabcontrol         = ((Form1)frm).tabcontrol;
             this.theme_manager      = new themeManager(rconfig);
+            this.r2html             = new r2html(this); 
             this.gui_controls       = new GuiControls(this);
             this.controls           = new Dictionary<string, object>();
             this.decorators_cb      = new Dictionary<string, Func<string>>();
@@ -107,22 +108,26 @@ namespace r2pipe_test
                         cols != null ? string.Join(", ", cols) : "");
                 else
                 {
-                    if (r2 == null) return null;
-                    string seekaddr = r2.RunCommand("? $$~[1]");
-                    if(seekaddr!=null) 
-                        seekaddr=seekaddr.Replace("\r", "").Replace("\n", "");
-                    output_msg = string.Format("[{0}]> {1,-25} # {2}\n",
-                        seekaddr, cmds, controlName);
+                    if (r2 != null)
+                    {
+                        string seekaddr = r2.RunCommand("? $$~[1]");
+                        if (seekaddr != null)
+                            seekaddr = seekaddr.Replace("\r", "").Replace("\n", "");
+                        output_msg = string.Format("[{0}]> {1,-25} # {2}\n",
+                            seekaddr, cmds, controlName);
+                    }
                 }
                 if (controlName != null && silent == false)
                     setText("output", "", output_msg, true); // send command to output
             }
+            /*
             if (r2 == null)
             {
                 if( cmds!=null ) cmds="";
                 //Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
+             * */
             if (controlName != null) //select target tab
             {                
                 GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
@@ -148,8 +153,8 @@ namespace r2pipe_test
                         string pre_cmd = "", pos_cmd = "";
                         if (gc != null && gc.pre_cmd != null && gc.pre_cmd.Length > 0) pre_cmd = gc.pre_cmd + ";";
                         if (gc != null && gc.pos_cmd != null && gc.pos_cmd.Length > 0) pos_cmd = ";" + gc.pos_cmd;
-                        if (r2 == null) return null;
-                        res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
+                        if (r2 != null) 
+                            res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
                         break;
                     case "javascript":
                         res = invokeJavascript(cmds, filter);
@@ -163,7 +168,8 @@ namespace r2pipe_test
                 {
                     if(gc!=null && gc.control!=null && gc.control.GetType() == typeof(WebBrowser))
                         res = res.Replace("'", "&#39;"); //todo: find a better way to do this
-                    res = r2html.encodeutf8(res);
+                    if (r2html != null)
+                        res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
                 }
                 /*
@@ -185,7 +191,7 @@ namespace r2pipe_test
             try
             {
 
-                    string resultString = escape_json(res);
+                string resultString = escape_json(res);
                 json_obj = JsonConvert.DeserializeObject(resultString);
             }
             catch (Exception e)
@@ -242,7 +248,7 @@ namespace r2pipe_test
                 return;
             }
             //c = controls[controlName];
-            if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
+            //if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
             if (gc.control == null)
             {
                 output(string.Format("setText: gc.control {0} is null, please set some control before 'setText'", controlName));
@@ -260,7 +266,7 @@ namespace r2pipe_test
                     }
                     catch (Exception e) // may fail on closing gui
                     {
-                        Show(e.ToString(), "setText callback invoke");
+                        Console.WriteLine(e.ToString() + " setText callback invoke");
                     }
                 }
                 else
@@ -274,8 +280,12 @@ namespace r2pipe_test
                 ListView lstview = (ListView) gc.control;
                 if (cols == null || cols.Count == 0)
                     cols = save_active_cols(controlName, lstview);
-                lstview.Invoke(new BeginListviewUpdate(listviewUpdate),
-                    new object[] { lstview, true, controlName, cols });
+                try
+                {
+                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate),
+                        new object[] { lstview, true, controlName, cols });
+                }
+                catch (Exception) { } // may fail
                 if (json_obj != null)
                 {
                     try // sometimes fails
@@ -476,7 +486,10 @@ namespace r2pipe_test
             tmpName = rconfig.tempPath + Path.GetFileName(tmpName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
-                sw.WriteLine(r2html.convert(cmds, someText, json_obj, ref mc_addresses));
+                string html = someText;
+                if (r2html != null)
+                    html = r2html.convert(cmds, someText, json_obj, ref mc_addresses);
+                sw.WriteLine(html);
             }
             return tmpName;                
         }
@@ -779,8 +792,7 @@ namespace r2pipe_test
             }
             commandline = args + quotedFileName;
             this.r2 = new R2Pipe(commandline, r2path);
-            this.fileName = fileName;
-            this.r2html = new r2html(this);
+            this.fileName = fileName;            
             int addr_hexlength = int.Parse(run_silent("e asm.bits")) / 4;
         }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
@@ -1043,8 +1055,7 @@ namespace r2pipe_test
             run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
             run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
             run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
-            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
-            popup_cmds_async("Call graph", "agf", false);
+            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });            
             if (!fileName.Equals("-"))
             {
                 if (debugMode) //fileName.StartsWith("-d "))
