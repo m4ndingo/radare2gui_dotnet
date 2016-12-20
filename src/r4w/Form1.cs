@@ -448,7 +448,7 @@ namespace r2pipe_test
             }
             r2pw.run(c.cmds, c.name, false, null, null, false, false, c);
         }*/
-        public void popup_cmds(string title, string cmds, bool popup=true)
+        public void popup_cmds(string title, string cmds, bool popup=true, GuiControl gc=null)
         {
             int i;
             TabPage selected = tabcontrol.SelectedTab;
@@ -457,21 +457,30 @@ namespace r2pipe_test
             this.SuspendLayout();
             //TabPage page = null;
             webbrowser_container_form webFrm = null;
-            r2pw.run("s " + address);
-            GuiControl gc = r2pw.gui_controls.findControlBy_cmds(cmds);
+            if( address!=null )
+                r2pw.run("s " + address);
+            if( gc == null )
+                gc = r2pw.gui_controls.findControlBy_cmds(cmds);
             if (gc == null || gc.control == null)
             {
                 WebBrowser wb=r2pw.add_control_tab(title, cmds, null, null, popup);
-                gc = new GuiControl(wb, title + cmds, title, cmds, title,
-                    null, null, null, -1, webFrm);
-                if (popup == true)
+                if (gc!=null && gc.control == null) // set a default control > webbrowser
                 {
-                    webFrm = popup_tab(gc);
+                    gc.control = wb;
                 }
-                gc.wcf = webFrm;
+                else // create a new control
+                {
+                    gc = new GuiControl(wb, title + cmds, title, cmds, title,
+                        null, null, null, -1, webFrm);
+                }
             }
-            r2pw.run(cmds, title, false, null, null, false, false, gc);
             if (popup == true)
+            {
+                webFrm = popup_tab(gc);
+            }
+            gc.wcf = webFrm;
+            r2pw.run(cmds, title, false, null, null, false, false, gc);
+            if (popup == false)
             {
                 for (i = 0; i < tabcontrol.TabPages.Count; i++)
                 {
@@ -555,13 +564,14 @@ namespace r2pipe_test
         }
         private void popup_cb(string cmds)
         {
+            bool popup = true;
             string popupName = "";
             GuiControl gc = find_control_by_cmds(cmds);
             if (gc == null)
                 popupName = cmds;
             else
                 popupName = gc.name;
-            popup_cmds(popupName, cmds);
+            popup_cmds(popupName, cmds, popup, gc);
         }
         private void changeArch(String arch)
         {

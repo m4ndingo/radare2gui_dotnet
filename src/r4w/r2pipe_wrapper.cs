@@ -243,7 +243,7 @@ namespace r2pipe_test
             if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
             if (gc.control == null)
             {
-                Console.WriteLine(string.Format("setText: gc.control {0} is null, please set some control before 'setText'", controlName), "error");
+                output(string.Format("setText: gc.control {0} is null, please set some control before 'setText'", controlName));
                 return;
             }
             if (gc.control.GetType() == typeof(RichTextBox))
@@ -409,15 +409,22 @@ namespace r2pipe_test
         {
             string url = null;
             object c = null;
-            if (!controls.ContainsKey(controlName))
+            if (gc.control == null)
             {
-                Console.WriteLine("Controls don't contain key " + controlName,
-                    "sendToWebBrowser", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                c = gc.control;
+                if (!controls.ContainsKey(controlName))
+                {
+                    Console.WriteLine("Controls don't contain key " + controlName,
+                        "sendToWebBrowser", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    c = gc.control;
+                }
+                else
+                {
+                    c = controls[controlName];
+                }
             }
             else
             {
-                c = controls[controlName];
+                c = gc.control;
             }
             if (someText == null && cached_results.ContainsKey(controlName)) 
                 someText = cached_results[controlName];

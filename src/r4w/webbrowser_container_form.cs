@@ -40,6 +40,7 @@ namespace r2pipe_test
             }
             this.ShowIcon = true;
             refresh_menu();
+            WindowState = FormWindowState.Normal;
         }
         public const int WM_SYSCOMMAND      = 0x0112;
         public const int NCACTIVATE         = 0x0086;
@@ -102,7 +103,7 @@ namespace r2pipe_test
         }
         private void webbrowser_container_form_FormClosed(object sender, FormClosedEventArgs e)
         {
-            r2pw.unregister_control(control.name);
+            r2pw.unregister_control(control.name);            
         }
     }
 }
