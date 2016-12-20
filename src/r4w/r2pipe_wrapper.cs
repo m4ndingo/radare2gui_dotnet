@@ -73,7 +73,9 @@ namespace r2pipe_test
                 Show(string.Format("run: {0} Timed out\n",cmds),"run");
             return null;
         }
-        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false, bool silent=false, GuiControl gc=null)
+        public string run(String cmds, String controlName = null, Boolean append = false, 
+            List<string> cols = null, string filter = null, bool refresh_tab = false, 
+            bool silent=false, GuiControl gc=null)
         {
             string res = "";
             dynamic json_obj = null;
@@ -1042,9 +1044,9 @@ namespace r2pipe_test
             run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
             run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
             run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
+            popup_cmds_async("Call graph", "agf", false);
             if (!fileName.Equals("-"))
             {
-                popup_cmds_async("Call graph", "agf", false);
                 if (debugMode) //fileName.StartsWith("-d "))
                 {
                     popup_cmds_async("Maps", "dmj", true);

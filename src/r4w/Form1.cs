@@ -489,8 +489,11 @@ namespace r2pipe_test
                     {
                         tabcontrol.SelectedTab = page;
                         
-                        close_selected_tab();
-                        webFrm.Focus();
+                        //close_selected_tab();
+                        if(webFrm!=null) 
+                            webFrm.Focus();
+                        else
+                            output("error: popup_cmds(): no webfrm title='"+title+"' cmds='"+cmds+"'");
                     }
                 }
             }
@@ -891,7 +894,7 @@ namespace r2pipe_test
             string new_controlName = null;
             string tabTitle = selected_tab("title");
             String timeStamp = r2pw.get_timestamp();
-            if (tabTitle == null && gc != null)
+            if (gc != null)
             {
                 tabTitle = gc.tabTitle;
             }
