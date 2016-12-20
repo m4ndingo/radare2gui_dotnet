@@ -89,6 +89,7 @@
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.akiraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminal256ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.hideR2RunCmdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -839,6 +840,7 @@
             // 
             this.themeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.classicToolStripMenuItem,
+            this.akiraToolStripMenuItem,
             this.lemonToolStripMenuItem,
             this.blueToolStripMenuItem,
             this.controlToolStripMenuItem,
@@ -890,6 +892,13 @@
             this.blueToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
             this.blueToolStripMenuItem1.Text = "Blue";
             this.blueToolStripMenuItem1.Click += new System.EventHandler(this.blueToolStripMenuItem1_Click);
+            // 
+            // akiraToolStripMenuItem
+            // 
+            this.akiraToolStripMenuItem.Name = "akiraToolStripMenuItem";
+            this.akiraToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.akiraToolStripMenuItem.Text = "Akira";
+            this.akiraToolStripMenuItem.Click += new System.EventHandler(this.akiraToolStripMenuItem_Click);
             // 
             // terminal256ToolStripMenuItem1
             // 
@@ -1959,6 +1968,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ToolStripMenuItem blueToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem akiraToolStripMenuItem;
     }
 }
 

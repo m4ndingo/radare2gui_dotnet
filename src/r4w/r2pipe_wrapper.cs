@@ -80,46 +80,47 @@ namespace r2pipe_test
         {
             string res = "";
             dynamic json_obj = null;
-            int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
+            //int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
             //Console.WriteLine("[cmds] "+cmds);
+            /*
             while (cpu_usage == 100) // wait for some free cpu resources
             {
                 System.Threading.Thread.Sleep(50);
                 cpu_usage = (int)guicontrol.benchmarks.getCurrentCpuUsage();
-            }
-            if (controls.ContainsKey("output"))
+            }*/
+            //if (controls.ContainsKey("output"))
+            //{
+            string control_type = "unknown";
+            string output_msg = "";
+            if(controlName!=null)
             {
-                string control_type = "unknown";
-                string output_msg = "";
-                if(controlName!=null)
-                {
-                    if( gc==null )
-                        gc = gui_controls.findControlBy_name(controlName);
-                    if( gc!=null && gc.control!=null)
-                        control_type = gc.control.GetType().ToString();
-                }
-                if (long_command_output == true)
-                    output_msg = string.Format(
-                        "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
-                        controlName,
-                        cmds,
-                        filter != null ? "~" + filter : "",
-                        current_shell, control_type,
-                        cols != null ? string.Join(", ", cols) : "");
-                else
-                {
-                    if (r2 != null)
-                    {
-                        string seekaddr = r2.RunCommand("? $$~[1]");
-                        if (seekaddr != null)
-                            seekaddr = seekaddr.Replace("\r", "").Replace("\n", "");
-                        output_msg = string.Format("[{0}]> {1,-25} # {2}\n",
-                            seekaddr, cmds, controlName);
-                    }
-                }
-                if (controlName != null && silent == false)
-                    setText("output", "", output_msg, true); // send command to output
+                if( gc==null )
+                    gc = gui_controls.findControlBy_name(controlName);
+                if( gc!=null && gc.control!=null)
+                    control_type = gc.control.GetType().ToString();
             }
+            if (long_command_output == true)
+                output_msg = string.Format(
+                    "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
+                    controlName,
+                    cmds,
+                    filter != null ? "~" + filter : "",
+                    current_shell, control_type,
+                    cols != null ? string.Join(", ", cols) : "");
+            else
+            {
+                if (r2 != null)
+                {
+                    string seekaddr = r2.RunCommand("? $$~[1]");
+                    if (seekaddr != null)
+                        seekaddr = seekaddr.Replace("\r", "").Replace("\n", "");
+                    output_msg = string.Format("[{0}]> {1,-25} # {2}\n",
+                        seekaddr, cmds, controlName);
+                }
+            }
+            if (controlName != null && silent == false && output_msg.Length>0)
+                setText("output", "", output_msg, true); // send command to output
+            //}
             /*
             if (r2 == null)
             {
@@ -550,8 +551,6 @@ namespace r2pipe_test
                 if(tabcontrol.SelectedTab.Text.StartsWith("Dissasembly")==false)
                     current_function_address = run_silent("s "+ address+"; afi~offset[1]; s -");
                 seekaddress_showtag(current_function_address, address);
-                //run("s " + current_function_address, "output", true);
-                //update controls
             }
             lastAddress = address;
         }
@@ -567,7 +566,6 @@ namespace r2pipe_test
             //output("#todo: save cols of " + controlName+"\n"+cols.ToString());
             GuiControl control = gui_controls.findControlBy_name(controlName);
             control.set_columnTitles(cols);
-            //output(control.ToString());
             return cols;
         }
         public void listviewUpdate(ListView lstview, bool update = true, string controlName = null, List<string> cols = null)
@@ -595,8 +593,7 @@ namespace r2pipe_test
                             lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
                         i++;
                     }
-                }
-                
+                }                
             }
             else
             {
@@ -701,7 +698,6 @@ namespace r2pipe_test
             if (browser != null)
             {
                 browser.Dock = DockStyle.Fill;
-                //browser.Navigate("about:" + cmds);
                 page.Controls.Add(browser);
             }
             try
@@ -807,22 +803,12 @@ namespace r2pipe_test
             string address = (string)item.Tag;
             gotoAddress(address);
             tabcontrol.SelectedIndex = 0; // select disasm
-            //string name = item.Text;
-            //GuiControl gc = gui_controls.findControlBy_cmds(cmds);
-            //if (gc != null) name = gc.name;
-            //run(cmds, name, false, null, null, false, false, gc);            
         }
         private void MenuItemClickHandler(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string name = item.Text;
             string cmds = item.Tag.ToString();
-            /*
-            GuiControl gc = gui_controls.findControlBy_cmds(cmds);
-            if (gc != null)
-            {
-                name = gc.name;
-            }*/
             run(cmds, name);
         }
         public DialogResult Show(string text, string caption)
@@ -835,14 +821,23 @@ namespace r2pipe_test
         {
             try // may fail on timeouts
             {
-                seek_address = UInt64.Parse(r2.RunCommand("? $$~[1]")); // get seek address in decimal ?v
-                string message = string.Format("{0} {1} {2} [0x{3}] > {4}",
-                        guicontrol.fileType, guicontrol.arch, Path.GetFileName(fileName), seek_address, cmds);
+                string saddress = "0x0";
+                if (r2 != null)
+                    saddress = r2.RunCommand("? $$~[1]").TrimEnd('\r').TrimEnd('\n').TrimEnd('\r');
+                string fname = Path.GetFileName(fileName);
+                string ftype = guicontrol.fileType != null ? guicontrol.fileType : "";
+                string farch = guicontrol.arch != null ? guicontrol.arch : "";
+                string message = string.Format("{0} {1} {2} [{3}] > {4}",
+                    ftype, 
+                    farch, 
+                    fname, saddress, cmds);
                 message = message.TrimStart(' ');
                 this.guicontrol.show_message(message);
 
             }
-            catch (Exception){} // better manage
+            catch (Exception e){
+                Console.WriteLine(e);
+            } // better manage
         }
         public void refresh_control(string controlName)
         {

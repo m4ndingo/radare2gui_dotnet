@@ -190,7 +190,7 @@ namespace r2pipe_test
                 if (!fileName.Equals("-"))
                 {
                     fileType = r2pw.run("e file.type", "output", true);
-                    fileType = null;
+                    //fileType = null;
                     if (fileType != null)
                         fileType = fileType.Replace("\n", "");
                     change_arch();
@@ -1732,6 +1732,11 @@ namespace r2pipe_test
         private void blueToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             changeTheme("blue");
+        }
+
+        private void akiraToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            changeTheme("akira");
         }
     }
     public class ListViewItemComparer : IComparer

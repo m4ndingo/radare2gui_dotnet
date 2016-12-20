@@ -66,7 +66,7 @@ namespace r2pipe_test
                 "<span class=group>$1</span>");
             console_text_cut = (new Regex(@"([re]ip:|pc\d?:)")).Replace(console_text_cut,
                 "<span class=esil_rip>$1</span>");
-            
+
             html = "<div class=r2code id=r2code>" + console_text_cut + "</div>";
             return html;
         }

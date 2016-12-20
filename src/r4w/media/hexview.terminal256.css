@@ -6,7 +6,7 @@ body{
 	background-attachment: fixed;
 	padding:0;
 	margin:0;
-	font-size:12px;
+	font-size:14px;
 }
 .hexb{
 	color:#eee;
@@ -15,6 +15,9 @@ body{
 	color:#d07917;
 }
 .r2code, .tbl, .tbl_dict{
+	position:absolute;
+	left:0;
+	top:0;
 	line-height: 1.1em;
 	white-space:pre;
 	font-family: Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols';
@@ -73,7 +76,7 @@ body{
 	color: #000;
 }
 .op_stack{
-	color: #b93994;
+	color: #c949a4;
 }
 .op_ip{
 	color: #4ebf22;

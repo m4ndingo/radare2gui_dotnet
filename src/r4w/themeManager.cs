@@ -51,6 +51,7 @@ namespace r2pipe_test
                     config.save("gui.output.fg", "ControlText");
                     break;
                 case "terminal256":
+                case "akira":
                     config.save("gui.output.bg", "black");
                     config.save("gui.output.fg", "Aquamarine");
                     config.save("gui.output.fg.fcn", "white");
