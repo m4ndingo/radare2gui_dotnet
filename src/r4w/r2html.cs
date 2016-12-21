@@ -30,7 +30,7 @@ namespace r2pipe_test
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
             console_text_cut_copy = console_text_cut;            
-            console_text_cut = (new Regex(@"(- offset -.+|int3\b|;[^\n]+)")).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(- offset -.+|int3\b|;\s[^\n]+)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");       
             console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<a name=$3></a><span class=address id=_ title='$0'>$3 <span class=agfpad>$2</span></span>");

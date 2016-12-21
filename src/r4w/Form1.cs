@@ -405,8 +405,8 @@ namespace r2pipe_test
         public void refresh_main_controls(string address = null)
         {
             int current_tab_index = tabcontrol.SelectedIndex;
-            r2pw.refresh_control("hexview");
             r2pw.refresh_control("dissasembly");
+            r2pw.refresh_control("hexview");
             r2pw.refresh_control("Call graph");
             refresh_popups();
             tabcontrol.SelectedIndex = current_tab_index;

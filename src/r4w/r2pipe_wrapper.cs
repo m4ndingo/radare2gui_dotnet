@@ -851,6 +851,8 @@ namespace r2pipe_test
             GuiControl gc = gui_controls.findControlBy_name(controlName);
             if (gc == null) return;
             run(gc.cmds, controlName, false, null, null, false, true, gc);
+            if(gc.control.GetType() == typeof(WebBrowser))
+                ((WebBrowser)gc.control).Refresh();
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {

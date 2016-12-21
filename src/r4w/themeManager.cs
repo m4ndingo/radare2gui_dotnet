@@ -74,6 +74,16 @@ namespace r2pipe_test
                 case "blue":
                     config.save("gui.output.bg", "DarkBlue");
                     config.save("gui.output.fg", "white");
+                    config.save("gui.output.fg.fcn", "white");
+                    config.save("gui.output.bg.fcn", "DarkBlue");
+                    config.save("gui.output.fg.sym", "white");
+                    config.save("gui.output.bg.sym", "RoyalBlue");
+                    config.save("gui.output.fg.sub", "white");
+                    config.save("gui.output.bg.sub", "DarkBlue");
+                    config.save("gui.output.fg.loc", "white");
+                    config.save("gui.output.bg.loc", "DarkBlue");
+                    config.save("gui.output.fg.entry0", "white");
+                    config.save("gui.output.bg.entry0", "RoyalBlue");
                     break;
             }
             Console.WriteLine("set_theme: {0}", themeName);
