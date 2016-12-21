@@ -39,7 +39,7 @@
             this.changePcBtn = new System.Windows.Forms.ToolStripButton();
             this.stepBtn = new System.Windows.Forms.ToolStripButton();
             this.continueUntilBtn = new System.Windows.Forms.ToolStripButton();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabcontrol = new System.Windows.Forms.TabControl();
             this.ctxTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxTabsItemClose = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +59,10 @@
             this.webBrowser2 = new System.Windows.Forms.WebBrowser();
             this.Strings = new System.Windows.Forms.TabPage();
             this.lstStrings = new System.Windows.Forms.ListView();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Imports = new System.Windows.Forms.TabPage();
             this.lstImports = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -84,6 +88,8 @@
             this.blueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.akiraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminal256ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.hideR2RunCmdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -195,11 +201,6 @@
             this.showPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.blueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -209,7 +210,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.tsDebug.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabcontrol.SuspendLayout();
             this.ctxTabs.SuspendLayout();
             this.Dissasembly.SuspendLayout();
             this.HexView.SuspendLayout();
@@ -289,7 +290,7 @@
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.Controls.Add(this.tsDebug);
-            this.splitContainer2.Panel1.Controls.Add(this.tabControl1);
+            this.splitContainer2.Panel1.Controls.Add(this.tabcontrol);
             // 
             // splitContainer2.Panel2
             // 
@@ -368,32 +369,32 @@
             this.continueUntilBtn.Text = "Continue Until ESIL ( aesu )";
             this.continueUntilBtn.Click += new System.EventHandler(this.continueUntilBtn_Click);
             // 
-            // tabControl1
+            // tabcontrol
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabcontrol.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.ContextMenuStrip = this.ctxTabs;
-            this.tabControl1.Controls.Add(this.Dissasembly);
-            this.tabControl1.Controls.Add(this.HexView);
-            this.tabControl1.Controls.Add(this.Strings);
-            this.tabControl1.Controls.Add(this.Imports);
-            this.tabControl1.Controls.Add(this.Sections);
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.HotTrack = true;
-            this.tabControl1.ImageList = this.imageList1;
-            this.tabControl1.Location = new System.Drawing.Point(-1, 3);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(451, 155);
-            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
-            this.tabControl1.TabIndex = 2;
-            this.tabControl1.Tag = "";
-            this.tabControl1.TabIndexChanged += new System.EventHandler(this.tabControl1_TabIndexChanged);
-            this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
-            this.tabControl1.DoubleClick += new System.EventHandler(this.tabControl1_DoubleClick);
-            this.tabControl1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tabControl1_KeyDown);
-            this.tabControl1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tabControl1_PreviewKeyDown);
+            this.tabcontrol.ContextMenuStrip = this.ctxTabs;
+            this.tabcontrol.Controls.Add(this.Dissasembly);
+            this.tabcontrol.Controls.Add(this.HexView);
+            this.tabcontrol.Controls.Add(this.Strings);
+            this.tabcontrol.Controls.Add(this.Imports);
+            this.tabcontrol.Controls.Add(this.Sections);
+            this.tabcontrol.Controls.Add(this.tabPage1);
+            this.tabcontrol.HotTrack = true;
+            this.tabcontrol.ImageList = this.imageList1;
+            this.tabcontrol.Location = new System.Drawing.Point(-1, 3);
+            this.tabcontrol.Name = "tabcontrol";
+            this.tabcontrol.SelectedIndex = 0;
+            this.tabcontrol.Size = new System.Drawing.Size(451, 155);
+            this.tabcontrol.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
+            this.tabcontrol.TabIndex = 2;
+            this.tabcontrol.Tag = "";
+            this.tabcontrol.TabIndexChanged += new System.EventHandler(this.tabControl1_TabIndexChanged);
+            this.tabcontrol.Click += new System.EventHandler(this.tabControl1_Click);
+            this.tabcontrol.DoubleClick += new System.EventHandler(this.tabControl1_DoubleClick);
+            this.tabcontrol.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tabControl1_KeyDown);
+            this.tabcontrol.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tabControl1_PreviewKeyDown);
             // 
             // ctxTabs
             // 
@@ -575,6 +576,22 @@
             this.lstStrings.View = System.Windows.Forms.View.Details;
             this.lstStrings.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstStrings_ColumnClick);
             this.lstStrings.DoubleClick += new System.EventHandler(this.lstStrings_DoubleClick);
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "section";
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "string";
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "vaddr";
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "type";
             // 
             // Imports
             // 
@@ -780,7 +797,7 @@
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
             this.ctxMenuOutput.Name = "ctxMenuOutput";
-            this.ctxMenuOutput.Size = new System.Drawing.Size(153, 170);
+            this.ctxMenuOutput.Size = new System.Drawing.Size(135, 148);
             // 
             // copyToolStripMenuItem
             // 
@@ -823,6 +840,7 @@
             // 
             this.themeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.classicToolStripMenuItem,
+            this.akiraToolStripMenuItem,
             this.lemonToolStripMenuItem,
             this.blueToolStripMenuItem,
             this.controlToolStripMenuItem,
@@ -830,7 +848,7 @@
             this.blueToolStripMenuItem1,
             this.terminal256ToolStripMenuItem1});
             this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
-            this.themeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.themeToolStripMenuItem.Text = "Theme";
             // 
             // classicToolStripMenuItem
@@ -867,6 +885,20 @@
             this.darkToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.darkToolStripMenuItem.Text = "Pink";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
+            // 
+            // blueToolStripMenuItem1
+            // 
+            this.blueToolStripMenuItem1.Name = "blueToolStripMenuItem1";
+            this.blueToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
+            this.blueToolStripMenuItem1.Text = "Blue";
+            this.blueToolStripMenuItem1.Click += new System.EventHandler(this.blueToolStripMenuItem1_Click);
+            // 
+            // akiraToolStripMenuItem
+            // 
+            this.akiraToolStripMenuItem.Name = "akiraToolStripMenuItem";
+            this.akiraToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.akiraToolStripMenuItem.Text = "Akira";
+            this.akiraToolStripMenuItem.Click += new System.EventHandler(this.akiraToolStripMenuItem_Click);
             // 
             // terminal256ToolStripMenuItem1
             // 
@@ -1020,7 +1052,7 @@
             // 
             // lblCpu
             // 
-            this.lblCpu.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCpu.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCpu.Name = "lblCpu";
             this.lblCpu.Size = new System.Drawing.Size(28, 17);
             this.lblCpu.Text = "CPU";
@@ -1717,29 +1749,6 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "section";
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "string";
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "vaddr";
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "type";
-            // 
-            // blueToolStripMenuItem1
-            // 
-            this.blueToolStripMenuItem1.Name = "blueToolStripMenuItem1";
-            this.blueToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
-            this.blueToolStripMenuItem1.Text = "Blue";
-            this.blueToolStripMenuItem1.Click += new System.EventHandler(this.blueToolStripMenuItem1_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1766,7 +1775,7 @@
             this.splitContainer2.ResumeLayout(false);
             this.tsDebug.ResumeLayout(false);
             this.tsDebug.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
+            this.tabcontrol.ResumeLayout(false);
             this.ctxTabs.ResumeLayout(false);
             this.Dissasembly.ResumeLayout(false);
             this.HexView.ResumeLayout(false);
@@ -1886,7 +1895,7 @@
         private System.Windows.Forms.ToolStripMenuItem copySelAddressMenu;
         private System.Windows.Forms.ToolStripMenuItem copyAllfieldsMenu;
         private System.Windows.Forms.ToolStripMenuItem renameAfnToolStripMenuItem;
-        private System.Windows.Forms.TabControl tabControl1;
+        public  System.Windows.Forms.TabControl tabcontrol;
         private System.Windows.Forms.TabPage Dissasembly;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.TabPage HexView;
@@ -1959,6 +1968,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ToolStripMenuItem blueToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem akiraToolStripMenuItem;
     }
 }
 

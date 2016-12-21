@@ -44,6 +44,7 @@ namespace r2pipe_test
             this.guicontrol         = frm;
             this.tabcontrol         = ((Form1)frm).tabcontrol;
             this.theme_manager      = new themeManager(rconfig);
+            this.r2html             = new r2html(this); 
             this.gui_controls       = new GuiControls(this);
             this.controls           = new Dictionary<string, object>();
             this.decorators_cb      = new Dictionary<string, Func<string>>();
@@ -73,54 +74,61 @@ namespace r2pipe_test
                 Show(string.Format("run: {0} Timed out\n",cmds),"run");
             return null;
         }
-        public string run(String cmds, String controlName = null, Boolean append = false, List<string> cols = null, string filter = null, bool refresh_tab = false, bool silent=false, GuiControl gc=null)
+        public string run(String cmds, String controlName = null, Boolean append = false, 
+            List<string> cols = null, string filter = null, bool refresh_tab = false, 
+            bool silent=false, GuiControl gc=null)
         {
             string res = "";
             dynamic json_obj = null;
-            int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
+            //int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
             //Console.WriteLine("[cmds] "+cmds);
+            /*
             while (cpu_usage == 100) // wait for some free cpu resources
             {
                 System.Threading.Thread.Sleep(50);
                 cpu_usage = (int)guicontrol.benchmarks.getCurrentCpuUsage();
-            }
-            if (controls.ContainsKey("output"))
+            }*/
+            //if (controls.ContainsKey("output"))
+            //{
+            string control_type = "unknown";
+            string output_msg = "";
+            if(controlName!=null)
             {
-                string control_type = "unknown";
-                string output_msg = "";
-                if(controlName!=null)
+                if( gc==null )
+                    gc = gui_controls.findControlBy_name(controlName);
+                if( gc!=null && gc.control!=null)
+                    control_type = gc.control.GetType().ToString();
+            }
+            if (long_command_output == true)
+                output_msg = string.Format(
+                    "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
+                    controlName,
+                    cmds,
+                    filter != null ? "~" + filter : "",
+                    current_shell, control_type,
+                    cols != null ? string.Join(", ", cols) : "");
+            else
+            {
+                if (r2 != null)
                 {
-                    if( gc==null )
-                        gc = gui_controls.findControlBy_name(controlName);
-                    if( gc!=null && gc.control!=null)
-                        control_type = gc.control.GetType().ToString();
-                }
-                if (long_command_output == true)
-                    output_msg = string.Format(
-                        "r2.RunCommand(\"{1}{2}\"): target='{0}' type='{3}' cols='{4}'\n",
-                        controlName,
-                        cmds,
-                        filter != null ? "~" + filter : "",
-                        current_shell, control_type,
-                        cols != null ? string.Join(", ", cols) : "");
-                else
-                {
-                    if (r2 == null) return null;
                     string seekaddr = r2.RunCommand("? $$~[1]");
-                    if(seekaddr!=null) 
-                        seekaddr=seekaddr.Replace("\r", "").Replace("\n", "");
+                    if (seekaddr != null)
+                        seekaddr = seekaddr.Replace("\r", "").Replace("\n", "");
                     output_msg = string.Format("[{0}]> {1,-25} # {2}\n",
                         seekaddr, cmds, controlName);
                 }
-                if (controlName != null && silent == false)
-                    setText("output", "", output_msg, true); // send command to output
             }
+            if (controlName != null && silent == false && output_msg.Length>0)
+                setText("output", "", output_msg, true); // send command to output
+            //}
+            /*
             if (r2 == null)
             {
                 if( cmds!=null ) cmds="";
                 //Show(string.Format("{0}\nR2PIPE_WRAPPER: run(): {1}: IR2Pipe is null", cmds, controlName), "Wops!");
                 return null;
             }
+             * */
             if (controlName != null) //select target tab
             {                
                 GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
@@ -146,8 +154,8 @@ namespace r2pipe_test
                         string pre_cmd = "", pos_cmd = "";
                         if (gc != null && gc.pre_cmd != null && gc.pre_cmd.Length > 0) pre_cmd = gc.pre_cmd + ";";
                         if (gc != null && gc.pos_cmd != null && gc.pos_cmd.Length > 0) pos_cmd = ";" + gc.pos_cmd;
-                        if (r2 == null) return null;
-                        res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
+                        if (r2 != null) 
+                            res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
                         break;
                     case "javascript":
                         res = invokeJavascript(cmds, filter);
@@ -161,7 +169,8 @@ namespace r2pipe_test
                 {
                     if(gc!=null && gc.control!=null && gc.control.GetType() == typeof(WebBrowser))
                         res = res.Replace("'", "&#39;"); //todo: find a better way to do this
-                    res = r2html.encodeutf8(res);
+                    if (r2html != null)
+                        res = r2html.encodeutf8(res);
                     res = res.Replace("\r", "");
                 }
                 /*
@@ -183,7 +192,7 @@ namespace r2pipe_test
             try
             {
 
-                    string resultString = escape_json(res);
+                string resultString = escape_json(res);
                 json_obj = JsonConvert.DeserializeObject(resultString);
             }
             catch (Exception e)
@@ -240,7 +249,7 @@ namespace r2pipe_test
                 return;
             }
             //c = controls[controlName];
-            if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
+            //if (r2 == null) return; // may happend if the gui is closed while using it (silent escape)
             if (gc.control == null)
             {
                 output(string.Format("setText: gc.control {0} is null, please set some control before 'setText'", controlName));
@@ -258,7 +267,7 @@ namespace r2pipe_test
                     }
                     catch (Exception e) // may fail on closing gui
                     {
-                        Show(e.ToString(), "setText callback invoke");
+                        Console.WriteLine(e.ToString() + " setText callback invoke");
                     }
                 }
                 else
@@ -272,8 +281,12 @@ namespace r2pipe_test
                 ListView lstview = (ListView) gc.control;
                 if (cols == null || cols.Count == 0)
                     cols = save_active_cols(controlName, lstview);
-                lstview.Invoke(new BeginListviewUpdate(listviewUpdate),
-                    new object[] { lstview, true, controlName, cols });
+                try
+                {
+                    lstview.Invoke(new BeginListviewUpdate(listviewUpdate),
+                        new object[] { lstview, true, controlName, cols });
+                }
+                catch (Exception) { } // may fail
                 if (json_obj != null)
                 {
                     try // sometimes fails
@@ -474,7 +487,10 @@ namespace r2pipe_test
             tmpName = rconfig.tempPath + Path.GetFileName(tmpName);
             using (StreamWriter sw = new StreamWriter(tmpName))
             {
-                sw.WriteLine(r2html.convert(cmds, someText, json_obj, ref mc_addresses));
+                string html = someText;
+                if (r2html != null)
+                    html = r2html.convert(cmds, someText, json_obj, ref mc_addresses);
+                sw.WriteLine(html);
             }
             return tmpName;                
         }
@@ -535,8 +551,6 @@ namespace r2pipe_test
                 if(tabcontrol.SelectedTab.Text.StartsWith("Dissasembly")==false)
                     current_function_address = run_silent("s "+ address+"; afi~offset[1]; s -");
                 seekaddress_showtag(current_function_address, address);
-                //run("s " + current_function_address, "output", true);
-                //update controls
             }
             lastAddress = address;
         }
@@ -552,7 +566,6 @@ namespace r2pipe_test
             //output("#todo: save cols of " + controlName+"\n"+cols.ToString());
             GuiControl control = gui_controls.findControlBy_name(controlName);
             control.set_columnTitles(cols);
-            //output(control.ToString());
             return cols;
         }
         public void listviewUpdate(ListView lstview, bool update = true, string controlName = null, List<string> cols = null)
@@ -580,8 +593,7 @@ namespace r2pipe_test
                             lstview.Columns[i].TextAlign = HorizontalAlignment.Right;
                         i++;
                     }
-                }
-                
+                }                
             }
             else
             {
@@ -686,7 +698,6 @@ namespace r2pipe_test
             if (browser != null)
             {
                 browser.Dock = DockStyle.Fill;
-                //browser.Navigate("about:" + cmds);
                 page.Controls.Add(browser);
             }
             try
@@ -777,8 +788,7 @@ namespace r2pipe_test
             }
             commandline = args + quotedFileName;
             this.r2 = new R2Pipe(commandline, r2path);
-            this.fileName = fileName;
-            this.r2html = new r2html(this);
+            this.fileName = fileName;            
             int addr_hexlength = int.Parse(run_silent("e asm.bits")) / 4;
         }
         private void MenuItemClick_CallbackHandler(object sender, EventArgs e)
@@ -793,22 +803,12 @@ namespace r2pipe_test
             string address = (string)item.Tag;
             gotoAddress(address);
             tabcontrol.SelectedIndex = 0; // select disasm
-            //string name = item.Text;
-            //GuiControl gc = gui_controls.findControlBy_cmds(cmds);
-            //if (gc != null) name = gc.name;
-            //run(cmds, name, false, null, null, false, false, gc);            
         }
         private void MenuItemClickHandler(object sender, EventArgs e)
         {
             System.Windows.Forms.ToolStripItem item = ((System.Windows.Forms.ToolStripItem)(sender));
             string name = item.Text;
             string cmds = item.Tag.ToString();
-            /*
-            GuiControl gc = gui_controls.findControlBy_cmds(cmds);
-            if (gc != null)
-            {
-                name = gc.name;
-            }*/
             run(cmds, name);
         }
         public DialogResult Show(string text, string caption)
@@ -821,14 +821,23 @@ namespace r2pipe_test
         {
             try // may fail on timeouts
             {
-                seek_address = UInt64.Parse(r2.RunCommand("? $$~[1]")); // get seek address in decimal ?v
-                string message = string.Format("{0} {1} {2} [0x{3}] > {4}",
-                        guicontrol.fileType, guicontrol.arch, Path.GetFileName(fileName), seek_address, cmds);
+                string saddress = "0x0";
+                if (r2 != null)
+                    saddress = r2.RunCommand("? $$~[1]").TrimEnd('\r').TrimEnd('\n').TrimEnd('\r');
+                string fname = Path.GetFileName(fileName);
+                string ftype = guicontrol.fileType != null ? guicontrol.fileType : "";
+                string farch = guicontrol.arch != null ? guicontrol.arch : "";
+                string message = string.Format("{0} {1} {2} [{3}] > {4}",
+                    ftype, 
+                    farch, 
+                    fname, saddress, cmds);
                 message = message.TrimStart(' ');
                 this.guicontrol.show_message(message);
 
             }
-            catch (Exception){} // better manage
+            catch (Exception e){
+                Console.WriteLine(e);
+            } // better manage
         }
         public void refresh_control(string controlName)
         {
@@ -1041,10 +1050,9 @@ namespace r2pipe_test
             run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
             run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
             run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
-            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
+            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });            
             if (!fileName.Equals("-"))
             {
-                popup_cmds_async("Call graph", "agf", false);
                 if (debugMode) //fileName.StartsWith("-d "))
                 {
                     popup_cmds_async("Maps", "dmj", true);
