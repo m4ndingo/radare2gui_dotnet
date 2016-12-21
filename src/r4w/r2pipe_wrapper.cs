@@ -137,8 +137,13 @@ namespace r2pipe_test
             }
             if (controlName!=null)
             {   GuiControl gc_=gui_controls.findControlBy_name(controlName);
-                if(gc_==null || gc_.closed==true)
-                    add_control_tab(controlName, cmds, (WebBrowser)gc_.control);
+            if (gc_ == null || gc_.closed == true)
+            {
+                WebBrowser wb = null;
+                if (gc_ != null && gc_.control != null)
+                    wb = (WebBrowser)gc_.control;
+                add_control_tab(controlName, cmds, wb);
+            }
             }
             if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
             update_statusbar(cmds); // may fail
