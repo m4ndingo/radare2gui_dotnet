@@ -82,7 +82,8 @@ namespace r2pipe_test
                     config.save("gui.output.bg.sub", "DarkBlue");
                     config.save("gui.output.fg.loc", "white");
                     config.save("gui.output.bg.loc", "DarkBlue");
-                    config.save("gui.output.fg.entry0", "white");
+                    config.save("gui.output.fg.loc", "white");
+                    config.save("gui.output.bg.imp", "MidnightBlue");
                     config.save("gui.output.bg.entry0", "RoyalBlue");
                     break;
             }

@@ -115,7 +115,7 @@ namespace r2pipe_test
             lstOperations.ForeColor = foreColor;
             txtCommands.BackColor = backcolor_lst;
             txtCommands.ForeColor = foreColor;
-            txtInput.BackColor = backColor;
+            txtInput.BackColor = backcolor_lst;
             txtInput.ForeColor = foreColor;
             cmdWriteInput.BackColor = backcolor_lst;
             cmdWriteInput.ForeColor = foreColor;
@@ -123,7 +123,7 @@ namespace r2pipe_test
             txtSeekAddress.ForeColor = foreColor;
             txtBlockSize.BackColor = backcolor_lst;
             txtBlockSize.ForeColor = foreColor;
-            txtOutput.BackColor = backColor;
+            txtOutput.BackColor = backcolor_lst;
             txtOutput.ForeColor = foreColor;
             //btnConvert.BackColor = foreColor;
             //btnConvert.ForeColor = backColor;

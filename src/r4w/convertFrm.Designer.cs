@@ -279,7 +279,7 @@
             this.txtOutput.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtOutput.Location = new System.Drawing.Point(3, 22);
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(612, 314);
+            this.txtOutput.Size = new System.Drawing.Size(612, 316);
             this.txtOutput.TabIndex = 5;
             this.txtOutput.Text = "";
             this.txtOutput.WordWrap = false;
