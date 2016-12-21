@@ -138,7 +138,7 @@ namespace r2pipe_test
             if (controlName!=null)
             {   GuiControl gc_=gui_controls.findControlBy_name(controlName);
                 if(gc_==null || gc_.closed==true)
-                    add_control_tab(controlName, cmds);
+                    add_control_tab(controlName, cmds, (WebBrowser)gc_.control);
             }
             if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
             update_statusbar(cmds); // may fail
@@ -683,15 +683,17 @@ namespace r2pipe_test
             if ( tabcontrol == null)
                 return null;
             var page = new TabPage(tabname);
-            ;
-            try
+            if (browser == null)
             {
-                browser = new WebBrowser();
-            }
-            catch (Exception e)
-            {
-                //Show(e.ToString(), "add_control_tab: browser");
-                return null;
+                try
+                {
+                    browser = new WebBrowser();
+                }
+                catch (Exception e)
+                {
+                    //Show(e.ToString(), "add_control_tab: browser");
+                    return null;
+                }
             }
             page.Tag = cmds; // tabname.ToLower();
             page.ImageIndex = 1;

@@ -24,6 +24,11 @@ body{
 	cursor:default;
 	font-weight:bold;
 	padding:3px;
+	  text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
 }
 .tbl{
     border-collapse:collapse;

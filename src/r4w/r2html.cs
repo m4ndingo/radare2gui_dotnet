@@ -111,7 +111,7 @@ namespace r2pipe_test
                     r2pw.rconfig.load<string>("gui.hexview.css", "r2pipe.css")
                     );
             html_header = "<!DOCTYPE html>\n";
-            //html_header += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
+            html_header += "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n";
             html_header += "<meta charset=\"UTF-8\">\n";
             html_header += "<html>\r\n";
             html_header += "<head>\r\n";
