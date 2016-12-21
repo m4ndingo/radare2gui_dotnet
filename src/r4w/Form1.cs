@@ -891,7 +891,7 @@ namespace r2pipe_test
             string new_controlName = null;
             string tabTitle = selected_tab("title");
             String timeStamp = r2pw.get_timestamp();
-            if (tabTitle == null && gc != null)
+            if (gc != null)
             {
                 tabTitle = gc.tabTitle;
             }
