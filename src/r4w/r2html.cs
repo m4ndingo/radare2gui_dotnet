@@ -29,10 +29,10 @@ namespace r2pipe_test
             console_text_cut = console_text_cut.Replace("<", "&lt");
             Regex address_regex = new Regex((@"\b(0x[0-9a-f]{3,})\b"), RegexOptions.IgnoreCase);
             mc = address_regex.Matches(console_text_cut);
-            console_text_cut_copy = console_text_cut;            
-            console_text_cut = (new Regex(@"(- offset -.+|int3\b|;\s[^\n]+)")).Replace(console_text_cut,
+            console_text_cut_copy = console_text_cut;
+            console_text_cut = (new Regex(@"(- offset -.+|int3\b|;\B[^\n\│]+)")).Replace(console_text_cut,
                 "<span class=comment>$1</span>");       
-            console_text_cut = (new Regex(@"\b((fcn|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"\b((fcn|loc|str)\.([\:\w]+))", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<a name=$3></a><span class=address id=_ title='$0'>$3 <span class=agfpad>$2</span></span>");
             console_text_cut = (new Regex(@"((sub|sym)\.(imp\.)?([^\.]+\.dll_)?([\w\.]+))\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<a name=$5></a><span class=address id='_' title='$1'>$5<span class=agfpad>$2.$3$4</span></span>");
@@ -40,7 +40,7 @@ namespace r2pipe_test
                 "<span class=number>$1</span>$2");
             //console_text_cut = (new Regex(@"(0x[0-9a-f]{2,}\s+)([0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
             //    "$1<span class=hexb>$2</span>");
-            console_text_cut = (new Regex(@"(0x[0-9a-f]{2,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"(0x[0-9a-f]{1,})\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=hexb>$1</span>");
             console_text_cut = (new Regex(@"([\[\s])(0x[0-9a-f]{3,})([\]\s])\b", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "$1<span class=address id=_>$2</span>$3");
@@ -50,7 +50,7 @@ namespace r2pipe_test
                 "<a name=$1></a><span class=address></span><span class=address title='$1' id=_>$1</span>"));
             console_text_cut = (new Regex(@"(push|pop\b|cli\b|int\b)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_stack>$1</span>");
-            console_text_cut = (new Regex(@"([rl]?jmp|je|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
+            console_text_cut = (new Regex(@"([rl]?jmp|je\b|jne|jbe?|ret|brcs)", RegexOptions.IgnoreCase)).Replace(console_text_cut,
                 "<span class=op_ip>$1</span>");
             console_text_cut = (new Regex(@"\b([rl]?call)\b")).Replace(console_text_cut,
                 "<span class=op_call>$1</span>");
@@ -145,7 +145,7 @@ namespace r2pipe_test
                 foreach (Match m in mc)
                 {
                     string address = m.Groups[0].Value; // get the address
-                    if (!address.StartsWith("str."))    // fix the fnc.0000000 address
+                    if (!address.StartsWith("str.") && !address.StartsWith("fcn."))    // fix the fnc.0000000 address
                         address = "0x" + address;
                     if (!addresses.Contains(address))
                     {
@@ -153,6 +153,7 @@ namespace r2pipe_test
                     }
                 }
                 addresses = new HashSet<string>(addresses).ToList();
+                
                 foreach (string address in addresses)
                 { 
                     if( cmds!=null && (cmds.StartsWith("pd") || cmds.StartsWith("agf")) && r2pw.fileName.StartsWith("-")==false )
@@ -174,7 +175,7 @@ namespace r2pipe_test
                             pd_previews.Add("'" + address + "':'" + preview + "'");
                         }
                     }
-                }
+                }                
                 // add the rest of address
                 foreach (Match m in mc)
                 {

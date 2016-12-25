@@ -81,7 +81,7 @@ namespace r2pipe_test
             string res = "";
             dynamic json_obj = null;
             //int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
-            //Console.WriteLine("[cmds] "+cmds);
+            Console.WriteLine(string.Format("[cmds] {0} # {1}", cmds, controlName!=null?controlName:"null"));
             /*
             while (cpu_usage == 100) // wait for some free cpu resources
             {
@@ -193,7 +193,8 @@ namespace r2pipe_test
                     }
                 }*/
             }
-            if(res != null && (res.StartsWith("[") || res.StartsWith("{")))
+            if (res != null && (res.StartsWith("[") || res.StartsWith("{")))
+            //if(res!=null && cmds.EndsWith("j"))
             try
             {
 
@@ -542,7 +543,8 @@ namespace r2pipe_test
             run("s " + address, "output", true);
             dissasembly.address_tag = address_tag;
             guicontrol.refresh_control(dissasembly);
-            run("s " + address_tag, "output", true);            
+            if(address!=address_tag) 
+                run("s " + address_tag, "output", true);            
             guicontrol.refresh_control(hexview);
             guicontrol.refresh_control(callgraph);
             guicontrol.refresh_popups();
@@ -1059,7 +1061,8 @@ namespace r2pipe_test
             run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
             run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
             run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
-            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });            
+            run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
+            run("agf", "Call graph"); // pd or pdf?
             if (!fileName.Equals("-"))
             {
                 if (debugMode) //fileName.StartsWith("-d "))

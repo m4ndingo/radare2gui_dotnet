@@ -417,7 +417,7 @@ namespace r2pipe_test
             if (address != null)
             {
                 r2pw.gotoAddress(address);
-                refresh_main_controls(address);
+                //refresh_main_controls(address);
             }
         }
         private void menuXrefs_Click(object sender, EventArgs e)
@@ -517,8 +517,8 @@ namespace r2pipe_test
         private void dumpGuiVars(string args)
         {
             List<string> keys = rconfig.reg_enumkeys();
-            if (args == "*") args = Prompt("filter results", "Enum registry vars", args);
-            output(string.Format("filter: {0}", args));
+            //if (args == "*") args = Prompt("filter results", "Enum registry vars", args);
+            //output(string.Format("filter: {0}", args));
             foreach (string varname in keys)
             {
                 string value = rconfig.load<string>(varname);
@@ -679,6 +679,8 @@ namespace r2pipe_test
                 }
                 else if (lstname_short_address.StartsWith("sym."))
                 {
+                    listview_item.ForeColor = r2pw.get_color_address("fg", "sym", listview_item.ForeColor);
+                    listview_item.BackColor = r2pw.get_color_address("bg", "sym", listview_item.BackColor);
                     lstname_short_address = lstname_short_address.Substring(4); // remove sym.
                 }
             }

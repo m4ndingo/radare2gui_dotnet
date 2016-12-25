@@ -67,7 +67,7 @@
             this.panel1.Controls.Add(this.askLabel);
             this.panel1.Location = new System.Drawing.Point(-1, -2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(392, 213);
+            this.panel1.Size = new System.Drawing.Size(423, 200);
             this.panel1.TabIndex = 7;
             // 
             // btnPaste
@@ -75,7 +75,7 @@
             this.btnPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPaste.ImageIndex = 0;
             this.btnPaste.ImageList = this.imageList1;
-            this.btnPaste.Location = new System.Drawing.Point(336, 120);
+            this.btnPaste.Location = new System.Drawing.Point(367, 108);
             this.btnPaste.Name = "btnPaste";
             this.btnPaste.Size = new System.Drawing.Size(44, 39);
             this.btnPaste.TabIndex = 13;
@@ -93,7 +93,7 @@
             this.txtHeader.Margin = new System.Windows.Forms.Padding(0);
             this.txtHeader.Multiline = false;
             this.txtHeader.Name = "txtHeader";
-            this.txtHeader.Size = new System.Drawing.Size(376, 29);
+            this.txtHeader.Size = new System.Drawing.Size(407, 29);
             this.txtHeader.TabIndex = 12;
             this.txtHeader.Text = "txtHeader";
             this.txtHeader.WordWrap = false;
@@ -101,7 +101,7 @@
             // btnOpenfile
             // 
             this.btnOpenfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOpenfile.Location = new System.Drawing.Point(336, 75);
+            this.btnOpenfile.Location = new System.Drawing.Point(367, 63);
             this.btnOpenfile.Name = "btnOpenfile";
             this.btnOpenfile.Size = new System.Drawing.Size(44, 39);
             this.btnOpenfile.TabIndex = 11;
@@ -113,7 +113,7 @@
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(263, 177);
+            this.btnCancel.Location = new System.Drawing.Point(278, 161);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(67, 23);
             this.btnCancel.TabIndex = 10;
@@ -125,7 +125,7 @@
             // 
             this.btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(106, 177);
+            this.btnOk.Location = new System.Drawing.Point(121, 161);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(80, 23);
             this.btnOk.TabIndex = 8;
@@ -139,17 +139,15 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAnswer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAnswer.Location = new System.Drawing.Point(106, 75);
+            this.txtAnswer.Location = new System.Drawing.Point(106, 63);
             this.txtAnswer.Multiline = true;
             this.txtAnswer.Name = "txtAnswer";
-            this.txtAnswer.Size = new System.Drawing.Size(224, 92);
+            this.txtAnswer.Size = new System.Drawing.Size(255, 84);
             this.txtAnswer.TabIndex = 7;
             // 
             // askLabel
             // 
-            this.askLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.askLabel.Location = new System.Drawing.Point(11, 76);
+            this.askLabel.Location = new System.Drawing.Point(11, 64);
             this.askLabel.Name = "askLabel";
             this.askLabel.Size = new System.Drawing.Size(89, 83);
             this.askLabel.TabIndex = 9;
@@ -159,7 +157,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(394, 215);
+            this.ClientSize = new System.Drawing.Size(425, 196);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "askForm";

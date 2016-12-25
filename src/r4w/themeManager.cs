@@ -27,13 +27,13 @@ namespace r2pipe_test
                     config.save("gui.output.fg.fcn", "black");
                     config.save("gui.output.bg.fcn", "white");
                     config.save("gui.output.fg.loc", "black");
-                    config.save("gui.output.bg.loc", "lime");
-                    config.save("gui.output.fg.sym", "pink");
-                    config.save("gui.output.bg.sym", "white");
+                    config.save("gui.output.bg.loc", "white");
+                    config.save("gui.output.fg.sym", "black");
+                    config.save("gui.output.bg.sym", "lightcyan");
                     config.save("gui.output.fg.imp", "black");
                     config.save("gui.output.bg.imp", "lightcyan");
                     config.save("gui.output.fg.sub", "black");
-                    config.save("gui.output.bg.sub", "white");//DarkTurquoise
+                    config.save("gui.output.bg.sub", "white");
                     config.save("gui.output.fg.entry0", "highlight");
                     config.save("gui.output.bg.entry0", "white");
                     config.save("gui.hexview.css", "r2pipe.css");

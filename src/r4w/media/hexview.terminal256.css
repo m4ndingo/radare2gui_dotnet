@@ -98,12 +98,12 @@ body{
 	color:#008;
 }
 .msg{
-    background:#000;
+    background:#444;
     border:solid 1px #aaa;
     padding:2px;
     display:none;
     white-space:pre;
-	font-size:11px;
+	font-size:12px;
 }
 .agfpad{
 	color:#121314;
