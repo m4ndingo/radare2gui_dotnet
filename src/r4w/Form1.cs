@@ -38,7 +38,7 @@ namespace r2pipe_test
         {
             rconfig = new RConfig();
             benchmarks = new Benchmarks();
-            locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Maps" };
+            locked_tabs = new List<string>() { "Dissasembly", "Hex view", "Strings", "Imports", "Sections", "Processes", "Call graph" };
             CheckR2path();            
             r2pw = new R2PIPE_WRAPPER(rconfig, this);        // init here
             //add controls
@@ -214,7 +214,7 @@ namespace r2pipe_test
                 r2pw.run("e "+varname+" = " + res, "output", true);
                 switch (varname)
                 {
-                    case "arch":
+                    case "asm.arch":
                         arch = res;
                         break;
                 }
@@ -317,11 +317,12 @@ namespace r2pipe_test
             catch (Exception) { 
                 //r2pw.Show(e.ToString(), "show_message"); 
             } // manage this, script_executed_cb fails on this when prompt
+            /*
             try
             {
-                cmbCmdline.Focus();
+                cmbCmdline.Focus(); // called from run may lost other windows focus
             }
-            catch (Exception) { };
+            catch (Exception) { };*/
         }
         public void script_executed_cb()
         {
@@ -350,7 +351,7 @@ namespace r2pipe_test
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (r2pw == null) return;
-            string FileName = Prompt("Locate some file", "Open dialog", r2pw.fileName);
+            string FileName = Prompt("Locate some file", "Open file", r2pw.fileName);
             if( FileName!=null )
                 LoadFile(FileName);
         }
@@ -359,9 +360,7 @@ namespace r2pipe_test
             if (txtOutput.TextLength > 0)
             {
                 txtOutput.SelectionStart = txtOutput.TextLength;
-                txtOutput.SelectionLength = 0;
-                txtOutput.Focus();
-                cmbCmdline.Focus();
+                txtOutput.ScrollToCaret();
             }
         }
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1651,6 +1650,8 @@ namespace r2pipe_test
         private void xrefsAxtjToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             string selected_address = get_currentlistview_selected_address();
+            if (selected_address == null && selected_tab("title")=="Dissasembly") 
+                selected_address = r2pw.lastAddress;
             if (selected_address != null)
                 try
                 {
@@ -1697,13 +1698,14 @@ namespace r2pipe_test
                 foreach (string eAsm in eAsmList.Split('\n'))
                 {
                     string []fields = eAsm.Split('=');
-                    r2pw.add_menufcn(
-                        config, 
-                        fields[1].TrimEnd(' '), 
-                        fields[0].TrimStart(' '), 
-                        changeR2Config_cb, 
-                        mainMenu, 
-                        true);
+                    if(fields.Length>1)
+                        r2pw.add_menufcn(
+                            config, 
+                            fields[1].TrimEnd(' '), 
+                            fields[0].TrimStart(' '), 
+                            changeR2Config_cb, 
+                            mainMenu, 
+                            true);
                 }
             }
             Cursor.Current = Cursors.Default;
@@ -1735,10 +1737,40 @@ namespace r2pipe_test
         {
             changeTheme("blue");
         }
-
         private void akiraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             changeTheme("akira");
+        }
+        private void lstStrings_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) UpdateCtxMenu();
+        }
+        private void UpdateCtxMenu()
+        {
+            string selected_address = get_currentlistview_selected_address();
+            if (selected_address==null && selected_tab("title").Equals("Dissasembly"))
+            {
+                selected_address = r2pw.lastAddress;
+            }
+            xrefsAxtjToolStripMenuItem1.Enabled = false;
+            if (selected_address != null)
+            {
+                string res = r2pw.run("axtj @ " + selected_address);
+                xrefsAxtjToolStripMenuItem1.Enabled = res.Length > 0;
+            } 
+            ctxTabsItemClose.Visible = !locked_tabs.Contains(selected_tab("title"));
+        }
+        private void tabcontrol_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) UpdateCtxMenu();
+        }
+        private void lstImports_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) UpdateCtxMenu();
+        }
+        private void lstSections_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right) UpdateCtxMenu();
         }
     }
     public class ListViewItemComparer : IComparer

@@ -83,8 +83,10 @@ namespace r2pipe_test
                     config.save("gui.output.fg.loc", "white");
                     config.save("gui.output.bg.loc", "DarkBlue");
                     config.save("gui.output.fg.loc", "white");
-                    config.save("gui.output.bg.imp", "MidnightBlue");
-                    config.save("gui.output.bg.entry0", "RoyalBlue");
+                    config.save("gui.output.fg.imp", "white"); 
+                    config.save("gui.output.bg.imp", "RoyalBlue"); //RoyalBlue DarkBlue MidnightBlue
+                    config.save("gui.output.fg.entry0", "yellow");
+                    config.save("gui.output.bg.entry0", "DarkBlue");
                     break;
             }
             Console.WriteLine("set_theme: {0}", themeName);

@@ -1,9 +1,11 @@
 body{
 	background:#000084;
-	color:#ccc;
+	color:#ddd;
 	font-weight:bold;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
+	margin:0;
+	padding:0;
 }
 .r2code, .tbl, .tbl_dict{
 	line-height: 1.1em;
@@ -19,6 +21,26 @@ body{
    margin:0;
    border-spacing: 0;
    border-collapse: collapse;
+}
+.tbl{
+    border-collapse:collapse;
+    border:1px solid #aaa;
+}
+.tbl td{
+    display:table-cell;
+    padding:5px;
+    border:1px solid #404084;
+    font-weight:normal;
+}
+.tbl th{
+	color:black;
+    background:#fff;
+	text-align:left;
+    padding:5px;
+    font-weight:normal;
+}
+.tbl tr { 
+	line-height: 6px; 
 }
 .comment{
 	color:#00ffff;

@@ -84,12 +84,12 @@
             this.maximizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.themeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.classicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.akiraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lemonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.akiraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminal256ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.hideR2RunCmdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -394,6 +394,7 @@
             this.tabcontrol.Click += new System.EventHandler(this.tabControl1_Click);
             this.tabcontrol.DoubleClick += new System.EventHandler(this.tabControl1_DoubleClick);
             this.tabcontrol.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tabControl1_KeyDown);
+            this.tabcontrol.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabcontrol_MouseDown);
             this.tabcontrol.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tabControl1_PreviewKeyDown);
             // 
             // ctxTabs
@@ -489,6 +490,7 @@
             // 
             // xrefsAxtjToolStripMenuItem1
             // 
+            this.xrefsAxtjToolStripMenuItem1.Enabled = false;
             this.xrefsAxtjToolStripMenuItem1.Name = "xrefsAxtjToolStripMenuItem1";
             this.xrefsAxtjToolStripMenuItem1.Size = new System.Drawing.Size(143, 22);
             this.xrefsAxtjToolStripMenuItem1.Text = "Xrefs ( axtj )";
@@ -576,6 +578,7 @@
             this.lstStrings.View = System.Windows.Forms.View.Details;
             this.lstStrings.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstStrings_ColumnClick);
             this.lstStrings.DoubleClick += new System.EventHandler(this.lstStrings_DoubleClick);
+            this.lstStrings.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstStrings_MouseDown);
             // 
             // columnHeader3
             // 
@@ -624,6 +627,7 @@
             this.lstImports.View = System.Windows.Forms.View.Details;
             this.lstImports.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstImports_ColumnClick);
             this.lstImports.DoubleClick += new System.EventHandler(this.lstImports_DoubleClick);
+            this.lstImports.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstImports_MouseDown);
             // 
             // columnHeader2
             // 
@@ -664,6 +668,7 @@
             this.lstSections.View = System.Windows.Forms.View.Details;
             this.lstSections.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lstSections_ColumnClick);
             this.lstSections.DoubleClick += new System.EventHandler(this.lstSections_DoubleClick);
+            this.lstSections.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstSections_MouseDown);
             // 
             // imageList1
             // 
@@ -858,6 +863,13 @@
             this.classicToolStripMenuItem.Text = "Classic";
             this.classicToolStripMenuItem.Click += new System.EventHandler(this.classicToolStripMenuItem_Click);
             // 
+            // akiraToolStripMenuItem
+            // 
+            this.akiraToolStripMenuItem.Name = "akiraToolStripMenuItem";
+            this.akiraToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.akiraToolStripMenuItem.Text = "Akira";
+            this.akiraToolStripMenuItem.Click += new System.EventHandler(this.akiraToolStripMenuItem_Click);
+            // 
             // lemonToolStripMenuItem
             // 
             this.lemonToolStripMenuItem.Name = "lemonToolStripMenuItem";
@@ -892,13 +904,6 @@
             this.blueToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
             this.blueToolStripMenuItem1.Text = "Blue";
             this.blueToolStripMenuItem1.Click += new System.EventHandler(this.blueToolStripMenuItem1_Click);
-            // 
-            // akiraToolStripMenuItem
-            // 
-            this.akiraToolStripMenuItem.Name = "akiraToolStripMenuItem";
-            this.akiraToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.akiraToolStripMenuItem.Text = "Akira";
-            this.akiraToolStripMenuItem.Click += new System.EventHandler(this.akiraToolStripMenuItem_Click);
             // 
             // terminal256ToolStripMenuItem1
             // 
