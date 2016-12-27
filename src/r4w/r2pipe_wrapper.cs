@@ -36,7 +36,7 @@ namespace r2pipe_test
         public  Dictionary<string, Func<string>> decorators_cb     ;
         public  Dictionary<string, List<string>> decorators_names  ;
         public  Dictionary<string, Func<string>> shellopts_cb      ;
-        private Dictionary<string, string>       cached_results    ;
+        //private Dictionary<string, string>       cached_results    ;
         // r2pipe gui commands wrapper
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
@@ -50,7 +50,7 @@ namespace r2pipe_test
             this.decorators_cb      = new Dictionary<string, Func<string>>();
             this.decorators_names   = new Dictionary<string, List<string>>();
             this.shellopts_cb       = new Dictionary<string, Func<string>>();
-            this.cached_results     = new Dictionary<string, string>();
+            //this.cached_results     = new Dictionary<string, string>();
             this.current_shell = 
                 rconfig.load<string>("gui.current_shell", "radare");
             string r2dir = System.IO.Path.GetDirectoryName(rconfig.r2path);
@@ -81,7 +81,7 @@ namespace r2pipe_test
             string res = "";
             dynamic json_obj = null;
             //int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
-            Console.WriteLine(string.Format("[cmds] {0} # {1}", cmds, controlName!=null?controlName:"null"));
+            //Console.WriteLine(string.Format("[cmds] {0} # {1}", cmds, controlName!=null?controlName:"null"));
             /*
             while (cpu_usage == 100) // wait for some free cpu resources
             {
@@ -129,12 +129,14 @@ namespace r2pipe_test
                 return null;
             }
              * */
+            /*
             if (controlName != null) //select target tab
             {                
                 GuiControl gc_tab = gui_controls.findControlBy_name(controlName, 1);
                 if( gc_tab!=null )
                     tabcontrol.SelectedIndex = gc_tab.tab_index;
             }
+             * */
             if (controlName!=null)
             {   GuiControl gc_=gui_controls.findControlBy_name(controlName);
             if (gc_ == null || gc_.closed == true)
@@ -159,8 +161,11 @@ namespace r2pipe_test
                         string pre_cmd = "", pos_cmd = "";
                         if (gc != null && gc.pre_cmd != null && gc.pre_cmd.Length > 0) pre_cmd = gc.pre_cmd + ";";
                         if (gc != null && gc.pos_cmd != null && gc.pos_cmd.Length > 0) pos_cmd = ";" + gc.pos_cmd;
-                        if (r2 != null) 
-                            res = r2.RunCommand(pre_cmd+cmds_new+pos_cmd);
+                        if (r2 != null)
+                        {
+                            Console.WriteLine(string.Format("[CMDS] {0} # {1}", cmds, controlName != null ? controlName : "null"));
+                            res = r2.RunCommand(pre_cmd + cmds_new + pos_cmd);
+                        }
                         break;
                     case "javascript":
                         res = invokeJavascript(cmds, filter);
@@ -193,7 +198,7 @@ namespace r2pipe_test
                     }
                 }*/
             }
-            if (res != null && (res.StartsWith("[") || res.StartsWith("{")))
+            if (res != null && cmds.Contains("j") && (res.StartsWith("[") || res.StartsWith("{")))
             //if(res!=null && cmds.EndsWith("j"))
             try
             {
@@ -209,8 +214,8 @@ namespace r2pipe_test
             {
                 // send results and "others" to control (ex: listview)
                 setText(controlName, cmds, res, append, json_obj, cols, gc);
-                if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
-                cached_results.Add(controlName, res);
+                //if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
+                //cached_results.Add(controlName, res);
             }
             // refresh required tabs after cmds
             if (refresh_tab && autorefresh_activetab)
@@ -448,8 +453,8 @@ namespace r2pipe_test
                     c = gc.control;
                 }
             }
-            if (someText == null && cached_results.ContainsKey(controlName)) 
-                someText = cached_results[controlName];
+            //if (someText == null && cached_results.ContainsKey(controlName)) 
+            //    someText = cached_results[controlName];
             url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
             if (gc != null && gc.address_tag != null)
                 url += "#" + gc.address_tag;
@@ -850,11 +855,12 @@ namespace r2pipe_test
         }
         public void refresh_control(string controlName)
         {
+            bool silent = true;
             GuiControl gc = gui_controls.findControlBy_name(controlName);
             if (gc == null) return;
-            run(gc.cmds, controlName, false, null, null, false, true, gc);
-            if(gc.control.GetType() == typeof(WebBrowser))
-                ((WebBrowser)gc.control).Refresh();
+            run(gc.cmds, controlName, false, null, null, false, silent, gc);
+            //if(gc.control.GetType() == typeof(WebBrowser)) may be loading the doc
+            //    ((WebBrowser)gc.control).Refresh();
         }
         public string readFile(string fileName, bool use_guiPath = true)
         {
