@@ -427,7 +427,8 @@ namespace r2pipe_test
             item = listView1.SelectedItems[0].SubItems[1]; // find address
             addr = Prompt("Address:", "Xrefs", item.Text);
             if (addr != null && addr.Length > 0)
-                runCmds("axtj @ " + addr);            
+                r2pw.popup_cmds_send("Xrefs", "axtj @ " + addr, true);
+                //runCmds("axtj @ " + addr);            
         }
         /*private void popup_tab(GuiControl c)
         {
@@ -1244,8 +1245,8 @@ namespace r2pipe_test
         private void pathsToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (r2pw == null) return;
-            r2pw.find_dataPath(rconfig.load<string>("gui.datapath", "."));
-            changeTheme(themeName);
+            if (r2pw.find_dataPath(rconfig.load<string>("gui.datapath", "."), true) != null)
+                changeTheme(themeName);
         }
         private void editPnToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1771,6 +1772,14 @@ namespace r2pipe_test
         private void lstSections_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right) UpdateCtxMenu();
+        }
+        private void akiraToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            changeTheme("akira");
+        }
+        private void blueToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            changeTheme("blue");
         }
     }
     public class ListViewItemComparer : IComparer

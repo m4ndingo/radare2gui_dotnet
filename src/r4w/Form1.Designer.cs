@@ -170,11 +170,13 @@
             this.guiMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.themeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.classicToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.akiraToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.lemonToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.azuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contorlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminal256ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blueToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.advancedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -802,12 +804,12 @@
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
             this.ctxMenuOutput.Name = "ctxMenuOutput";
-            this.ctxMenuOutput.Size = new System.Drawing.Size(135, 148);
+            this.ctxMenuOutput.Size = new System.Drawing.Size(153, 170);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -817,7 +819,7 @@
             this.enableToolStripMenuItem,
             this.disableToolStripMenuItem});
             this.wordWrapToolStripMenuItem.Name = "wordWrapToolStripMenuItem";
-            this.wordWrapToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.wordWrapToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.wordWrapToolStripMenuItem.Text = "Word Wrap";
             // 
             // enableToolStripMenuItem
@@ -837,7 +839,7 @@
             // maximizeToolStripMenuItem
             // 
             this.maximizeToolStripMenuItem.Name = "maximizeToolStripMenuItem";
-            this.maximizeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.maximizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.maximizeToolStripMenuItem.Text = "Zoom";
             this.maximizeToolStripMenuItem.Click += new System.EventHandler(this.maximizeToolStripMenuItem_Click);
             // 
@@ -850,10 +852,10 @@
             this.blueToolStripMenuItem,
             this.controlToolStripMenuItem,
             this.darkToolStripMenuItem,
-            this.blueToolStripMenuItem1,
-            this.terminal256ToolStripMenuItem1});
+            this.terminal256ToolStripMenuItem1,
+            this.blueToolStripMenuItem1});
             this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
-            this.themeToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.themeToolStripMenuItem.Text = "Theme";
             // 
             // classicToolStripMenuItem
@@ -915,7 +917,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(131, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // hideR2RunCmdToolStripMenuItem
             // 
@@ -923,7 +925,7 @@
             this.yesToolStripMenuItem,
             this.noToolStripMenuItem});
             this.hideR2RunCmdToolStripMenuItem.Name = "hideR2RunCmdToolStripMenuItem";
-            this.hideR2RunCmdToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.hideR2RunCmdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hideR2RunCmdToolStripMenuItem.Text = "r2.RunCmd";
             // 
             // yesToolStripMenuItem
@@ -943,12 +945,12 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(131, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
@@ -1518,13 +1520,15 @@
             // 
             this.themeToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.classicToolStripMenuItem1,
+            this.akiraToolStripMenuItem1,
             this.lemonToolStripMenuItem1,
             this.azuToolStripMenuItem,
             this.contorlToolStripMenuItem,
             this.pinkToolStripMenuItem,
-            this.terminal256ToolStripMenuItem});
+            this.terminal256ToolStripMenuItem,
+            this.blueToolStripMenuItem2});
             this.themeToolStripMenuItem1.Name = "themeToolStripMenuItem1";
-            this.themeToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+            this.themeToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.themeToolStripMenuItem1.Text = "Theme";
             // 
             // classicToolStripMenuItem1
@@ -1533,6 +1537,13 @@
             this.classicToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
             this.classicToolStripMenuItem1.Text = "Classic";
             this.classicToolStripMenuItem1.Click += new System.EventHandler(this.classicToolStripMenuItem1_Click_1);
+            // 
+            // akiraToolStripMenuItem1
+            // 
+            this.akiraToolStripMenuItem1.Name = "akiraToolStripMenuItem1";
+            this.akiraToolStripMenuItem1.Size = new System.Drawing.Size(158, 22);
+            this.akiraToolStripMenuItem1.Text = "Akira";
+            this.akiraToolStripMenuItem1.Click += new System.EventHandler(this.akiraToolStripMenuItem1_Click);
             // 
             // lemonToolStripMenuItem1
             // 
@@ -1569,15 +1580,22 @@
             this.terminal256ToolStripMenuItem.Text = "Terminal 256col";
             this.terminal256ToolStripMenuItem.Click += new System.EventHandler(this.terminal256ToolStripMenuItem_Click_1);
             // 
+            // blueToolStripMenuItem2
+            // 
+            this.blueToolStripMenuItem2.Name = "blueToolStripMenuItem2";
+            this.blueToolStripMenuItem2.Size = new System.Drawing.Size(158, 22);
+            this.blueToolStripMenuItem2.Text = "Blue";
+            this.blueToolStripMenuItem2.Click += new System.EventHandler(this.blueToolStripMenuItem2_Click);
+            // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(132, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(149, 6);
             // 
             // advancedToolStripMenuItem
             // 
             this.advancedToolStripMenuItem.Name = "advancedToolStripMenuItem";
-            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.advancedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.advancedToolStripMenuItem.Text = "Miscelanea";
             // 
             // preferencesToolStripMenuItem
@@ -1587,7 +1605,7 @@
             this.refreshActiveTabToolStripMenuItem,
             this.followESILExecutionToolStripMenuItem});
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
             // 
             // pathsToolStripMenuItem
@@ -1630,12 +1648,12 @@
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(132, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
             // 
             // maximizeOutputToolStripMenuItem
             // 
             this.maximizeOutputToolStripMenuItem.Name = "maximizeOutputToolStripMenuItem";
-            this.maximizeOutputToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.maximizeOutputToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.maximizeOutputToolStripMenuItem.Text = "Reset";
             this.maximizeOutputToolStripMenuItem.Click += new System.EventHandler(this.maximizeOutputToolStripMenuItem_Click);
             // 
@@ -1974,6 +1992,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ToolStripMenuItem blueToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem akiraToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem akiraToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem blueToolStripMenuItem2;
     }
 }
 

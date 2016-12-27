@@ -70,11 +70,12 @@ namespace r2pipe_test
         {
             GuiControl gui_control = null;
             if (name == null || name.Length == 0) return null;
+            /*
             if (control == null)
             {
                 Console.WriteLine("warning: GuiControl: add_control(): control name='" + name + "' is null", "control is null");
                 //return null;
-            }
+            }*/
             gui_control = findControlBy_name(name);
             if (gui_control != null)
             {

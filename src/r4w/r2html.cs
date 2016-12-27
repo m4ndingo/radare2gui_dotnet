@@ -161,7 +161,7 @@ namespace r2pipe_test
                         string preview = ""; // get some previevs
                         string print_cmd = "psz";
                         if(!address.StartsWith("str."))
-                            print_cmd = "pd 32";
+                            print_cmd = "pdf";
 
                         preview = r2pw.run(print_cmd + " @ " + address);
                         if (preview != null)
@@ -169,7 +169,7 @@ namespace r2pipe_test
                             preview = preview.TrimEnd('\n');
                             //preview = encodeutf8(preview);
                             preview = htmlize(preview, ref mc);
-                            preview = preview.Replace("'", "\\'");
+                            preview = preview.Replace("'", "&#39");
                             preview = preview.Replace("\r", "\\r");
                             preview = preview.Replace("\n", "\\n");
                             pd_previews.Add("'" + address + "':'" + preview + "'");

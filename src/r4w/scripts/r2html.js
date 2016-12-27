@@ -210,9 +210,16 @@ function add_select_event(id,cname_orig,cname_selected)
 				if (text && pd_previews) {
 					text = pd_previews[address];							
 					if (text!=null && text.length>0) {
+						x_pos=e.pageX-text.length/2;
+						y_pos=e.pageY-26;
+						if(x_pos<0)
+						{
+							x_pos=0;
+							y_pos+=38;
+						}
 						text = text.replace(/\n/g, "<br>")
 						text = text.replace(/\s\s/g, "&nbsp;&nbsp;")
-						myDialog.css({ top: e.pageY-26, left: e.pageX-text.length/2, position: 'absolute' });
+						myDialog.css({ top: y_pos, left: x_pos, position: 'absolute' });
 						myDialog.html(text);                    
 						make_selectable();						
 					}else{

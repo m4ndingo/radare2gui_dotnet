@@ -36,7 +36,6 @@ namespace r2pipe_test
         public  Dictionary<string, Func<string>> decorators_cb     ;
         public  Dictionary<string, List<string>> decorators_names  ;
         public  Dictionary<string, Func<string>> shellopts_cb      ;
-        //private Dictionary<string, string>       cached_results    ;
         // r2pipe gui commands wrapper
         public R2PIPE_WRAPPER(RConfig rconfig, Form1 frm)
         {
@@ -50,7 +49,6 @@ namespace r2pipe_test
             this.decorators_cb      = new Dictionary<string, Func<string>>();
             this.decorators_names   = new Dictionary<string, List<string>>();
             this.shellopts_cb       = new Dictionary<string, Func<string>>();
-            //this.cached_results     = new Dictionary<string, string>();
             this.current_shell = 
                 rconfig.load<string>("gui.current_shell", "radare");
             string r2dir = System.IO.Path.GetDirectoryName(rconfig.r2path);
@@ -80,6 +78,7 @@ namespace r2pipe_test
         {
             string res = "";
             dynamic json_obj = null;
+            Cursor.Current = Cursors.WaitCursor;
             //int cpu_usage = (int) guicontrol.benchmarks.getCurrentCpuUsage();
             //Console.WriteLine(string.Format("[cmds] {0} # {1}", cmds, controlName!=null?controlName:"null"));
             /*
@@ -138,16 +137,17 @@ namespace r2pipe_test
             }
              * */
             if (controlName!=null)
-            {   GuiControl gc_=gui_controls.findControlBy_name(controlName);
-            if (gc_ == null || gc_.closed == true)
-            {
-                WebBrowser wb = null;
-                if (gc_ != null && gc_.control != null)
-                    wb = (WebBrowser)gc_.control;
-                add_control_tab(controlName, cmds, wb);
+            {   
+                GuiControl gc_=gui_controls.findControlBy_name(controlName);
+                if (gc_ == null || gc_.closed == true)
+                {
+                    WebBrowser wb = null;
+                    if (gc_ != null && gc_.control != null)
+                        wb = (WebBrowser)gc_.control;
+                    add_control_tab(controlName, cmds, wb);
+                }
             }
-            }
-            if( controlName!=null ) Cursor.Current = Cursors.WaitCursor;
+            //if( controlName!=null ) 
             update_statusbar(cmds); // may fail
             if (cmds != null)
             {
@@ -214,8 +214,6 @@ namespace r2pipe_test
             {
                 // send results and "others" to control (ex: listview)
                 setText(controlName, cmds, res, append, json_obj, cols, gc);
-                //if (cached_results.ContainsKey(controlName)) cached_results.Remove(controlName);
-                //cached_results.Add(controlName, res);
             }
             // refresh required tabs after cmds
             if (refresh_tab && autorefresh_activetab)
@@ -453,8 +451,6 @@ namespace r2pipe_test
                     c = gc.control;
                 }
             }
-            //if (someText == null && cached_results.ContainsKey(controlName)) 
-            //    someText = cached_results[controlName];
             url = BuildWebPage((WebBrowser)c, controlName, cmds, someText, json_obj);
             if (gc != null && gc.address_tag != null)
                 url += "#" + gc.address_tag;
@@ -900,12 +896,12 @@ namespace r2pipe_test
         {
             run("dpj", "processes_listView", false, new List<string> { "path", "status", "pid" }, filter);
         }
-        public string find_dataPath(string def="")
+        public string find_dataPath(string def="", bool force=false)
         {
             string datapath = rconfig.load<string>("gui.datapath", def);
             if (datapath == null)
                 datapath = def;
-            if (!Directory.Exists(datapath))
+            if (!Directory.Exists(datapath) || force==true)
             {
                 datapath = guicontrol.Prompt("gui media path?", "Please, locate your data path...", def);
             }
