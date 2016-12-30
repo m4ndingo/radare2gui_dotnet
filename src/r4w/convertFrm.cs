@@ -15,7 +15,7 @@ namespace r2pipe_test
     {
         const string welcome_message    = "Welcome to r4w gui powered by radare2";
         public string seek_address      = "0";
-        public string blocksize         = "128";
+        public string blocksize         = "256";
         private R2PIPE_WRAPPER r2pw = null;
         public convertFrm(R2PIPE_WRAPPER r2pw)
         {
@@ -35,6 +35,9 @@ namespace r2pipe_test
                 case "To Dissasembly":
                     command = "pd " + this.blocksize + " @ " + this.seek_address;
                     break;
+                case "To String":
+                    command = "ps " + this.blocksize + " @ " + this.seek_address;
+                    break;
                 case "To MD5 hash":
                     command = "ph md5 " + this.blocksize + " @ " + this.seek_address;
                     break;
@@ -49,6 +52,11 @@ namespace r2pipe_test
                     break;
                 case "From Base64":
                     command = "p6d " + this.blocksize + " @ " + this.seek_address;
+                    break;
+                case "XOR with key":
+                    string hexkey = r2pw.guicontrol.Prompt("Hex key", "XOR with key", "1234");
+                    command = "b " + this.blocksize + Environment.NewLine;
+                    command += "wox "+ hexkey + " @ " + this.seek_address;
                     break;
                 case "ASM to Hexpairs":
                     if (txtInput.Text.Equals(welcome_message) || !Regex.IsMatch(txtInput.Text, @"^[0-9a-f\s]+$"))
@@ -70,10 +78,7 @@ namespace r2pipe_test
         }
         private void btnConvert_Click(object sender, EventArgs e)
         {
-            string input = txtInput.Text;
-            string write_cmd = cmdWriteInput.Text;
-            if( write_cmd.Length>0 )
-                r2pw.run(write_cmd);
+            string input;
             txtOutput.Text = "";
             foreach (string cmd in txtCommands.Text.Split('\n'))
             {
@@ -135,11 +140,13 @@ namespace r2pipe_test
             lblCommands.ForeColor = foreColor_lbl;
             lstOperations.Items.Add("To Hexdump");
             lstOperations.Items.Add("To Dissasembly");
+            lstOperations.Items.Add("To String");
             lstOperations.Items.Add("To Base64");
             lstOperations.Items.Add("From Base64");
             lstOperations.Items.Add("To C array");
             lstOperations.Items.Add("To MD5 hash");
-            lstOperations.Items.Add("To Entropy value");            
+            lstOperations.Items.Add("To Entropy value");
+            lstOperations.Items.Add("XOR with key");
             lstOperations.Items.Add("ASM to Hexpairs");
             lstOperations.Items.Add("Hexpairs to ASM");
             init_r2_commands();
@@ -166,7 +173,8 @@ namespace r2pipe_test
         {
             txtCommands.Clear();
             txtOutput.Clear();
-            if (MessageBox.Show("Clear input?", "Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (txtInput.TextLength>0 && 
+                MessageBox.Show("Clear input?", "Clear", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 txtInput.Clear();
                 txtInput.Focus();
@@ -186,6 +194,21 @@ namespace r2pipe_test
         private void txtBlockSize_TextChanged_1(object sender, EventArgs e)
         {
             this.blocksize = txtBlockSize.Text;
+        }
+        private void yesCondensedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtOutput.WordWrap = true;
+        }
+        private void noLongLinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtOutput.WordWrap = false;
+        }
+        private void btnWrite_Click(object sender, EventArgs e)
+        {
+            string input = txtInput.Text;
+            string write_cmd = cmdWriteInput.Text;
+            if (write_cmd.Length > 0)
+                r2pw.run(write_cmd);
         }
     }
 }

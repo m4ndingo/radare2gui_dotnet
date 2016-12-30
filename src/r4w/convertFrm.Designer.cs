@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(convertFrm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btnClear = new System.Windows.Forms.Button();
@@ -46,6 +47,11 @@
             this.lblSeek = new System.Windows.Forms.Label();
             this.txtOutput = new System.Windows.Forms.RichTextBox();
             this.lblOutput = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.wordWrapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.yesCondensedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noLongLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnWrite = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -54,6 +60,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -76,7 +83,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(828, 501);
-            this.splitContainer1.SplitterDistance = 203;
+            this.splitContainer1.SplitterDistance = 229;
             this.splitContainer1.TabIndex = 0;
             // 
             // btnClear
@@ -84,10 +91,10 @@
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClear.Font = new System.Drawing.Font("Consolas", 11.25F);
+            this.btnClear.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClear.Location = new System.Drawing.Point(2, 467);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(201, 30);
+            this.btnClear.Size = new System.Drawing.Size(227, 30);
             this.btnClear.TabIndex = 9;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -98,12 +105,12 @@
             this.btnConvert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnConvert.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConvert.Font = new System.Drawing.Font("Consolas", 11.25F);
+            this.btnConvert.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnConvert.Location = new System.Drawing.Point(2, 436);
             this.btnConvert.Name = "btnConvert";
-            this.btnConvert.Size = new System.Drawing.Size(201, 30);
+            this.btnConvert.Size = new System.Drawing.Size(227, 30);
             this.btnConvert.TabIndex = 8;
-            this.btnConvert.Text = "Convert";
+            this.btnConvert.Text = "Run commands";
             this.btnConvert.UseVisualStyleBackColor = true;
             this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
             // 
@@ -115,7 +122,7 @@
             this.txtCommands.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtCommands.Location = new System.Drawing.Point(4, 323);
             this.txtCommands.Name = "txtCommands";
-            this.txtCommands.Size = new System.Drawing.Size(199, 110);
+            this.txtCommands.Size = new System.Drawing.Size(225, 110);
             this.txtCommands.TabIndex = 7;
             this.txtCommands.Text = "";
             this.txtCommands.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCommands_KeyDown);
@@ -145,7 +152,7 @@
             this.lstOperations.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstOperations.Location = new System.Drawing.Point(4, -2);
             this.lstOperations.Name = "lstOperations";
-            this.lstOperations.Size = new System.Drawing.Size(199, 299);
+            this.lstOperations.Size = new System.Drawing.Size(225, 299);
             this.lstOperations.TabIndex = 0;
             this.lstOperations.UseCompatibleStateImageBehavior = false;
             this.lstOperations.View = System.Windows.Forms.View.Details;
@@ -168,6 +175,7 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.btnWrite);
             this.splitContainer2.Panel1.Controls.Add(this.cmdWriteInput);
             this.splitContainer2.Panel1.Controls.Add(this.lblInput);
             this.splitContainer2.Panel1.Controls.Add(this.txtInput);
@@ -180,7 +188,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.lblSeek);
             this.splitContainer2.Panel2.Controls.Add(this.txtOutput);
             this.splitContainer2.Panel2.Controls.Add(this.lblOutput);
-            this.splitContainer2.Size = new System.Drawing.Size(621, 501);
+            this.splitContainer2.Size = new System.Drawing.Size(595, 501);
             this.splitContainer2.SplitterDistance = 126;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -193,7 +201,7 @@
             this.cmdWriteInput.Location = new System.Drawing.Point(3, 100);
             this.cmdWriteInput.Multiline = false;
             this.cmdWriteInput.Name = "cmdWriteInput";
-            this.cmdWriteInput.Size = new System.Drawing.Size(612, 25);
+            this.cmdWriteInput.Size = new System.Drawing.Size(472, 25);
             this.cmdWriteInput.TabIndex = 10;
             this.cmdWriteInput.Text = "";
             // 
@@ -216,7 +224,7 @@
             this.txtInput.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtInput.Location = new System.Drawing.Point(3, 19);
             this.txtInput.Name = "txtInput";
-            this.txtInput.Size = new System.Drawing.Size(612, 78);
+            this.txtInput.Size = new System.Drawing.Size(586, 78);
             this.txtInput.TabIndex = 0;
             this.txtInput.Text = "welcome to r4w gui powered by radare2";
             this.txtInput.TextChanged += new System.EventHandler(this.txtInput_TextChanged);
@@ -226,12 +234,12 @@
             this.txtBlockSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBlockSize.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtBlockSize.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtBlockSize.Location = new System.Drawing.Point(553, 344);
+            this.txtBlockSize.Location = new System.Drawing.Point(527, 344);
             this.txtBlockSize.Multiline = false;
             this.txtBlockSize.Name = "txtBlockSize";
             this.txtBlockSize.Size = new System.Drawing.Size(62, 20);
             this.txtBlockSize.TabIndex = 18;
-            this.txtBlockSize.Text = "128";
+            this.txtBlockSize.Text = "256";
             this.txtBlockSize.TextChanged += new System.EventHandler(this.txtBlockSize_TextChanged_1);
             // 
             // lblBlock
@@ -239,7 +247,7 @@
             this.lblBlock.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBlock.AutoSize = true;
             this.lblBlock.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.lblBlock.Location = new System.Drawing.Point(504, 344);
+            this.lblBlock.Location = new System.Drawing.Point(478, 344);
             this.lblBlock.Name = "lblBlock";
             this.lblBlock.Size = new System.Drawing.Size(48, 18);
             this.lblBlock.TabIndex = 17;
@@ -250,10 +258,10 @@
             this.txtSeekAddress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSeekAddress.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSeekAddress.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.txtSeekAddress.Location = new System.Drawing.Point(429, 344);
+            this.txtSeekAddress.Location = new System.Drawing.Point(378, 344);
             this.txtSeekAddress.Multiline = false;
             this.txtSeekAddress.Name = "txtSeekAddress";
-            this.txtSeekAddress.Size = new System.Drawing.Size(69, 20);
+            this.txtSeekAddress.Size = new System.Drawing.Size(94, 20);
             this.txtSeekAddress.TabIndex = 16;
             this.txtSeekAddress.Text = "0";
             this.txtSeekAddress.TextChanged += new System.EventHandler(this.txtSeekAddress_TextChanged_1);
@@ -263,7 +271,7 @@
             this.lblSeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSeek.AutoSize = true;
             this.lblSeek.Font = new System.Drawing.Font("Consolas", 11.25F);
-            this.lblSeek.Location = new System.Drawing.Point(383, 344);
+            this.lblSeek.Location = new System.Drawing.Point(332, 344);
             this.lblSeek.Name = "lblSeek";
             this.lblSeek.Size = new System.Drawing.Size(40, 18);
             this.lblSeek.TabIndex = 15;
@@ -276,13 +284,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtOutput.ContextMenuStrip = this.contextMenuStrip1;
             this.txtOutput.Font = new System.Drawing.Font("Consolas", 11.25F);
             this.txtOutput.Location = new System.Drawing.Point(3, 22);
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(612, 316);
+            this.txtOutput.Size = new System.Drawing.Size(586, 316);
             this.txtOutput.TabIndex = 5;
             this.txtOutput.Text = "";
-            this.txtOutput.WordWrap = false;
             // 
             // lblOutput
             // 
@@ -293,6 +301,48 @@
             this.lblOutput.Size = new System.Drawing.Size(56, 18);
             this.lblOutput.TabIndex = 4;
             this.lblOutput.Text = "Output";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.wordWrapToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(135, 26);
+            // 
+            // wordWrapToolStripMenuItem
+            // 
+            this.wordWrapToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.yesCondensedToolStripMenuItem,
+            this.noLongLinesToolStripMenuItem});
+            this.wordWrapToolStripMenuItem.Name = "wordWrapToolStripMenuItem";
+            this.wordWrapToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.wordWrapToolStripMenuItem.Text = "Word Wrap";
+            // 
+            // yesCondensedToolStripMenuItem
+            // 
+            this.yesCondensedToolStripMenuItem.Name = "yesCondensedToolStripMenuItem";
+            this.yesCondensedToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.yesCondensedToolStripMenuItem.Text = "yes ( condensed )";
+            this.yesCondensedToolStripMenuItem.Click += new System.EventHandler(this.yesCondensedToolStripMenuItem_Click);
+            // 
+            // noLongLinesToolStripMenuItem
+            // 
+            this.noLongLinesToolStripMenuItem.Name = "noLongLinesToolStripMenuItem";
+            this.noLongLinesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.noLongLinesToolStripMenuItem.Text = "no ( long lines )";
+            this.noLongLinesToolStripMenuItem.Click += new System.EventHandler(this.noLongLinesToolStripMenuItem_Click);
+            // 
+            // btnWrite
+            // 
+            this.btnWrite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnWrite.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnWrite.Location = new System.Drawing.Point(481, 99);
+            this.btnWrite.Name = "btnWrite";
+            this.btnWrite.Size = new System.Drawing.Size(108, 25);
+            this.btnWrite.TabIndex = 11;
+            this.btnWrite.Text = "Write input";
+            this.btnWrite.UseVisualStyleBackColor = true;
+            this.btnWrite.Click += new System.EventHandler(this.btnWrite_Click);
             // 
             // convertFrm
             // 
@@ -317,6 +367,7 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -340,5 +391,10 @@
         private System.Windows.Forms.RichTextBox txtSeekAddress;
         private System.Windows.Forms.Label lblSeek;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem wordWrapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem yesCondensedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noLongLinesToolStripMenuItem;
+        private System.Windows.Forms.Button btnWrite;
     }
 }

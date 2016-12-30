@@ -44,7 +44,7 @@ namespace r2pipe_test
             //add controls
             r2pw.add_control("output", txtOutput);
             r2pw.add_control("dissasembly", webBrowser1, "Dissasembly", "pd 256");
-            r2pw.add_control("strings_listview", lstStrings, "Strings", "izzj");
+            r2pw.add_control("strings_listview", lstStrings, "Strings", "izj");
             r2pw.add_control("functions_listview", listView1, "Functions", "aflj");
             r2pw.add_control("imports_listview", lstImports, "Imports", "iij");
             r2pw.add_control("sections_listview", lstSections, "Sections", "Sj");
@@ -70,7 +70,7 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "File info", "iIj", mainMenu);
             r2pw.add_menucmd("&View", "File version", "iV", mainMenu);
             r2pw.add_menucmd("&View", "Sections", "S=", mainMenu);
-            r2pw.add_menucmd("&View", "Strings", "izzj", mainMenu);
+            r2pw.add_menucmd("&View", "Strings", "izj", mainMenu);
             r2pw.add_menucmd("&View", "Libraries", "ilj", mainMenu);
             r2pw.add_menucmd("&View", "Imports", "iij", mainMenu);
             r2pw.add_menucmd("&View", "Exports", "iEj", mainMenu);
@@ -83,8 +83,10 @@ namespace r2pipe_test
             r2pw.add_menucmd("&View", "Debug registers", "drj", mainMenu);
             r2pw.add_menufcn("&View", "Call graph", "agf", newtab_cb, mainMenu);
             r2pw.add_menucmd("&View", "Flags", "fj", mainMenu);
-            r2pw.add_menucmd("&View", "Magic", "pm @ 0", mainMenu);
+            r2pw.add_menucmd("Magic", "File magic", "pm @ 0", mainMenu);
+            r2pw.add_menucmd("Magic", "Magic find", "/m", mainMenu);
             r2pw.add_menucmd("r2", "Main", "?", mainMenu);
+            r2pw.add_menucmd("r2", "Full help", "?*", mainMenu);
             r2pw.add_menucmd("r2", "Expresions", "???", mainMenu);
             r2pw.add_menucmd("r2", "Write", "w?", mainMenu);
             r2pw.add_menucmd("r2", "Dbg cmds", "d?", mainMenu);
@@ -865,7 +867,7 @@ namespace r2pipe_test
             if (tabTag != null) cmds = tabTag;
             if (tabTitle == "Dissasembly") cmds = "pd 20";
             if (tabTitle == "Hex view") cmds = "pxa";
-            if (tabTitle == "Strings") cmds = "izz";
+            if (tabTitle == "Strings") cmds = "iz";
             if (tabTitle == "Sections") cmds = "iS";
             if (tabTitle == "Imports") cmds = "ii";
             if (tabTitle == "Processes") cmds = "dp";
