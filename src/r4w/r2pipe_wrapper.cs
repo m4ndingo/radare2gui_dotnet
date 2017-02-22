@@ -1062,7 +1062,7 @@ namespace r2pipe_test
             run("pd 256",           "dissasembly"); // pd or pdf?
             run("dpj",              "processes_listView", false, new List<string> { "path", "status", "pid" });
             run("aflj", "functions_listview", false, new List<string> { "type", "offset", "name", "size", "cc", "nargs", "nlocals", "datarefs" });
-            run("izj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
+            run("izzj", "strings_listview", false, new List<string> { "section", "string", "vaddr", "type" });
             run("iij", "imports_listview", false, new List<string> { "ordinal", "name", "plt", "type" });
             run("Sj", "sections_listview", false, new List<string> { "name", "size", "vsize", "flags", "paddr", "vaddr" });
             run("agf", "Call graph"); // pd or pdf?
